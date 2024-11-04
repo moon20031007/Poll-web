@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.poll.mapper.OptionsMapper">
+
+    <resultMap id="BaseResultMap" type="com.poll.pojo.Options">
+        <id property="optionId" column="option_id" jdbcType="INTEGER"/>
+        <result property="pollId" column="poll_id" jdbcType="INTEGER"/>
+        <result property="description" column="description" jdbcType="VARCHAR"/>
+        <result property="order" column="order" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        option_id
+        ,poll_id,description,
+        order
+    </sql>
+</mapper>

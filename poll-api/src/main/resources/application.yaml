@@ -1,0 +1,40 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /
+
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/poll?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8&useSSL=true
+    username: root
+    password: 123456
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  mail:  # Change it to your mail server
+    host: smtp.exmail.qq.com
+    port: 465
+    username: 20223802051@m.scnu.edu.cn
+    password: LuoDing0729
+    properties:
+      mail:
+        smtp:
+          auth: true
+          socketFactory:
+            class: javax.net.ssl.SSLSocketFactory
+            fallback: false
+            port: 465
+  data:  # Change it ti your redis server
+#    redis:
+#      host: 10.253.36.111
+#      port: 6379
+#      password: luoding0729
+    redis:
+      host: 47.121.211.207
+      port: 6379
+      password: 123456
+
+mybatis-plus:
+  type-aliases-package: com.poll.pojo
+  global-config:
+    db-config:
+      logic-delete-field: isDeleted
+      id-type: auto

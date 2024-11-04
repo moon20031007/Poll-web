@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.poll.mapper.PollTopicsMapper">
+
+    <resultMap id="BaseResultMap" type="com.poll.pojo.PollTopics">
+        <id property="pollTopicsId" column="poll_topics_id" jdbcType="INTEGER"/>
+        <result property="pollId" column="poll_id" jdbcType="INTEGER"/>
+        <result property="topicId" column="topic_id" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        poll_topics_id
+        ,poll_id,topic_id
+    </sql>
+</mapper>

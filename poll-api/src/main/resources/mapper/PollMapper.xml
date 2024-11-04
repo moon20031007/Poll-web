@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.poll.mapper.PollMapper">
+
+    <resultMap id="BaseResultMap" type="com.poll.pojo.Poll">
+        <id property="pollId" column="poll_id" jdbcType="INTEGER"/>
+        <result property="creatorId" column="creator_id" jdbcType="INTEGER"/>
+        <result property="type" column="type" jdbcType="BOOLEAN"/>
+        <result property="title" column="title" jdbcType="VARCHAR"/>
+        <result property="starCount" column="star_count" jdbcType="INTEGER"/>
+        <result property="description" column="description" jdbcType="VARCHAR"/>
+        <result property="startTime" column="start_time" jdbcType="TIMESTAMP"/>
+        <result property="endTime" column="end_time" jdbcType="TIMESTAMP"/>
+        <result property="allowAnonymous" column="allow_anonymous" jdbcType="BOOLEAN"/>
+        <result property="enabled" column="enabled" jdbcType="BOOLEAN"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        poll_id
+        ,creator_id,type,
+		title,star_count,description,
+		start_time,end_time,allow_anonymous,
+		enabled
+    </sql>
+</mapper>
