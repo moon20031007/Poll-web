@@ -14,4 +14,21 @@
         follow_id
         ,follower_id,following_id
     </sql>
+
+    <select id="select" resultType="com.poll.pojo.Follow">
+        select *
+        from follow
+        where follower_id = #{followerId}
+        and following_id = #{followingId}
+    </select>
+
+    <insert id="insert">
+        insert into follow(follower_id, following_id)
+        values(#{followerId}, #{followingId})
+    </insert>
+
+    <delete id="delete">
+        delete from follow
+        where follow_id = #{followId}
+    </delete>
 </mapper>

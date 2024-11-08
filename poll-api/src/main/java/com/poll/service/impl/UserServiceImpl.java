@@ -5,8 +5,13 @@ import com.poll.pojo.User;
 import com.poll.service.EmailService;
 import com.poll.service.UserService;
 import com.poll.utils.HashUtils;
+import com.poll.utils.SaveImageUtils;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.util.Objects;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -50,5 +55,25 @@ public class UserServiceImpl implements UserService {
         userMapper.insert(user);
         redisTemplate.delete(user.getEmail());
         return true;
+    }
+
+    @Override
+    public Boolean avatar(User user, MultipartFile avatar) {
+        try {
+            User userToUpdate = userMapper.selectById(user.getUserId());
+            String avatarName = SaveImageUtils.saveImage(avatar, "avatar");
+            userMapper.updateAvatar(user.getUserId(), avatarName);
+            if (!Objects.equals(userToUpdate.getAvatar(), "default.png")){
+                SaveImageUtils.deleteImage(userToUpdate.getAvatar(), "avatar");
+            }
+            return true;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void updateProfile(Integer id, String profile) {
+        userMapper.updateProfile(id, profile);
     }
 }

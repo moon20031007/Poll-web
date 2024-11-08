@@ -37,4 +37,23 @@
         values (#{username}, #{password}, #{gender}, #{birth}, #{email})
     </insert>
 
+    <select id="selectById" resultType="com.poll.pojo.User">
+        select
+        <include refid="Base_Column_List"/>
+        from user
+        where user_id = #{id}
+    </select>
+
+    <update id="updateAvatar">
+        update user
+        set avatar = #{avatar}
+        where user_id = #{id}
+    </update>
+
+    <update id="updateProfile">
+        update user
+        set profile = #{profile}
+        where user_id =#{id}
+    </update>
+
 </mapper>

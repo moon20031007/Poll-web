@@ -2,7 +2,7 @@ package com.poll.service.impl;
 
 import com.poll.pojo.User;
 import com.poll.service.EmailService;
-import com.poll.utils.RandomUtil;
+import com.poll.utils.RandomUtils;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -23,7 +23,7 @@ public class EmailServiceImpl implements EmailService {
 
     @Override
     public void send(User user) {
-        String verificationCode = RandomUtil.generateVerificationCode();
+        String verificationCode = RandomUtils.generateVerificationCode();
 
         redisTemplate.opsForValue().set(user.getEmail(), verificationCode, 10, TimeUnit.MINUTES);
 

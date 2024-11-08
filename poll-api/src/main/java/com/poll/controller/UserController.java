@@ -6,6 +6,7 @@ import com.poll.utils.JwtUtils;
 import com.poll.utils.result.Result;
 import com.poll.utils.result.ResultCode;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 public class UserController {
@@ -56,5 +57,21 @@ public class UserController {
             return Result.success();
         }
         return Result.error(ResultCode.ERROR);
+    }
+
+    @PostMapping("/avatar/update")
+    public Result avatar(@RequestHeader("Authorization") String jwt, @RequestParam("file") MultipartFile file) {
+        Boolean done = userService.avatar(JwtUtils.parseJwt(jwt), file);
+        if (done) {
+            return Result.success();
+        } else {
+            return Result.error(ResultCode.ERROR);
+        }
+    }
+
+    @PostMapping("/profile/update")
+    public Result updateProfile(@RequestHeader("Authorization") String jwt, @RequestBody User user) {
+        userService.updateProfile(JwtUtils.parseJwt(jwt).getUserId(), user.getProfile());
+        return Result.success();
     }
 }
