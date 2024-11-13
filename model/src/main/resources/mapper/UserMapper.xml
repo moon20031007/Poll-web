@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.poll.mapper.UserMapper">
+
+    <resultMap id="BaseResultMap" type="com.poll.pojo.User">
+        <id property="userId" column="user_id" jdbcType="INTEGER"/>
+        <result property="username" column="username" jdbcType="VARCHAR"/>
+        <result property="password" column="password" jdbcType="VARCHAR"/>
+        <result property="gender" column="gender" jdbcType="BOOLEAN"/>
+        <result property="birth" column="birth" jdbcType="DATE"/>
+        <result property="email" column="email" jdbcType="VARCHAR"/>
+        <result property="avatar" column="avatar" jdbcType="VARCHAR"/>
+        <result property="profile" column="profile" jdbcType="VARCHAR"/>
+        <result property="isAdmin" column="is_admin" jdbcType="BOOLEAN"/>
+        <result property="enabled" column="enabled" jdbcType="BOOLEAN"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        user_id
+        ,username,password,
+        gender,birth,email,
+        avatar,profile,is_admin,
+        enabled
+    </sql>
+
+    <select id="selectByEmail" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from user
+        where email = #{email}
+    </select>
+
+    <insert id="insert">
+        insert into user (username, password, gender, birth, email)
+        values (#{username}, #{password}, #{gender}, #{birth}, #{email})
+    </insert>
+
+    <select id="selectById" resultType="com.poll.pojo.User">
+        select
+        <include refid="Base_Column_List"/>
+        from user
+        where user_id = #{id}
+    </select>
+
+    <update id="updateAvatar">
+        update user
+        set avatar = #{avatar}
+        where user_id = #{id}
+    </update>
+
+    <update id="updateProfile">
+        update user
+        set profile = #{profile}
+        where user_id =#{id}
+    </update>
+
+</mapper>

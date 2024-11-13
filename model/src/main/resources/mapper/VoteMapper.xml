@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.poll.mapper.VoteMapper">
+
+    <resultMap id="BaseResultMap" type="com.poll.pojo.Vote">
+        <id property="voteId" column="vote_id" jdbcType="INTEGER"/>
+        <result property="voterId" column="voter_id" jdbcType="INTEGER"/>
+        <result property="pollId" column="poll_id" jdbcType="INTEGER"/>
+        <result property="optionId" column="option_id" jdbcType="INTEGER"/>
+        <result property="isAnonymous" column="is_anonymous" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        vote_id
+        ,voter_id,poll_id,
+        option_id,is_anonymous
+    </sql>
+</mapper>
