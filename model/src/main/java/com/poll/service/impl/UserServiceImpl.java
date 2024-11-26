@@ -78,4 +78,9 @@ public class UserServiceImpl implements UserService {
     public void updateProfile(Integer id, String profile) {
         userMapper.updateProfile(id, profile);
     }
+
+    @Override
+    public void enableOperate(User user) {
+        userMapper.operateEnable(user.getUserId());
+    }
 }

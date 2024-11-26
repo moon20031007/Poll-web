@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.util.Objects;
 
 @RestController
+@RequestMapping("/user")
 public class UserController {
 
     private final UserService userService;
@@ -59,7 +60,7 @@ public class UserController {
         if(userService.registerStepTwo(user, verification)){
             return Result.success();
         }
-        return Result.error(ResultCode.ERROR);
+        return Result.error(ResultCode.USER_REGISTER_ERROR);
     }
 
     @PostMapping("/avatar/update")
@@ -75,6 +76,15 @@ public class UserController {
     @PostMapping("/profile/update")
     public Result updateProfile(@RequestHeader("Authorization") String jwt, @RequestBody User user) {
         userService.updateProfile(JwtUtils.parseJwt(jwt).getUserId(), user.getProfile());
+        return Result.success();
+    }
+
+    @PutMapping("/enable")
+    public Result enable(@RequestHeader("Authorization") String jwt, @RequestBody User user) {
+        if (!JwtUtils.parseJwt(jwt).getIsAdmin()) {
+            return Result.error(ResultCode.PERMISSION_NO_ACCESS);
+        }
+        userService.enableOperate(user);
         return Result.success();
     }
 }

@@ -15,4 +15,6 @@ public interface UserMapper {
     void updateAvatar(Integer id, String avatar);
 
     void updateProfile(Integer id, String profile);
+
+    void operateEnable(Integer id);
 }

@@ -1,7 +1,6 @@
 package com.poll.service;
 
 import com.poll.pojo.User;
-import org.springframework.web.multipart.MultipartFile;
 
 public interface UserService {
 
@@ -14,4 +13,6 @@ public interface UserService {
     String avatar(User user, String avatarName);
 
     void updateProfile(Integer id, String profile);
+
+    void enableOperate(User user);
 }
