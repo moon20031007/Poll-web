@@ -10,6 +10,8 @@ public interface UserMapper {
 
     void insert(User user);
 
+    void updatePassword(User user);
+
     User selectById(Integer id);
 
     void updateAvatar(Integer id, String avatar);

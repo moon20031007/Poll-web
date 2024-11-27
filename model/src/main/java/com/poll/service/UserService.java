@@ -10,6 +10,10 @@ public interface UserService {
 
     Boolean registerStepTwo(User user, String verification);
 
+    void passwordResetStepOne(User user);
+
+    Boolean passwordResetStepTwo(User user, String password, String verification);
+
     String avatar(User user, String avatarName);
 
     void updateProfile(Integer id, String profile);

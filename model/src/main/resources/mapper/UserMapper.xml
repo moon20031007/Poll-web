@@ -37,6 +37,13 @@
         values (#{username}, #{password}, #{gender}, #{birth}, #{email})
     </insert>
 
+
+    <update id="updatePassword">
+        update user
+        set password = #{password}
+        where user_id = #{userId}
+    </update>
+
     <select id="selectById" resultType="com.poll.pojo.User">
         select
         <include refid="Base_Column_List"/>

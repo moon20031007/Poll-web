@@ -63,6 +63,25 @@ public class UserController {
         return Result.error(ResultCode.USER_REGISTER_ERROR);
     }
 
+    @GetMapping("/password/step/1")
+    public Result passwordResetStepOne(@RequestHeader("Authorization") String jwt) {
+        try {
+            userService.passwordResetStepOne(JwtUtils.parseJwt(jwt));
+            return Result.success();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.error(ResultCode.ERROR);
+        }
+    }
+
+    @PostMapping("/password/step/2")
+    public Result passwordResetStepTwo(@RequestHeader("Authorization") String jwt, @RequestBody User user, @RequestParam String verification) {
+        if(userService.passwordResetStepTwo(JwtUtils.parseJwt(jwt), user.getPassword(), verification)){
+            return Result.success();
+        }
+        return Result.error(ResultCode.ERROR);
+    }
+
     @PostMapping("/avatar/update")
     public Result avatar(@RequestHeader("Authorization") String jwt, @RequestParam("file") MultipartFile file) throws IOException {
         String newName = SaveImageUtils.saveImage(file, "avatar");
