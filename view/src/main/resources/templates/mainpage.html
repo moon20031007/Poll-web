@@ -36,18 +36,11 @@
 <div class="top">
     <div class="container">
         <ul class="loginbar pull-right">
-            <li style="visibility:visible;"><i class="icon-globe"></i><a>Languages <i class="icon-sort-up"></i></a>
-                <ul class="nav-list">
-                    <li class="active"><a href="mainpage.html">English</a> <i class="icon-ok"></i></li> <!-- 目前选择的写icon-ok，href写本页面的html名 -->
-                    <li><a href="mainpage.html">Chinese</a></li> <!-- href写本页面对应的中文页面的html名 -->
-                </ul>
-            </li>
-            <li class="devider">&nbsp;</li>
             <li style="visibility:visible;"><a href="login.html" class="login-btn">Login</a></li>
             <li class="devider" style="visibility:visible;">&nbsp;</li>
             <li style="visibility:visible;"><a href="register.html" class="login-btn">Register</a></li>
             <li class="devider" style="visibility:visible;">&nbsp;</li>
-            <li style="visibility:visible;"><a href="userCenter.html" class="login-btn" style="text-transform: none;"><img class="media-object" src="assets/img/unlogin.png" alt="" /> Name</a></li>
+            <li style="visibility:visible;"><a href="userCenter.html" class="login-btn" style="text-transform: none;"><img class="media-object" src="assets/img/unlogin.png" alt="" /> UserCenter</a></li>
             <li class="devider" style="visibility:visible;">&nbsp;</li>
             <li style="visibility:visible;"><a href="login.html" class="login-btn">Log out</a></li>
         </ul>
@@ -58,10 +51,6 @@
 <!--=== Header ===-->
 <div class="header margin-bottom-20">
     <div class="container">
-        <!-- Logo -->
-        <div class="logo">
-            <a href="mainpage.html"><img id="logo-header" src="assets/img/htc_logo.png" alt="Logo" /></a>
-        </div><!-- /logo -->
 
         <!-- Menu -->
         <div class="navbar">
@@ -126,20 +115,21 @@
 <!--=== End Header ===-->
 
 <!--=== Content Part ===-->
+
 <div class="container">
     <div class="row-fluid blog-page">
         <!-- Left Sidebar -->
         <div class="span7">
             <div class="blog margin-bottom-30 bg-light">
                 <div class="special-button">
-                    <span class="blog-title" style="color: #72c02c;font-size: 22px; line-height: 24px; display: inline;float: left;">Do you think my photography skill is good? </span>
+                    <span class="blog-title" style="color: #72c02c;font-size: 22px; line-height: 24px; display: inline;float: left;">Title </span>
                     <ul class="unstyled">
                         <a class="praise" style="text-decoration:none;font-size: 16px;" href="javascript:void(0);" onclick="praiseBox(this);"><li style="list-style: none;display: inline;"><i class="icon-star"></i></li>star</a>
                     </ul>
                 </div>
                 <ul class="unstyled inline blog-info blog-tags" >
-                    <li><a href="userCenter.html" class="login-btn" style="text-transform: none;"><img class="media-object" src="assets/img/sliders/elastislide/2.jpg" alt="" /></a>Charry</li>
-                    <li><i class="icon-calendar"></i> February 02, 2013</li>
+                    <li><a href="userCenter.html" class="login-btn" style="text-transform: none;"><img class="media-object" src="assets/img/sliders/elastislide/2.jpg" alt="" /></a>author</li>
+                    <li><i class="icon-calendar"></i> time</li>
                     <li>
                         <i class="icon-tags"></i>
                         <a href="javascript:void(0);">Daily Life</a>
@@ -154,24 +144,25 @@
                             <li><a href="assets/img/posts/b3.jpg"><img src="assets/img/posts/b3.jpg" /></a></li>
                             <li><a href="assets/img/posts/b4.jpg"><img src="assets/img/posts/b4.jpg" /></a></li>
                         </ul>
-                        <p class="qst-container">The landscape is so beautiful! I have taken several photos. Do you think my photography skill is good? Take a vote and let me know, thanks!</p>
                     </div>
                     <div class="span6 vote_bar">
                         <div style="margin:10px auto; width: 190px;height: 75px; overflow: hidden;">
                             <div class="votecolumn" style="">
                                 <div class="votecard">
                                     <div>
-                                        <em><strong>3</strong><span></span></em>
+                                        <em><strong>0</strong><span></span></em>
                                     </div>
                                 </div>
+                                <a><img src="/img/good.png" class="resized-image"></a>
                                 <a class="voteaction" href="javascript:void(0);">Up</a>
                             </div>
                             <div class="votecolumn2" style="margin-left: 20%;">
                                 <div class="votecard2">
                                     <div>
-                                        <em><strong>1</strong><span></span></em>
+                                        <em><strong>0</strong><span></span></em>
                                     </div>
                                 </div>
+                                <a><img src="/img/bad.png" class="resized-image"></a>
                                 <a class="voteaction2" href="javascript:void(0);">Down</a>
                             </div>
                         </div>
@@ -182,33 +173,12 @@
                         <!-- Media -->
                         <div class="main-comment inline">
                             <hr />
-                            <a href="commentPage.html"><h3 class="color-green" style="text-align: center;">View more comments</h3></a>
-                            <a class="pull-left" href="userCenter.html" style="width: 25px;">
-                                <img class="media-object" src="assets/img/sliders/elastislide/5.jpg" alt="" />
-                            </a>
-
-                            <h4 class="media-heading" >Sharon <span style="float: right;">5 hours ago / <a href="commentPage.html#postComment">Reply</a></span></h4>
-                            <p class="cm-container">Your photos are very nice ! where did you travel and I wish I could visit ! And could you teach me how to take a nice photo? Last time I visited Italy and viewed some perfect scenery, but pictures that I took was not so good. </p>
-                            <hr />
-                            <!-- bShare Button BEGIN -->
-                            <!-- JiaThis Button BEGIN -->
-                            <div class="jiathis_style_32x32">
-                                <a class="jiathis_button_qzone"></a>
-                                <a class="jiathis_button_tsina"></a>
-                                <a class="jiathis_button_weixin"></a>
-                                <a class="jiathis_button_cqq"></a>
-                                <a class="jiathis_button_fb"></a>
-                                <a class="jiathis_button_twitter"></a>
-                                <a class="jiathis_counter_style"></a>
-                            </div>
-                            <!-- JiaThis Button END -->
-
-                            <!-- bShare Button END -->
+                            <p class="qst-container">Description</p>
                         </div>
                     </div>
                 </div>
-                <p><a class="btn-u btn-u-small" href="commentPage.html" style="margin-left: 20px;margin-top: 5px;">Read More</a></p>
             </div><!--/blog-->
+
             <div class="blog margin-bottom-30 bg-light">
                 <div class="special-button">
                     <span class="blog-title" style="color: #72c02c;font-size: 22px; line-height: 24px; display: inline;float: left;">Do you think my photography skill is good?</span>

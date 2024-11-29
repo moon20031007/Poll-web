@@ -2244,3 +2244,10 @@ a.voted,a.voted:hover{outline:none;background-position:-3px -96px;cursor:default
 	.info-button{line-height: 26px; padding: 0 4px; margin-top: 0px;}
 	.basic-info-contentHead{font-size: 20px;line-height: 24px;}
 }
+.resized-image {
+  max-width: 30px; /* 设置最大宽度为200像素 */
+  height: auto;     /* 高度自动根据宽度调整，保持原始宽高比 */
+  position: relative; /* 设置相对定位 */
+  top: -10px;        /* 向上移动10像素 */
+  left: 20px;        /* 向右移动10像素 */
+}
