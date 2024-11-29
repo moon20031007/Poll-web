@@ -12,4 +12,10 @@ public class TemplateController {
         model.addAttribute("data", "example");
         return "example";
     }
+
+    @GetMapping("/")
+    public String index() {
+        return "mainpage";
+    }
 }
+
