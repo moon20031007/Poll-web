@@ -23,8 +23,8 @@
     </select>
 
     <insert id="insert">
-        insert into follow(follower_id, following_id)
-        values(#{followerId}, #{followingId})
+        insert into follow (follower_id, following_id)
+        values (#{followerId}, #{followingId})
     </insert>
 
     <delete id="delete">

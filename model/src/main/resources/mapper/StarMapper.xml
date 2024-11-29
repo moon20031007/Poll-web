@@ -14,4 +14,21 @@
         star_id
         ,user_id,poll_id
     </sql>
+
+    <select id="select" resultType="com.poll.pojo.Star">
+        select *
+        from star
+        where user_id = #{userId}
+        and poll_id = #{pollId}
+    </select>
+
+    <insert id="insert">
+        insert into star (user_id, poll_id)
+        values (#{userId}, #{pollId})
+    </insert>
+
+    <delete id="delete">
+        delete from star
+        where star_id = #{starId}
+    </delete>
 </mapper>
