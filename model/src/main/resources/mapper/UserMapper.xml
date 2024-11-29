@@ -37,6 +37,13 @@
         values (#{username}, #{password}, #{gender}, #{birth}, #{email})
     </insert>
 
+
+    <update id="updatePassword">
+        update user
+        set password = #{password}
+        where user_id = #{userId}
+    </update>
+
     <select id="selectById" resultType="com.poll.pojo.User">
         select
         <include refid="Base_Column_List"/>
@@ -53,7 +60,13 @@
     <update id="updateProfile">
         update user
         set profile = #{profile}
-        where user_id =#{id}
+        where user_id = #{id}
+    </update>
+
+    <update id="operateEnable">
+        update user
+        set enabled = 1 - enabled
+        where user_id = #{id}
     </update>
 
 </mapper>

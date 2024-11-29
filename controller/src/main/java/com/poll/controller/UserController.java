@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.util.Objects;
 
 @RestController
+@RequestMapping("/user")
 public class UserController {
 
     private final UserService userService;
@@ -59,6 +60,25 @@ public class UserController {
         if(userService.registerStepTwo(user, verification)){
             return Result.success();
         }
+        return Result.error(ResultCode.USER_REGISTER_ERROR);
+    }
+
+    @GetMapping("/password/step/1")
+    public Result passwordResetStepOne(@RequestHeader("Authorization") String jwt) {
+        try {
+            userService.passwordResetStepOne(JwtUtils.parseJwt(jwt));
+            return Result.success();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.error(ResultCode.ERROR);
+        }
+    }
+
+    @PostMapping("/password/step/2")
+    public Result passwordResetStepTwo(@RequestHeader("Authorization") String jwt, @RequestBody User user, @RequestParam String verification) {
+        if(userService.passwordResetStepTwo(JwtUtils.parseJwt(jwt), user.getPassword(), verification)){
+            return Result.success();
+        }
         return Result.error(ResultCode.ERROR);
     }
 
@@ -75,6 +95,15 @@ public class UserController {
     @PostMapping("/profile/update")
     public Result updateProfile(@RequestHeader("Authorization") String jwt, @RequestBody User user) {
         userService.updateProfile(JwtUtils.parseJwt(jwt).getUserId(), user.getProfile());
+        return Result.success();
+    }
+
+    @PutMapping("/enable")
+    public Result enable(@RequestHeader("Authorization") String jwt, @RequestBody User user) {
+        if (!JwtUtils.parseJwt(jwt).getIsAdmin()) {
+            return Result.error(ResultCode.PERMISSION_NO_ACCESS);
+        }
+        userService.enableOperate(user);
         return Result.success();
     }
 }

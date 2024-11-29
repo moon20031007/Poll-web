@@ -52,6 +52,23 @@ public class UserServiceImpl implements UserService {
         return true;
     }
 
+    @Override
+    public void passwordResetStepOne(User user) {
+        emailService.send(user);
+    }
+
+    @Override
+    public Boolean passwordResetStepTwo(User user, String password, String verification) {
+        String storedVerificationCode = redisTemplate.opsForValue().get(user.getEmail());
+        if (storedVerificationCode == null || !verification.equals(storedVerificationCode)) {
+            return false;
+        }
+        user.setPassword(HashUtils.encodePassword(password));
+        userMapper.updatePassword(user);
+        redisTemplate.delete(user.getEmail());
+        return true;
+    }
+
 //    @Override
 //    public Boolean avatar(User user, MultipartFile avatar) {
 //        try {
@@ -77,5 +94,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public void updateProfile(Integer id, String profile) {
         userMapper.updateProfile(id, profile);
+    }
+
+    @Override
+    public void enableOperate(User user) {
+        userMapper.operateEnable(user.getUserId());
     }
 }
