@@ -38,4 +38,3 @@ public class TemplateController {
         return "resetpw";
     }
 }
-
