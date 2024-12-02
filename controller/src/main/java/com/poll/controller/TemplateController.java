@@ -47,4 +47,14 @@ public class TemplateController {
     public String resetpw() {
         return "resetpw";
     }
+
+    @GetMapping("/userCenter")
+    public String userCenter() {
+        return "userCenter";
+    }
+
+    @GetMapping("/post")
+    public String post() {
+    	return "post";
+    }
 }
