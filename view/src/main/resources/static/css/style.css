@@ -2268,3 +2268,45 @@ a.voted,a.voted:hover{outline:none;background-position:-3px -96px;cursor:default
   top: -10px;        /* 向上移动10像素 */
   left: 20px;        /* 向右移动10像素 */
 }
+
+.text-center {
+    text-align: center;
+}
+
+.gallery_img_pro, .qst-container_pro, .vote_section {
+    display: block;
+    margin: 0 auto;
+}
+
+.HTC_media_a_pro {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.HTC_media_a_pro li {
+    flex: 1 1 calc(50% - 10px); /* 50% of the container width minus some margin */
+    max-width: calc(50% - 10px);
+    margin: 5px;
+    box-sizing: border-box;
+}
+
+.HTC_media_a_pro img {
+    max-width: 100%;
+    height: auto;
+}
+
+.vote_section .vote_bar {
+    display: inline-block;
+    text-align: center;
+}
+
+hr {
+    border: 0;
+    height: 1px;
+    background: #ccc;
+    margin: 20px 0;
+}
