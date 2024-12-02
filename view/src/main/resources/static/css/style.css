@@ -2008,6 +2008,23 @@ a.voted,a.voted:hover{outline:none;background-position:-3px -96px;cursor:default
     text-decoration: none;
     color:#fff;
 }
+.submitbtn {
+    background-color: #87CEFA; /* 浅蓝色背景 */
+    padding-right: 9px;
+    padding-left: 9px;
+    -webkit-border-radius: 9px;
+    -moz-border-radius: 9px;
+    border-radius: 9px;
+    color: #fff; /* 文字颜色保持白色 */
+    border: none; /* 去除边框 */
+}
+.submitbtn:hover {
+    background-color: #6495ED; /* 鼠标悬停时更深一点的浅蓝色 */
+    box-shadow: 2px 2px 3px gray;
+    cursor: pointer;
+    text-decoration: none;
+    color: #fff; /* 文字颜色保持白色 */
+}
 .modifyPage{margin-left: 20%!important;}
 .accordion-inner a {color:#72c02c;}
 .pic{
@@ -2250,4 +2267,46 @@ a.voted,a.voted:hover{outline:none;background-position:-3px -96px;cursor:default
   position: relative; /* 设置相对定位 */
   top: -10px;        /* 向上移动10像素 */
   left: 20px;        /* 向右移动10像素 */
+}
+
+.text-center {
+    text-align: center;
+}
+
+.gallery_img_pro, .qst-container_pro, .vote_section {
+    display: block;
+    margin: 0 auto;
+}
+
+.HTC_media_a_pro {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.HTC_media_a_pro li {
+    flex: 1 1 calc(50% - 10px); /* 50% of the container width minus some margin */
+    max-width: calc(50% - 10px);
+    margin: 5px;
+    box-sizing: border-box;
+}
+
+.HTC_media_a_pro img {
+    max-width: 100%;
+    height: auto;
+}
+
+.vote_section .vote_bar {
+    display: inline-block;
+    text-align: center;
+}
+
+hr {
+    border: 0;
+    height: 1px;
+    background: #ccc;
+    margin: 20px 0;
 }

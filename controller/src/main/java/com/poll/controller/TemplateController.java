@@ -18,6 +18,16 @@ public class TemplateController {
         return "mainpage";
     }
 
+    @GetMapping("/type1")
+    public String commentpage1() {
+        return "commentpage1";
+    }
+
+    @GetMapping("/type2")
+    public String commentpage2() {
+        return "commentpage2";
+    }
+
     @GetMapping("/login")
     public String login() {
         return "login";
@@ -36,5 +46,15 @@ public class TemplateController {
     @GetMapping("/resetpw")
     public String resetpw() {
         return "resetpw";
+    }
+
+    @GetMapping("/userCenter")
+    public String userCenter() {
+        return "userCenter";
+    }
+
+    @GetMapping("/post")
+    public String post() {
+    	return "post";
     }
 }
