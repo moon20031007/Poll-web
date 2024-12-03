@@ -15,7 +15,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/poll")
@@ -28,6 +30,17 @@ public class PollController {
     public PollController(PollService pollService, ImageService imageService) {
         this.pollService = pollService;
         this.imageService = imageService;
+    }
+
+    @GetMapping("/main")
+    public Result getPolls(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "3") int size) {
+        try {
+            Map<Poll, List<Options>> map = pollService.getPolls(page, size);
+            return Result.success(map);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.error(ResultCode.ERROR);
+        }
     }
 
     @PostMapping("/add")
