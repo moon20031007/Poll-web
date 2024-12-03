@@ -16,4 +16,9 @@
         ,poll_id,order,
         path
     </sql>
+
+    <insert id="insert">
+        insert into image (poll_id, order, path)
+        values (#{pollId}, #{order}, #{path})
+    </insert>
 </mapper>

@@ -1,10 +1,114 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" xmlns:th="http://www.thymeleaf.org">
-    <title>上传图片</title>
+    <meta charset="UTF-8">
+    <title>Test API</title>
+    <script src="/js/axios.min.js"></script>
+    <script src="/js/api.js"></script>
 </head>
 <body>
-<h1 th:text="${data}"></h1>
+
+<h2>Test Poll API</h2>
+
+<form id="pollForm" enctype="multipart/form-data">
+    <label>Type:</label><br>
+    <input type="radio" id="typeTrue" name="poll.type" value="true"><label for="typeTrue">True</label>
+    <input type="radio" id="typeFalse" name="poll.type" value="false"><label for="typeFalse">False</label><br>
+
+    <label for="title">Title:</label><br>
+    <input type="text" id="title" name="poll.title"><br>
+
+    <label for="description">Description:</label><br>
+    <textarea id="description" name="poll.description"></textarea><br>
+
+    <div id="optionsContainer">
+        <!-- Options will be added dynamically -->
+    </div>
+
+    <button type="button" onclick="addOptionField()">Add Option</button><br>
+
+    <label for="files">Select files to upload (optional):</label><br>
+    <input type="file" id="files" name="files" multiple><br>
+
+    <button type="button" onclick="submitForm()">Submit</button>
+</form>
+
+<div id="response"></div>
+
+<script>
+    function submitForm() {
+        const formData = new FormData(document.getElementById('pollForm'));
+
+        // 构建Poll对象
+        const poll = {
+            type: document.querySelector('input[name="poll.type"]:checked').value === 'true',
+            title: document.getElementById('title').value,
+            description: document.getElementById('description').value
+        };
+
+        // 构建Options列表
+        const options = [];
+        const optionElements = document.querySelectorAll('#optionsContainer .option');
+        optionElements.forEach(optionElement => {
+            const description = optionElement.querySelector('input[name^="options["][name$=".description"]').value;
+            const order = optionElement.querySelector('input[name^="options["][name$=".order"]').value;
+            options.push({ description, order });
+        });
+
+        // 将Poll和Options转换为JSON字符串并添加到FormData
+        formData.append('poll', JSON.stringify(poll));
+        formData.append('options', JSON.stringify(options));
+
+        instance.post('/poll/test', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        })
+            .then(response => {
+                document.getElementById('response').innerText = JSON.stringify(response.data, null, 2);
+            })
+            .catch(error => {
+                document.getElementById('response').innerText = `Error: ${error.message}`;
+            });
+    }
+
+    function addOptionField() {
+        const optionsContainer = document.getElementById('optionsContainer');
+        const newIndex = optionsContainer.querySelectorAll('.option').length + 1;
+
+        const optionDiv = document.createElement('div');
+        optionDiv.className = 'option';
+
+        const descriptionLabel = document.createElement('label');
+        descriptionLabel.htmlFor = `option${newIndex}Description`;
+        descriptionLabel.textContent = `Option ${newIndex} Description: `;
+        optionDiv.appendChild(descriptionLabel);
+
+        const descriptionInput = document.createElement('input');
+        descriptionInput.type = 'text';
+        descriptionInput.id = `option${newIndex}Description`;
+        descriptionInput.name = `options[${newIndex - 1}].description`;
+        optionDiv.appendChild(descriptionInput);
+
+        const orderLabel = document.createElement('label');
+        orderLabel.htmlFor = `option${newIndex}Order`;
+        orderLabel.textContent = `Order: `;
+        optionDiv.appendChild(orderLabel);
+
+        const orderInput = document.createElement('input');
+        orderInput.type = 'number';
+        orderInput.id = `option${newIndex}Order`;
+        orderInput.name = `options[${newIndex - 1}].order`;
+        optionDiv.appendChild(orderInput);
+
+        optionsContainer.appendChild(optionDiv);
+    }
+
+    // 初始化三个选项
+    addOptionField();
+    addOptionField();
+    addOptionField();
+</script>
+
 </body>
 </html>
