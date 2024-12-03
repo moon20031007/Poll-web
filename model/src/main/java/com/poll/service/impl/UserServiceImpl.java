@@ -22,6 +22,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User selectById(Integer id) {
+        User user = userMapper.selectById(id);
+        user.setPassword(null);
+        return user;
+    }
+
+    @Override
     public User login(String email, String password) {
         User user = userMapper.selectByEmail(email);
         if (user == null) {
