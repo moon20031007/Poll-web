@@ -20,10 +20,10 @@
 		<div class="clear"> </div>
 		<div class="lable-2">
 			<h3 style="padding-bottom: 0px;">Account:</h3>
-			<input type="text" class="text" id="email" placeholder="your@email.com" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = 'your@email.com';}">
+			<input type="text" class="text" id="email" placeholder="your@email.com">
 
 			<h3 style="padding-bottom: 0px;">Password:</h3>
-			<input type="password" class="text" id="password" placeholder="Password" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = 'Password';}">
+			<input type="password" class="text" id="password" placeholder="Password">
 
 			<div class="clear"> </div>
 		</div>
@@ -34,7 +34,7 @@
 		</div>
 		<div class="clear"> </div>
 		<h3 id="errorMessage" style="color:#EF514B; display: none;">Error message</h3>
-		<h3 style="margin-top: -10px;">New to How To Chooose? <span><a href="/register" style="color:#F2CA68; margin-left: 2%;">Create account</a> <span><span><a href="/forgetpw" style="margin-left: 25%;">Forget password?</a> <span></h3>
+		<h3 style="margin-top: -10px;">New to How To Chooose? <span><a href="/register" style="color:#F2CA68; margin-left: 2%;">Create account</a> <span><span><a href="/forgetpw" style="margin-left: 25%;">Forget password?</a><span></h3>
 	</form>
 	<!-- end-main -->
 </div>
@@ -62,24 +62,25 @@
 					.then(response => {
 						if (response.data.code == 0) {
 							alert("success");
+							const token = response.data.data;
+							if (token) {
+								localStorage.setItem('authToken', token);
+								console.log('Token stored successfully:', token);
+							} else {
+								console.warn('No token received from the server.');
+							}
+							// 登录成功后，可以重定向到主页或其他页面
+							// window.location.href = '/mainpage'; // 替换为实际的重定向URL
+						}else {
+							throw new Error('Login failed with code: ' + response.data.msg);
 						}
 					})
 					.catch(error => {
 						alert("error");
 					});
 
-			console.log('Token stored successfully:');
-
-			// 登录成功后，可以重定向到主页或其他页面
-			// window.location.href = '/mainpage'; // 替换为实际的重定向URL
-
 		} catch (error) {
 			console.error('Error during login:', error);
-
-			// 显示错误信息给用户
-			const errorMessageElement = document.getElementById('errorMessage');
-			errorMessageElement.style.display = 'block';
-			errorMessageElement.textContent = 'Invalid email or password. Please try again.';
 		}
 	}
 

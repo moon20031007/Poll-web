@@ -9,6 +9,13 @@ instance.interceptors.request.use(
   config => {
     // 在发送请求之前做些什么
     console.log('Request was sent.');
+    // 从 localStorage 中获取令牌
+    const token = localStorage.getItem('authToken');
+
+    // 如果存在令牌，则将其添加到请求头中
+    if (token) {
+       config.headers['Authorization'] = `Bearer ${token}`;
+    }
     return config;
   },
   error => {
@@ -22,6 +29,13 @@ instance.interceptors.response.use(
   response => {
     // 对响应数据做点什么
     console.log('Response received.');
+      // 从 localStorage 中获取令牌
+      const token = localStorage.getItem('authToken');
+
+      // 如果存在令牌，则将其添加到请求头中
+      if (token) {
+          config.headers['Authorization'] = `Bearer ${token}`;
+      }
     return response;
   },
   error => {
