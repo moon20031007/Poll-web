@@ -21,6 +21,12 @@ public class UserController {
         this.userService = userService;
     }
 
+    @GetMapping("/info/{id}")
+    public Result getUser(@PathVariable int id) {
+        User user = userService.selectById(id);
+        return Result.success(user);
+    }
+
     @PostMapping("/login")
     public Result login(@RequestBody User user) {
         User userToLogin = userService.login(user.getEmail(), user.getPassword());

@@ -57,4 +57,14 @@ public class TemplateController {
     public String post() {
     	return "post";
     }
+
+    @GetMapping("/searchResult")
+    public String searchResult() {
+    	return "searchResult";
+    }
+
+    @GetMapping("/messages")
+    public String messages() {
+    	return "messages";
+    }
 }

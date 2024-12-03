@@ -16,4 +16,10 @@
         ,poll_id,description,
         order
     </sql>
+
+    <select id="selectByPollId" resultType="com.poll.pojo.Options">
+        select <include refid="Base_Column_List"/>
+        from options
+        where poll_id = #{id}
+    </select>
 </mapper>

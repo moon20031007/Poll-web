@@ -25,6 +25,13 @@
 		enabled
     </sql>
 
+    <select id="getPolls" resultType="com.poll.pojo.Poll">
+        select <include refid="Base_Column_List"/>
+        from poll
+        order by start_time desc
+        limit #{size} offset #{offset}
+    </select>
+
     <insert id="insert" useGeneratedKeys="true" keyProperty="pollId">
         insert into poll
             <trim prefix="(" suffix=")" suffixOverrides=",">

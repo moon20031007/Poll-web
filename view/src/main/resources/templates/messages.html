@@ -42,6 +42,8 @@
             <li class="devider" style="visibility:visible;">&nbsp;</li>
             <li style="visibility:visible;"><a href="userCenter.html" class="login-btn" style="text-transform: none;"><img class="media-object" src="assets/img/unlogin.png" alt="" /> UserCenter</a></li>
             <li class="devider" style="visibility:visible;">&nbsp;</li>
+            <li style="visibility:visible;"><a href="messages.html" class="login-btn">Messages</a></li>
+            <li class="devider" style="visibility:visible;">&nbsp;</li>
             <li style="visibility:visible;"><a href="login.html" class="login-btn">Log out</a></li>
         </ul>
     </div>
@@ -115,92 +117,68 @@
 <!--=== End Header ===-->
 
 <!--=== Content Part ===-->
+
 <div class="container">
-    <div class="row-fluid blog-page blog-item">
-        <div>
-            <div class="blog margin-bottom-30">
-                <div class="special-button">
-                    <span class="blog-title" style="color: #72c02c;font-size: 22px; line-height: 24px; display: inline;float: left;">Do you think my photography skill is good? </span>
-                    <ul class="unstyled">
-                        <a class="praise" style="text-decoration:none;font-size: 16px;" href="javascript:void(0);" onclick="praiseBox(this);"><li style="list-style: none;display: inline;"><i class="icon-star"></i></li>star</a>
-                    </ul>
+    <div class="row-fluid blog-page">
+        <!-- Left Sidebar -->
+        <div class="span3">
+            <!-- Posts -->
+            <div class="posts margin-bottom-20">
+
+                <div class="headline"><h3>Messages</h3></div>
+                <dl class="dl-horizontal">
+                    <dt><a href="commentPage.html"><img src="assets/img/sliders/elastislide/6.jpg" alt="" /></a></dt>
+                    <dd>
+                        <p class="sidebar-contianer"><a href="commentPage.html">User1</a></p>
+                    </dd>
+                </dl>
+                <dl class="dl-horizontal">
+                    <dt><a href="commentPage2.html"><img src="assets/img/sliders/elastislide/10.jpg" alt="" /></a></dt>
+                    <dd>
+                        <p class="sidebar-contianer"><a href="commentPage2.html">User2</a></p>
+                    </dd>
+                </dl>
+                <dl class="dl-horizontal">
+                    <dt><a href="commentPage.html"><img src="assets/img/sliders/elastislide/11.jpg" alt="" /></a></dt>
+                    <dd>
+                        <p class="sidebar-contianer"><a href="commentPage.html">User3</a></p>
+                    </dd>
+                </dl>
+                <dl class="dl-horizontal">
+                    <dt><a href="commentPage.html"><img src="assets/img/sliders/elastislide/6.jpg" alt="" /></a></dt>
+                    <dd>
+                        <p class="sidebar-contianer"><a href="commentPage.html">User4 </a></p>
+                    </dd>
+                </dl>
+                <dl class="dl-horizontal">
+                    <dt><a href="commentPage2.html"><img src="assets/img/sliders/elastislide/10.jpg" alt="" /></a></dt>
+                    <dd>
+                        <p class="sidebar-contianer"><a href="commentPage2.html">User5</a></p>
+                    </dd>
+                </dl>
+                <dl class="dl-horizontal">
+                    <dt><a href="commentPage2.html"><img src="assets/img/sliders/elastislide/11.jpg" alt="" /></a></dt>
+                    <dd>
+                        <p class="sidebar-contianer"><a href="commentPage2.html">User6</a></p>
+                    </dd>
+                </dl>
+            </div><!--/posts-->
+        </div><!--/span3-->
+
+        <!-- Right Sidebar -->
+        <div class="span7">
+            <span class="blog-title" style="color: #72c02c;font-size: 22px; line-height: 24px; display: inline;float: left;">User Name </span>
+            <div class="chat-container">
+                <div class="messages" id="messages">
+                    <!-- 消息会在这里动态添加 -->
                 </div>
-                <ul class="unstyled inline blog-info blog-tags" >
-                    <li><a href="userCenter.html" class="login-btn" style="text-transform: none;"><img class="media-object" src="assets/img/sliders/elastislide/2.jpg" alt="" /></a>Charry</li>
-                    <li><i class="icon-calendar"></i> February 02, 2013</li>
-                    <li>
-                        <i class="icon-tags"></i>
-                        <a href="javascript:void(0);">Daily Life</a>
-                        <a href="javascript:void(0);">Artork</a>
-                    </li>
-                </ul>
-
-                <!-- 分隔线 -->
-                <hr>
-
-                <div class="blog_content">
-                    <div class="gallery_img_pro">
-                        <ul class="HTC_media_a_pro">
-                            <li><a href="assets/img/posts/b1.jpg"><img src="assets/img/posts/b1.jpg" /></a></li>
-                            <li><a href="assets/img/posts/b2.jpg"><img src="assets/img/posts/b2.jpg" /></a></li>
-                            <li><a href="assets/img/posts/b3.jpg"><img src="assets/img/posts/b3.jpg" /></a></li>
-                            <li><a href="assets/img/posts/b4.jpg"><img src="assets/img/posts/b4.jpg" /></a></li>
-                        </ul>
-                    </div>
-                    <p class="qst-container_pro" style="font-size: 18px; margin-top: 20px;">Description</p>
+                <div class="input-area">
+                    <input type="text" id="chatInput" placeholder="Type a message...">
+                    <button onclick="sendMessage()">Send</button>
                 </div>
-
-                <!-- 分隔线 -->
-                <hr>
-
-                <div class="vote_section" style="text-align: center; display: flex; flex-direction: column; align-items: center;">
-                    <div class="headline"><h3 style="font-size: 24px;">Cast your vote</h3></div>
-                    <div class="vote_bar" style="font-size: 18px; width: 100%; max-width: 300px; display: flex; justify-content: space-between; align-items: center;">
-                        <div class="votecolumn" style="display: flex; flex-direction: column; align-items: center; text-align: center;">
-                            <div class="votecard" style="width: 100%;">
-                                <div style="margin: 5px 0;">
-                                    <em><strong>3</strong><span></span></em>
-                                </div>
-                            </div>
-                            <a class="voteaction" href="javascript:void(0);">Up</a>
-                        </div>
-                        <div class="votecolumn2" style="display: flex; flex-direction: column; align-items: center; text-align: center;">
-                            <div class="votecard2" style="width: 100%;">
-                                <div style="margin: 5px 0;">
-                                    <em><strong>1</strong><span></span></em>
-                                </div>
-                            </div>
-                            <a class="voteaction2" href="javascript:void(0);">Down</a>
-                        </div>
-                    </div>
-                    <div class="progress" style="width: 85%; max-width: 300px; margin: 10px auto; display: flex; justify-content: center; align-items: center;">
-                        <div class="bar bar-warning" style="width: 75%; background-color: #C5E1A5; height: 20px;"></div>
-                        <div class="bar bar-danger" style="width: 25%; background-color: #558B2F; height: 20px;"></div>
-                    </div>
-                </div>
-            </div><!--/blog-->
-        </div><!--/span9-->
-    </div>
-</div>
-
-<!-- 分隔线 -->
-<hr>
-
-<div class="vote_analysis" style="text-align: center; margin-top: 20px;">
-    <h3 style="font-size: 24px;">Voting result analysis</h3>
-    <p>Total votes：4</p>
-    <div style="display: flex; justify-content: space-between; align-items: center; width: 85%; max-width: 300px; margin: 0 auto;">
-        <div style="width: 100%;">
-            <p>agree (75%)</p>
-            <div class="progress" style="background-color: #C5E1A5; height: 20px;"></div>
         </div>
-        <div style="width: 100%;">
-            <p>disagree (25%)</p>
-            <div class="progress" style="background-color: #558B2F; height: 20px;"></div>
-        </div>
-    </div>
-    <p>analysis</p>
-</div>
+    </div><!--/row-fluid-->
+</div><!--/container-->
 <!--=== End Content Part ===-->
 
 <!--=== Copyright ===-->
@@ -209,18 +187,16 @@
         <div class="row-fluid">
             <div class="span8">
                 <!-- start-copyright -->
-                <p>Copyright @ 2024 Voteease</p>
+                <p>Copyright @ 2024 VoteEase</p>
                 <!-- end-copyrigh -->
-            </div>
-            <div class="span4">
-                <a href="mainpage.html"><img id="logo-footer" src="assets/img/htc_logo.png" class="pull-right" alt="" /></a>
             </div>
         </div><!--/row-fluid-->
     </div><!--/container-->
 </div><!--/copyright-->
 <!--=== End Copyright ===-->
 
+</div>>
+
 
 </body>
-
 </html>
