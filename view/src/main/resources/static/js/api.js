@@ -14,7 +14,7 @@ instance.interceptors.request.use(
 
     // 如果存在令牌，则将其添加到请求头中
     if (token) {
-       config.headers['Authorization'] = `Bearer ${token}`;
+       config.headers['Authorization'] = token;
     }
     return config;
   },
