@@ -17,7 +17,7 @@
 				 <!-- start-main -->
 				<!-- 返回按钮 -->
 				<div class="back-button-container">
-					<a href="/login" class="back-button">back</a>
+					<a href="/" class="back-button">back</a>
 				</div>
 				 <form id="checkRegister" action="" method="post">
 		                    <div class="clear"> </div>
@@ -107,8 +107,6 @@
 						.then(response => {
 							if (response.data.code == 0) {
 								alert("Verification code sent successfully!");
-								// 登录成功后，可以重定向到主页或其他页面
-								// window.location.href = '/login'; // 替换为实际的重定向URL
 							}else {
 								throw new Error('Failed to send verification code: ' + response.data.msg);
 							}
@@ -144,7 +142,7 @@
 						.then(response => {
 							if (response.data.code == 0) {
 								alert("Registered successfully!");
-								// 登录成功后，可以重定向到主页或其他页面
+								// 注册成功后，可以重定向到主页或其他页面
 								// window.location.href = '/login'; // 替换为实际的重定向URL
 							}else {
 								alert('Registration failure: ' + response.data.msg);

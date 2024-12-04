@@ -8,36 +8,124 @@
 		<!-- JS: load the page without delay -->
 		<script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } 
 		</script>
-		
+		<script src="/js/axios.min.js"></script>
+		<script src="/js/api.js"></script>
 </head>
  
 <body>
+	<div class="back-button-container">
+		<a href="/login" class="back-button">back</a>
+	</div>
 	<div class="register">	
 				 <!-- start-main -->
 
 				 <!-- post the register info to database by AJAX -->
 				 <form id="checkRegister" action="" method="post">
-		                    <div class="clear"> </div>
-		                    <div class="lable-2">
+		             <div class="clear"> </div>
+					 <div id="step1" style="display: block;">
+					 	<div class="lable-2">
 		                    <h3 style="padding-bottom: 5px; font-size: 30px;">Password assistance</h3>
 		                    <h3 style="padding-bottom: 5px; font-size: 18px;">Enter your email address associated with your How To Chooose account.</h3>
-		                    <input type="text" class="text" id="email" value="your@email.com " onfocus="this.value = '';" onblur="if (this.value == '') {this.value = 'your@email.com ';}">
-							</div>
-							<div class="clear"> </div>
-							<div class="submit" style=" margin-left: 0.3%; margin-right:-10px;">
-								<input type="submit" id="submit" value="Continue" >
-							</div>
+		                    <input type="text" class="text" id="email" placeholder="your@email.com ">
+						</div>
+						<div class="clear"> </div>
+						<div class="submit" style=" margin-left: 0.3%; margin-right:-10px;">
+							<input type="submit" id="submit" value="Continue" >
+						</div>
+					 </div>
+					 <div id="step2" style="display: none;">
+						 <div class="lable-2">
+							 <h3 style="padding-bottom: 5px; font-size: 30px;">Reset Password of Your Account</h3>
+							 <h3 style="padding-bottom: 5px; font-size: 18px;">Enter new password for your account.</h3>
+							 <input type="password" class="text" id="newPassword" placeholder="New Password">
+							 <h3 style="padding-bottom: 5px; font-size: 18px;">Enter your password again.</h3>
+							 <input type="password" class="text" id="confirmPassword" placeholder="Confirm Password">
+							 <h3 style="padding-bottom: 5px; font-size: 18px;">Email verification code:</h3>
+							 <input type="text" class="text" id="verificationCode" placeholder="Verification Code">
+						 </div>
+						 <div class="clear"> </div>
+						 <div class="submit" style="margin-left: 0.3%; margin-right: -10px; padding-top: 20px;">
+							 <input type="submit" id="resetPassword" value="Reset Password">
+						 </div>
+					 </div>
 							<div class="clear"> </div>
 							<h3>Already have an account? <span><a href="/login" style="color:#F2CA68;">Log in </a> <span></h3>
-							<h3 style="color:#EF514B; ">error message<h3>
 					</form>
 		<!-- end-main -->
 		</div>
 		 <!-- start-copyright -->
    					<div class="copy-right" style="margin-top: 300px;">
-						<p>Copyright @ 2017 How To Chooose Community. All Rights Reserved.</p> 
+						<p>Copyright @ 2024 Online Polling System. All Rights Reserved.</p>
 					</div>
 				<!-- end-copyrigh -->
-	 
+	 <script type="module">
+		 //发送邮箱验证
+		async function sendemail(event){
+			event.preventDefault(); // 阻止表单的默认提交行为
+			try {
+				// 从表单中获取用户输入的邮箱
+				const email = document.getElementById('email').value;
+
+				instance.post('/user/register/step/1', {
+					email: email
+				})
+						.then(response => {
+							console.log(response);
+							if (response.data.code == 0) {
+								alert("Verification code sent successfully!");
+								// 切换到第二步
+								document.getElementById('step1').style.display = 'none';
+								document.getElementById('step2').style.display = 'block';
+							}else {
+								throw new Error('Failed to send verification code: ' + response.data.msg);
+							}
+						})
+
+			} catch (error) {
+				console.error('Error during verification code request:', error);
+				alert(error.message || 'An error occurred while sending the verification code.');
+			}
+		}
+		//重设密码
+		async function resetpw(event){
+			event.preventDefault(); // 阻止表单的默认提交行为
+			try {
+				const newpassword = document.getElementById("newPassword").value;
+				const confirmpassword = document.getElementById("confirmPassword").value;
+				const verification = document.getElementById('verificationCode').value;
+				const email = document.getElementById('email').value;
+
+				// 验证新密码和确认密码是否一致
+				if (newpassword !== confirmpassword) {
+					alert("Passwords do not match.");
+					document.getElementById("newPassword").value = "";
+					document.getElementById("confirmPassword").value = "";
+					return;
+				}
+				const password = newpassword;
+
+				instance.post(`/user/password/reset?verification=${encodeURIComponent(verification)}`, {
+					password: password,
+					email: email
+				})
+						.then(response => {
+							if (response.data.code == 0) {
+								alert("Reset successfully!");
+								// 注册成功后，可以重定向到主页或其他页面
+								// window.location.href = '/login'; // 替换为实际的重定向URL
+							}else {
+								alert('Reset failure: ' + response.data.msg);
+							}
+						})
+			}catch (error) {
+			 console.error('Error during reset:', error);
+			 alert(error.message || 'An error occurred while reset.');
+		 }
+		}
+		 // 为 "submit" 按钮添加点击事件监听器
+		 document.getElementById('submit').addEventListener('click', sendemail);
+
+		 document.getElementById('resetPassword').addEventListener('click', resetpw);
+	 </script>
 </body>
 </html>
