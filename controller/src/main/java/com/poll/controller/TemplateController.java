@@ -3,6 +3,7 @@ package com.poll.controller;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 @Controller
 public class TemplateController {
@@ -16,6 +17,11 @@ public class TemplateController {
     @GetMapping("/")
     public String index() {
         return "mainpage";
+    }
+
+    @GetMapping("/type/{id}")
+    public String commentpage1(@PathVariable int id) {
+        return "commentpage1";
     }
 
     @GetMapping("/type1")
@@ -66,5 +72,10 @@ public class TemplateController {
     @GetMapping("/messages")
     public String messages() {
     	return "messages";
+    }
+
+    @GetMapping("/test")
+    public String test() {
+    	return "mainpage1";
     }
 }

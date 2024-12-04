@@ -2359,3 +2359,18 @@ hr {
 .input-area button:hover {
     background-color: #66b22a;
 }
+
+/* 描述段落样式 */
+.category-description {
+    margin-top: 20px;
+    font-size: 1.5em; /* 放大文本 */
+    line-height: 1.4;
+    max-width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    padding: 20px;
+    /* 边框和阴影已移除 */
+    border-radius: 10px; /* 保留圆角效果 */
+    box-shadow: none; /* 移除阴影 */
+}
