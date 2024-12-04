@@ -60,6 +60,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public String passwordReset(User user, String verification) {
+        String storedVerificationCode = redisTemplate.opsForValue().get(user.getEmail());
+        if (storedVerificationCode == null || !verification.equals(storedVerificationCode)) {
+            return "verification error";
+        }
+        user.setPassword(HashUtils.encodePassword(user.getPassword()));
+        userMapper.updatePassword(user);
+        redisTemplate.delete(user.getEmail());
+        return null;
+    }
+
+    @Override
     public void passwordResetStepOne(User user) {
         emailService.send(user);
     }

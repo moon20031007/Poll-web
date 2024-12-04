@@ -41,7 +41,14 @@
     <update id="updatePassword">
         update user
         set password = #{password}
-        where user_id = #{userId}
+        <where>
+            <if test="userId != null">
+                and user_id = #{userId}
+            </if>
+            <if test="email != null">
+                and email = #{email}
+            </if>
+        </where>
     </update>
 
     <select id="selectById" resultType="com.poll.pojo.User">

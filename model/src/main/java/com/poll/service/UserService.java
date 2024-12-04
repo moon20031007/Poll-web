@@ -12,6 +12,8 @@ public interface UserService {
 
     Boolean registerStepTwo(User user, String verification);
 
+    String passwordReset(User user, String verification);
+
     void passwordResetStepOne(User user);
 
     Boolean passwordResetStepTwo(User user, String password, String verification);

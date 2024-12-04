@@ -69,6 +69,15 @@ public class UserController {
         return Result.error(ResultCode.USER_REGISTER_ERROR);
     }
 
+    @PostMapping("/password/reset")
+    public Result resetPassword(@RequestBody User user, @RequestParam String verification) {
+        String result = userService.passwordReset(user, verification);
+        if (Objects.equals(result, "verification error")) {
+            return Result.error(ResultCode.PARAM_IS_INVALID);
+        }
+        return Result.success();
+    }
+
     @GetMapping("/password/step/1")
     public Result passwordResetStepOne(@RequestHeader("Authorization") String jwt) {
         try {
