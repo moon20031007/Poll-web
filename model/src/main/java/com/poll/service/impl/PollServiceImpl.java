@@ -1,14 +1,8 @@
 package com.poll.service.impl;
 
 import com.poll.DTO.PollInfoDTO;
-import com.poll.mapper.ImageMapper;
-import com.poll.mapper.OptionsMapper;
-import com.poll.mapper.PollMapper;
-import com.poll.mapper.VoteMapper;
-import com.poll.pojo.Image;
-import com.poll.pojo.Options;
-import com.poll.pojo.Poll;
-import com.poll.pojo.Vote;
+import com.poll.mapper.*;
+import com.poll.pojo.*;
 import com.poll.service.PollService;
 import org.springframework.stereotype.Service;
 
@@ -28,11 +22,14 @@ public class PollServiceImpl implements PollService {
 
     private final VoteMapper voteMapper;
 
-    public PollServiceImpl(PollMapper pollMapper, OptionsMapper optionsMapper, ImageMapper imageMapper, VoteMapper voteMapper) {
+    private final TopicMapper topicMapper;
+
+    public PollServiceImpl(PollMapper pollMapper, OptionsMapper optionsMapper, ImageMapper imageMapper, VoteMapper voteMapper, TopicMapper topicMapper) {
         this.pollMapper = pollMapper;
         this.optionsMapper = optionsMapper;
         this.imageMapper = imageMapper;
         this.voteMapper = voteMapper;
+        this.topicMapper = topicMapper;
     }
 
     @Override
@@ -42,10 +39,12 @@ public class PollServiceImpl implements PollService {
         for (Poll poll : polls) {
             PollInfoDTO pollInfoDTO = new PollInfoDTO();
             List<Options> options = optionsMapper.selectByPollId(poll.getPollId());
+            List<Topic> topics = topicMapper.selectByPollId(poll.getPollId());
             List<Image> images = imageMapper.selectByPollId(poll.getPollId());
             List<Vote> votes = voteMapper.selectByPollId(poll.getPollId());
             pollInfoDTO.setPoll(poll);
             pollInfoDTO.setOptions(options);
+            pollInfoDTO.setTopics(topics);
             pollInfoDTO.setImages(images);
             pollInfoDTO.setVotes(votes);
             pollInfoList.add(pollInfoDTO);
