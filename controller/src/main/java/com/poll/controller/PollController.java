@@ -1,6 +1,7 @@
 package com.poll.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.poll.DTO.PollInfoDTO;
 import com.poll.pojo.Image;
 import com.poll.pojo.Options;
 import com.poll.pojo.Poll;
@@ -35,8 +36,8 @@ public class PollController {
     @GetMapping("/main")
     public Result getPolls(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "3") int size) {
         try {
-            Map<Poll, List<Options>> map = pollService.getPolls(page, size);
-            return Result.success(map);
+            List<PollInfoDTO> pollInfoList = pollService.getPolls(page, size);
+            return Result.success(pollInfoList);
         } catch (Exception e) {
             e.printStackTrace();
             return Result.error(ResultCode.ERROR);

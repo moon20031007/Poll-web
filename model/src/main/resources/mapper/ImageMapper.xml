@@ -21,4 +21,10 @@
         insert into image (poll_id, order, path)
         values (#{pollId}, #{order}, #{path})
     </insert>
+
+    <select id="selectByPollId" resultType="com.poll.pojo.Image">
+        select <include refid="Base_Column_List"/>
+        from image
+        where poll_id = #{id}
+    </select>
 </mapper>

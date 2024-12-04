@@ -17,4 +17,10 @@
         ,voter_id,poll_id,
         option_id,is_anonymous
     </sql>
+
+    <select id="selectByPollId" resultType="com.poll.pojo.Vote">
+        select <include refid="Base_Column_List"/>
+        from vote
+        where poll_id = #{id}
+    </select>
 </mapper>
