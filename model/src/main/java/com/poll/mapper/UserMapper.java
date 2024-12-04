@@ -14,6 +14,8 @@ public interface UserMapper {
 
     User selectById(Integer id);
 
+    User selectByUsername(String username);
+
     void updateAvatar(Integer id, String avatar);
 
     void updateProfile(Integer id, String profile);

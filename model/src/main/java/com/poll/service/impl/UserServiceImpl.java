@@ -22,24 +22,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User selectById(Integer id) {
-        User user = userMapper.selectById(id);
+    public User selectByUsername(String username) {
+        User user = userMapper.selectByUsername(username);
         user.setPassword(null);
         return user;
     }
 
     @Override
-    public User login(String email, String password) {
-        User user = userMapper.selectByEmail(email);
-        if (user == null) {
-            return null;
-        } else if (!user.getEnabled()) {
-            return null;
-        }
-        if (HashUtils.checkPassword(password, user.getPassword())) {
-            return user;
-        }
-        return null;
+    public User login(String email) {
+        return userMapper.selectByEmail(email);
     }
 
     @Override

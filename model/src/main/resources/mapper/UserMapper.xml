@@ -58,6 +58,12 @@
         where user_id = #{id}
     </select>
 
+    <select id="selectByUsername" resultType="com.poll.pojo.User">
+        select <include refid="Base_Column_List"/>
+        from user
+        where username = #{username}
+    </select>
+
     <update id="updateAvatar">
         update user
         set avatar = #{avatar}

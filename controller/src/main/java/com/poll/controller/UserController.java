@@ -2,6 +2,7 @@ package com.poll.controller;
 
 import com.poll.pojo.User;
 import com.poll.service.UserService;
+import com.poll.utils.HashUtils;
 import com.poll.utils.JwtUtils;
 import com.poll.result.*;
 import com.poll.utils.SaveImageUtils;
@@ -21,34 +22,30 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping("/info/{id}")
-    public Result getUser(@PathVariable int id) {
-        User user = userService.selectById(id);
+    @GetMapping("/info/{username}")
+    public Result getUser(@PathVariable String username) {
+        User user = userService.selectByUsername(username);
+        if (user == null) {
+            return Result.error(ResultCode.USER_NOT_EXIST);
+        }
         return Result.success(user);
     }
 
     @PostMapping("/login")
     public Result login(@RequestBody User user) {
-        User userToLogin = userService.login(user.getEmail(), user.getPassword());
-        if (userToLogin != null) {
+        User userToLogin = userService.login(user.getEmail());
+        if (userToLogin == null) {
+            return Result.error(ResultCode.USER_NOT_EXIST);
+        } else if (!userToLogin.getEnabled()) {
+            return Result.error(ResultCode.USER_ACCOUNT_FORBIDDEN);
+        }
+        if (HashUtils.checkPassword(user.getPassword(), userToLogin.getPassword())) {
             String jwt = JwtUtils.generateJwt(userToLogin);
             return Result.success(jwt);
+        } else {
+            return Result.error(ResultCode.PARAM_IS_INVALID);
         }
-        return Result.error(ResultCode.ERROR);
     }
-
-//    服务端设置响应头
-//    @PostMapping("/login")
-//    public Result login(@RequestBody User user, HttpServletResponse response) {
-//        User userToLogin = userService.login(user.getEmail(), user.getPassword());
-//        if (userToLogin != null) {
-//            String jwt = JwtUtils.generateJwt(userToLogin);
-//            // 设置响应头
-//            response.setHeader("Authorization", "Bearer " + jwt);
-//            return Result.success(jwt);
-//        }
-//        return Result.error(ResultCode.ERROR);
-//    }
 
     @PostMapping("/register/step/1")
     public Result registerStepOne(@RequestBody User user) {

@@ -4,9 +4,9 @@ import com.poll.pojo.User;
 
 public interface UserService {
 
-    User selectById(Integer id);
+    User selectByUsername(String username);
 
-    User login(String email, String password);
+    User login(String email);
 
     void registerStepOne(User user);
 
