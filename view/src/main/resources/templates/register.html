@@ -8,56 +8,60 @@
 		<!-- JS: load the page without delay -->
 		<script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } 
 		</script>
+		<script src="/js/axios.min.js"></script>
+		<script src="/js/api.js"></script>
 </head>
  
 <body>
 	<div class="register">	
 				 <!-- start-main -->
-				 <!-- post the register info to database by AJAX -->
+				<!-- 返回按钮 -->
+				<div class="back-button-container">
+					<a href="/login" class="back-button">back</a>
+				</div>
 				 <form id="checkRegister" action="" method="post">
 		                    <div class="clear"> </div>
 		                    <div class="lable-2">
 							<h3 style="padding-bottom: 0px;">email:</h3>
-								<input type="text" class="text" id="email" value="your@email.com " onfocus="this.value = '';" onblur="if (this.value == '') {this.value = 'your@email.com ';}">
+								<input type="text" class="text" id="email" placeholder="your@email.com ">
 							<h3 style="padding-bottom: 0px;">Email verification code:</h3>
-								<input type="text" class="text" id="verification code" value="Verification code" onfocus="this.value=''" onblur="if(this.value==''){this.value='Verification code';}" style="width:60%;"/><div class="vcodeNumber" src="images/bg2.png"  style=" height:40px;cursor: pointer;background: none;float: left;padding: 14px;"></div>
+								<input type="text" class="text" id="verification code" placeholder="Verification code" style="width:60%;"/><div class="vcodeNumber" style=" height:40px;cursor: pointer;background: none;float: left;padding: 14px;"></div>
 							<div class="submitverificationcode" style="height: 40px; cursor: pointer; background: none; float: right;padding: 14px;width: 25%;">
-								<input type="submit" id="submitverification" value="Send verification code" style="font-size: 10px;">
+								<input type="submit" id="submitverification" value="Send" style="font-size: 10px;">
 							</div>
 							<h3 style="padding-bottom: 0px;">username:</h3>
-								<input type="text" class="text" id="username" value="username" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = 'username ';}">
+								<input type="text" class="text" id="username" placeholder="username">
 							<h3 style="padding-bottom: 0px;">Password:</h3>
-								<input type="password" class="text" id="password" value="Password " onfocus="this.value = '';" onblur="if (this.value == '') {this.value = 'Password ';}">
+								<input type="password" class="text" id="password" placeholder="Password">
 							<h3 style="padding-bottom: 0px;">Birth Date:</h3>
-								<input required="" placeholder="Enter birth date" type="date" class="text" id="birth" value="brith " onfocus="this.value = '';" onblur="if (this.value == '') {this.value = ' ';}">
+								<input required="" placeholder="Enter birth date" type="date" class="text" id="birth" aria-placeholder="brith">
 							</div>
 					 		<h3 style="padding-bottom: 0px;">Gender:</h3>
 					 			<div class="radio-input">
 						 			<div class="radio-b">
-							 			<input type="radio" class="radio-b__input" id="radio1" name="radio-group" />
-							 			<label class="radio-b__label" for="radio1">
+							 			<input type="radio" class="radio-b__input" id="male" name="gender" value="true" />
+										<label class="radio-b__label" for="male">
 								 			<div class="radio-b__custom">
 									 			<span class="radio-b__custom-fill"></span>
 								 			</div>
-								 			<span class="radio-b__text">Man</span>
+											<span class="radio-b__text">Man</span>
 							 			</label>
 						 			</div>
 						 			<div class="radio-b">
-							 			<input type="radio" class="radio-b__input" id="radio2" name="radio-group" />
-							 		<label class="radio-b__label" for="radio2">
-								 		<div class="radio-b__custom">
-									 		<span class="radio-b__custom-fill"></span>
-								 		</div>
-								 		<span class="radio-b__text">Woman</span>
-							 		</label>
-						 		</div>
-							 </div>
+										<input type="radio" class="radio-b__input" id="female" name="gender" value="false" />
+							 			<label class="radio-b__label" for="female">
+								 			<div class="radio-b__custom">
+									 			<span class="radio-b__custom-fill"></span>
+								 			</div>
+								 			<span class="radio-b__text">Woman</span>
+							 			</label>
+						 			</div>
+					 			</div>
 					 <div class="clear"> </div>
 							<div class="submit" style="margin-left: 0.3%; margin-right: -10px; padding-top: -20px;">
 								<input type="submit" id="submit" value="Create account">
 							</div>
 							<div class="clear"> </div>
-							<h3 style="color:#EF514B; ">error message<h3>
 							<h3 style="margin-top: -10px; ">Already have an account? <span><a href="/login" style="color:#F2CA68;">Log in </a> <span></h3>
 							<h3>By creating an account, you agree to our <b>Terms & Conditions:</b></h3>
 							<div class="term-condition" style="margin-left:4%; margin-right:-1%; text-align: left;margin-bottom: 20px;">You need to follow these terms:</br>
@@ -85,9 +89,92 @@
 		</div>
 		 <!-- start-copyright -->
    					<div class="copy-right" style="margin-bottom: 40px; overflow: hidden; float:left; margin:0 30%;">
-						<p>Copyright @ 2017 How To Chooose Community. All Rights Reserved.</p> 
+						<p>Copyright @ 2024 Online Polling System. All Rights Reserved.</p>
 					</div>
 				<!-- end-copyrigh -->
+	<script type="module">
+		//发送邮箱验证码
+		async function sendVerificationCode(event) {
+			event.preventDefault(); // 阻止表单的默认提交行为
+
+			try {
+				// 从表单中获取用户输入的邮箱
+				const email = document.getElementById('email').value;
+
+				instance.post('/user/register/step/1', {
+					email: email
+				})
+						.then(response => {
+							if (response.data.code == 0) {
+								alert("Verification code sent successfully!");
+								// 登录成功后，可以重定向到主页或其他页面
+								// window.location.href = '/login'; // 替换为实际的重定向URL
+							}else {
+								throw new Error('Failed to send verification code: ' + response.data.msg);
+							}
+						})
+
+			} catch (error) {
+				console.error('Error during verification code request:', error);
+				showError(error.message || 'An error occurred while sending the verification code.');
+			}
+		}
+
+		//注册用户
+		async function registerUser(event) {
+			event.preventDefault(); // 阻止表单的默认提交行为
+
+			try {
+				// 从表单中获取用户输入的所有信息
+				const email = document.getElementById('email').value;
+				const verification = document.getElementById('verification code').value;
+				const username = document.getElementById('username').value;
+				const password = document.getElementById('password').value;
+				const birth = document.getElementById('birth').value;
+				const genderInput = document.querySelector('input[name="gender"]:checked');
+				const gender = genderInput.value === 'true';
+
+				instance.post(`/user/register/step/2?verification=${encodeURIComponent(verification)}`, {
+					email: email,
+					username: username,
+					password: password,
+					birth: birth,
+					gender: gender
+				})
+						.then(response => {
+							if (response.data.code == 0) {
+								alert("Registered successfully!");
+								// 登录成功后，可以重定向到主页或其他页面
+								// window.location.href = '/login'; // 替换为实际的重定向URL
+							}else {
+								alert('Registration failure: ' + response.data.msg);
+							}
+						})
+
+			} catch (error) {
+				console.error('Error during register request:', error);
+				showError(error.message || 'An error occurred while sending the register request.');
+			}
+		}
+
+		// 为 "Send verification code" 按钮添加点击事件监听器
+		document.getElementById('submitverification').addEventListener('click', sendVerificationCode);
+
+		// 为 "Create account" 按钮添加点击事件监听器
+		document.getElementById('submit').addEventListener('click', registerUser);
+
+
+		// 为每个 radio 按钮添加点击事件监听器
+		document.querySelectorAll('.radio-b__input').forEach(radio => {
+			radio.addEventListener('change', function(event) {
+				if (this.checked) {
+					// 获取当前选中的 radio 按钮的 id
+					const selectedId = this.id;
+					console.log('Selected radio button ID:', selectedId);
+				}
+			});
+		});
+	</script>
 	 
 </body>
 </html>
