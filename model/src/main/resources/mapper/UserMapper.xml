@@ -63,6 +63,17 @@
         where user_id = #{id}
     </update>
 
+    <update id="updateInfo">
+        update user
+        <set>
+            <if test="user.username != null">gender = #{user.username},</if>
+            <if test="user.gender != null">gender = #{user.gender},</if>
+            <if test="user.birth != null">birth = #{user.birth},</if>
+            <if test="user.email != null">email = #{user.email},</if>
+        </set>
+        where user_id = #{id}
+    </update>
+
     <update id="operateEnable">
         update user
         set enabled = 1 - enabled

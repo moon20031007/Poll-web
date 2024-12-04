@@ -104,6 +104,12 @@ public class UserController {
         return Result.success();
     }
 
+    @PostMapping("/info/update")
+    public Result updateInfo(@RequestHeader("Authorization") String jwt, @RequestBody User user) {
+        userService.updateInfo(JwtUtils.parseJwt(jwt).getUserId(), user);
+        return Result.success();
+    }
+
     @PutMapping("/enable")
     public Result enable(@RequestHeader("Authorization") String jwt, @RequestBody User user) {
         if (!JwtUtils.parseJwt(jwt).getIsAdmin()) {

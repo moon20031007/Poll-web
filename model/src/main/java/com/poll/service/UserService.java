@@ -20,5 +20,7 @@ public interface UserService {
 
     void updateProfile(Integer id, String profile);
 
+    void updateInfo(Integer id, User user);
+
     void enableOperate(User user);
 }

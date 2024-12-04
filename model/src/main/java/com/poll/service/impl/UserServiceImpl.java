@@ -104,6 +104,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public void updateInfo(Integer id, User user) {
+        userMapper.updateInfo(id, user);
+    }
+
+    @Override
     public void enableOperate(User user) {
         userMapper.operateEnable(user.getUserId());
     }
