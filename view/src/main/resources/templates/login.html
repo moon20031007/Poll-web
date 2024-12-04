@@ -14,6 +14,9 @@
 </head>
 
 <body>
+<div class="back-button-container">
+	<a href="/mainpage" class="back-button">back</a>
+</div>
 <div class="register">
 	<!-- start-main -->
 	<form id="loginForm">
@@ -33,7 +36,6 @@
 			<input type="submit" class="submit" value="Log in">
 		</div>
 		<div class="clear"> </div>
-		<h3 id="errorMessage" style="color:#EF514B; display: none;">Error message</h3>
 		<h3 style="margin-top: -10px;">New to How To Chooose? <span><a href="/register" style="color:#F2CA68; margin-left: 2%;">Create account</a> <span><span><a href="/forgetpw" style="margin-left: 25%;">Forget password?</a><span></h3>
 	</form>
 	<!-- end-main -->
@@ -41,7 +43,7 @@
 
 <!-- start-copyright -->
 <div class="copy-right" style="margin-top: 20px;">
-	<p>Copyright @ 2024 the Poll-web system. All Rights Reserved.</p>
+	<p>Copyright @ 2024 Online Polling System. All Rights Reserved.</p>
 </div>
 <!-- end-copyrigh -->
 
@@ -56,7 +58,7 @@
 			const password = document.getElementById('password').value;
 
 			instance.post('/user/login', {
-				email: email,  // 使用用户的邮箱作为用户名
+				email: email,
 				password: password
 			})
 					.then(response => {
