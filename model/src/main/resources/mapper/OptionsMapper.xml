@@ -22,4 +22,10 @@
         from options
         where poll_id = #{id}
     </select>
+
+    <select id="selectById" resultType="com.poll.pojo.Options">
+        select <include refid="Base_Column_List"/>
+        from options
+        where option_id = #{id}
+    </select>
 </mapper>

@@ -23,4 +23,10 @@
         from vote
         where poll_id = #{id}
     </select>
+
+    <select id="selectByUserId" resultType="com.poll.pojo.Vote">
+        select <include refid="Base_Column_List"/>
+        from vote
+        where voter_id = #{id}
+    </select>
 </mapper>

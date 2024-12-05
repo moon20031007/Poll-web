@@ -15,15 +15,10 @@ import java.util.Map;
 public class PollServiceImpl implements PollService {
 
     private final PollMapper pollMapper;
-
     private final OptionsMapper optionsMapper;
-
     private final ImageMapper imageMapper;
-
     private final VoteMapper voteMapper;
-
     private final TopicMapper topicMapper;
-
     private final UserMapper userMapper;
 
     public PollServiceImpl(PollMapper pollMapper, OptionsMapper optionsMapper, ImageMapper imageMapper, VoteMapper voteMapper, TopicMapper topicMapper, UserMapper userMapper) {

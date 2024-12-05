@@ -31,4 +31,11 @@
         delete from follow
         where follow_id = #{followId}
     </delete>
+
+    <select id="selectByUserId" resultType="com.poll.pojo.Follow">
+        select <include refid="Base_Column_List"/>
+        from follow
+        where follower_id = #{id} or
+        following_id = #{id}
+    </select>
 </mapper>

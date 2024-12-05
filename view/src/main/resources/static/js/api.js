@@ -23,30 +23,3 @@ instance.interceptors.request.use(
     return Promise.reject(error);
   }
 );
-
-// 添加响应拦截器
-//instance.interceptors.response.use(
-//  response => {
-//    // 对响应数据做点什么
-//    console.log('Response received.');
-//      // 从 localStorage 中获取令牌
-//      const token = localStorage.getItem('authToken');
-//
-//      // 如果存在令牌，则将其添加到请求头中
-//      if (token) {
-//          config.headers['Authorization'] = `Bearer ${token}`;
-//      }
-//    return response;
-//  },
-//  error => {
-//    // 对响应错误做点什么
-//    if (error.response) {
-//      // 请求已发出，但服务器响应的状态码不在2xx范围内
-//      console.error('Error:', error.response.data);
-//    } else {
-//      // 发生了某些问题导致请求未发出
-//      console.error('Network Error:', error.message);
-//    }
-//    return Promise.reject(error);
-//  }
-//);

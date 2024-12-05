@@ -1,10 +1,11 @@
 package com.poll.service;
 
+import com.poll.DTO.UserInfoDTO;
 import com.poll.pojo.User;
 
 public interface UserService {
 
-    User selectByUsername(String username);
+    UserInfoDTO selectUserInfo(String username);
 
     User login(String email);
 
