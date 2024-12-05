@@ -31,7 +31,7 @@ public class PollServiceImpl implements PollService {
     }
 
     @Override
-    public List<PollInfoDTO> getPolls(int page, int size) {
+    public List<PollInfoDTO> getPolls(Integer page, Integer size) {
         List<PollInfoDTO> pollInfoList = new ArrayList<>();
         List<Poll> polls = pollMapper.getPolls((page - 1) * size, size);
         polls.forEach(poll -> {
@@ -60,6 +60,12 @@ public class PollServiceImpl implements PollService {
             pollInfoList.add(pollInfoDTO);
         });
         return pollInfoList;
+    }
+
+    @Override
+    public Integer getPageSize(Integer size) {
+        Integer total = pollMapper.getPollCount();
+        return (int) Math.ceil((double) total / size);
     }
 
     @Override

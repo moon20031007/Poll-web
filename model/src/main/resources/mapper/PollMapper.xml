@@ -33,6 +33,12 @@
         limit #{size} offset #{offset}
     </select>
 
+    <select id="getPollCount" resultType="java.lang.Integer">
+        select count(*)
+        from poll
+        where enabled = true
+    </select>
+
     <insert id="insert" useGeneratedKeys="true" keyProperty="pollId">
         insert into poll
             <trim prefix="(" suffix=")" suffixOverrides=",">

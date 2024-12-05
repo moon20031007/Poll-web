@@ -10,6 +10,8 @@ public interface PollMapper {
 
     List<Poll> getPolls(Integer offset, Integer size);
 
+    Integer getPollCount();
+
     void insert(Poll poll);
 
     Poll selectById(Integer id);

@@ -15,10 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 @RequestMapping("/poll")
@@ -42,6 +39,12 @@ public class PollController {
             e.printStackTrace();
             return Result.error(ResultCode.ERROR);
         }
+    }
+
+    @GetMapping("/size")
+    public Result getSizePages(@RequestParam(defaultValue = "3") int size) {
+        Integer result = pollService.getPageSize(size);
+        return Result.success(result);
     }
 
     @PostMapping("/add")

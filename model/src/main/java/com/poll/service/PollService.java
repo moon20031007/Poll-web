@@ -7,7 +7,9 @@ import java.util.List;
 
 public interface PollService {
 
-    List<PollInfoDTO> getPolls(int page, int size);
+    List<PollInfoDTO> getPolls(Integer page, Integer size);
+
+    Integer getPageSize(Integer size);
 
     Poll insert(Integer id, Poll poll);
 }
