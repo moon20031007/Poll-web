@@ -4,6 +4,7 @@ import com.poll.pojo.*;
 import lombok.Data;
 
 import java.util.List;
+import java.util.Map;
 
 @Data
 public class PollInfoDTO {
@@ -16,4 +17,8 @@ public class PollInfoDTO {
     private List<Image> images;
 
     private List<Vote> votes;
+
+    private Map<Integer, Integer> results;
+
+    private String avatar;
 }

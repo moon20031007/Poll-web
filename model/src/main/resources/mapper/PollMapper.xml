@@ -28,6 +28,7 @@
     <select id="getPolls" resultType="com.poll.pojo.Poll">
         select <include refid="Base_Column_List"/>
         from poll
+        where enabled = true
         order by start_time desc
         limit #{size} offset #{offset}
     </select>
