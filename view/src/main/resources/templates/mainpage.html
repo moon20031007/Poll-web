@@ -388,7 +388,7 @@ function createSimplePollTemplate(poll, options, topics, images) {
         </div>
         <ul class="unstyled inline blog-info blog-tags">
             <li><a href="userCenter.html" class="login-btn" style="text-transform: none;"><img class="media-object" src="assets/img/sliders/elastislide/2.jpg" alt="" />${poll.creatorId}</a></li>
-            <li><i class="icon-calendar"></i> ${new Date(poll.startTime).toLocaleString()}</li>
+            <li><i class="icon-calendar"></i> ${new Date(poll.startTime).toLocaleString()}--${poll.endTime ? new Date(poll.endTime).toLocaleString() : ""}</li>
             <li>
                 <i class="icon-tags"></i>
                 ${topics.map(topic => `<a href="javascript:void(0);">${topic.name}</a>`).join('')}
@@ -397,7 +397,7 @@ function createSimplePollTemplate(poll, options, topics, images) {
         <div class="blog_content">
             <div class="span6 gallery_img">
                 <ul class="HTC_media_a">
-                    ${images.map(image => `<li><a href="${image.path}"><img src="${image.path}" /></a></li>`).join('')}
+                    ${images.map(image => `<li><img src="static/image/${image.path}" /></li>`).join('')}
                 </ul>
             </div>
             <div class="span6 vote_bar">
@@ -414,7 +414,6 @@ function createSimplePollTemplate(poll, options, topics, images) {
                                 </div>
                             </div>
                             <a><img src="/img/${index === 0 ? 'good' : 'bad'}.png" class="resized-image"></a>
-                            <a class="voteaction${index + 1}" href="javascript:void(0);">${index === 0 ? 'Up' : 'Down'}</a>
                         </div>
                     `).join('')}
                 </div>
@@ -444,7 +443,7 @@ function createComplexPollTemplate(poll, options, topics, images) {
         </div>
         <ul class="unstyled inline blog-info blog-tags">
             <li><a href="userCenter.html" class="login-btn" style="text-transform: none;"><img class="media-object" src="assets/img/sliders/elastislide/2.jpg" alt="" />${poll.creatorId}</a></li>
-            <li><i class="icon-calendar"></i> ${new Date(poll.startTime).toLocaleString()}</li>
+            <li><i class="icon-calendar"></i> ${new Date(poll.startTime).toLocaleString()}--${poll.endTime ? new Date(poll.endTime).toLocaleString() : ""} </li>
             <li>
                 <i class="icon-tags"></i>
                 ${topics.map(topic => `<a href="javascript:void(0);">${topic.name}</a>`).join('')}
@@ -453,7 +452,7 @@ function createComplexPollTemplate(poll, options, topics, images) {
         <div class="blog_content">
             <div class="span6 gallery_img">
                 <ul class="HTC_media_a">
-                    ${images.map(image => `<li><a href="${image.path}"><img src="${image.path}" /></a></li>`).join('')}
+                    ${images.map(image => `<li><img src="static/image/${image.path}" /></li>`).join('')}
                 </ul>
             </div>
             <div class="span6 vote_bar">
