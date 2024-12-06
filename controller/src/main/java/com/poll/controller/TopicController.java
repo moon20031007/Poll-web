@@ -32,7 +32,12 @@ public class TopicController {
 
     @GetMapping("/size/{id}")
     public Result size(@PathVariable("id") int id, @RequestParam(defaultValue = "3") int size) {
-        Integer count = pollTopicsService.getPageSize(id, size);
-        return Result.success(count);
+        try {
+            Integer count = pollTopicsService.getPageSize(id, size);
+            return Result.success(count);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.error(ResultCode.ERROR);
+        }
     }
 }

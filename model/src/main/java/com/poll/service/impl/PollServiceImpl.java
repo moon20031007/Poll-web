@@ -69,6 +69,34 @@ public class PollServiceImpl implements PollService {
     }
 
     @Override
+    public PollInfoDTO getPollInfo(Integer id) {
+        Poll poll = pollMapper.selectById(id);
+        PollInfoDTO pollInfoDTO = new PollInfoDTO();
+        List<Options> options = optionsMapper.selectByPollId(poll.getPollId());
+        List<Topic> topics = topicMapper.selectByPollId(poll.getPollId());
+        List<Image> images = imageMapper.selectByPollId(poll.getPollId());
+        List<Vote> votes = voteMapper.selectByPollId(poll.getPollId());
+        if (poll.getAllowAnonymous()) {
+            votes.stream().filter(Vote::getIsAnonymous).forEach(vote -> vote.setVoterId(null));
+        }
+        Map<Integer, Integer> results = new HashMap<>();
+        for (Options option : options) {
+            results.put(option.getOptionId(), 0);
+        }
+        for (Vote vote : votes) {
+            results.put(vote.getOptionId(), results.get(vote.getOptionId()) + 1);
+        }
+        pollInfoDTO.setPoll(poll);
+        pollInfoDTO.setOptions(options);
+        pollInfoDTO.setTopics(topics);
+        pollInfoDTO.setImages(images);
+        pollInfoDTO.setVotes(votes);
+        pollInfoDTO.setResults(results);
+        pollInfoDTO.setAvatar(userMapper.selectById(poll.getCreatorId()).getAvatar());
+        return pollInfoDTO;
+    }
+
+    @Override
     public Poll insert(Integer id, Poll poll) {
         poll.setCreatorId(id);
         pollMapper.insert(poll);

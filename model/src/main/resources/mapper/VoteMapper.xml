@@ -29,4 +29,21 @@
         from vote
         where voter_id = #{id}
     </select>
+
+    <insert id="insert">
+        insert into vote
+            <trim prefix="(" suffix=")" suffixOverrides=",">
+                <if test="voterId != null">voter_id,</if>
+                <if test="pollId != null">poll_id,</if>
+                <if test="optionId != null">option_id,</if>
+                <if test="isAnonymous != null">is_anonymous,</if>
+            </trim>
+        values
+            <trim prefix="(" suffix=")" suffixOverrides=",">
+                <if test="voterId != null">#{voterId},</if>
+                <if test="pollId != null">#{pollId},</if>
+                <if test="optionId != null">#{optionId},</if>
+                <if test="isAnonymous != null">#{isAnonymous},</if>
+            </trim>
+    </insert>
 </mapper>

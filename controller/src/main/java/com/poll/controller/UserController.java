@@ -25,11 +25,16 @@ public class UserController {
 
     @GetMapping("/info/{username}")
     public Result getUser(@PathVariable String username) {
-        UserInfoDTO userInfo = userService.selectUserInfo(username);
-        if (userInfo == null) {
-            return Result.error(ResultCode.USER_NOT_EXIST);
+        try {
+            UserInfoDTO userInfo = userService.selectUserInfo(username);
+            if (userInfo == null) {
+                return Result.error(ResultCode.USER_NOT_EXIST);
+            }
+            return Result.success(userInfo);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.error(ResultCode.ERROR);
         }
-        return Result.success(userInfo);
     }
 
     @PostMapping("/login")

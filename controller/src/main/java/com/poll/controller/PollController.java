@@ -42,8 +42,24 @@ public class PollController {
 
     @GetMapping("/size")
     public Result getSizePages(@RequestParam(defaultValue = "3") int size) {
-        Integer count = pollService.getPageSize(size);
-        return Result.success(count);
+        try {
+            Integer count = pollService.getPageSize(size);
+            return Result.success(count);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.error(ResultCode.ERROR);
+        }
+    }
+
+    @GetMapping("/info/{id}")
+    public Result getInfo(@PathVariable Integer id) {
+        try {
+            PollInfoDTO pollInfo = pollService.getPollInfo(id);
+            return Result.success(pollInfo);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.error(ResultCode.ERROR);
+        }
     }
 
     @PostMapping("/add")

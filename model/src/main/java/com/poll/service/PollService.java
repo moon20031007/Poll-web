@@ -11,5 +11,7 @@ public interface PollService {
 
     Integer getPageSize(Integer size);
 
+    PollInfoDTO getPollInfo(Integer id);
+
     Poll insert(Integer id, Poll poll);
 }
