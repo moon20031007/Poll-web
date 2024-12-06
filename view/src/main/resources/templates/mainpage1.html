@@ -2,8 +2,7 @@
 <!--[if IE 7]> <html lang="en" class="ie7"> <![endif]-->
 <!--[if IE 8]> <html lang="en" class="ie8"> <![endif]-->
 <!--[if IE 9]> <html lang="en" class="ie9"> <![endif]-->
-<!--[if !IE]><!-->
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml"> <!--<![endif]-->
+<!--[if !IE]><!--> <html lang="en"> <!--<![endif]-->
 <head>
     <title>VoteEase</title>
     <script src="/js/axios.min.js"></script>
@@ -31,26 +30,37 @@
     <!-- CSS Theme -->
     <!--     <link rel="stylesheet" href="assets/css/themes/default.css" id="style_color" /> -->
     <!--     <link rel="stylesheet" href="assets/css/themes/headers/default.css" id="style_color-header-1" />   -->
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /></head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+</head>
 
 <body>
 <!--=== Top ===-->
 <div class="top">
-    <div class="container">
-        <ul class="loginbar pull-right">
-            <li style="visibility:visible;"><a href="login" class="login-btn">Login</a></li>
-            <li class="devider" style="visibility:visible;">&nbsp;</li>
-            <li style="visibility:visible;"><a href="register" class="login-btn">Register</a></li>
-            <li class="devider" style="visibility:visible;">&nbsp;</li>
-            <li style="visibility:visible;"><a href="userCenter.html" class="login-btn" style="text-transform: none;"><img class="media-object" src="assets/img/unlogin.png" alt="" /> UserCenter</a></li>
-            <li class="devider" style="visibility:visible;">&nbsp;</li>
-            <li style="visibility:visible;"><a href="messages" class="login-btn">Messages</a></li>
-            <li class="devider" style="visibility:visible;">&nbsp;</li>
-            <li style="visibility:visible;"><a href="login.html" class="login-btn">Log out</a></li>
-        </ul>
+    <div id="status" class="container">
+        <!-- Unauthenticated state -->
+        <div id="unauthenticated" style="display: block;">
+            <ul class="loginbar pull-right">
+                <li><a href="login" class="login-btn">Login</a></li>
+                <li class="divider">&nbsp;</li>
+                <li><a href="register" class="login-btn">Register</a></li>
+            </ul>
+        </div>
+        <!-- Authenticated state -->
+        <div id="authenticated" style="display: none;">
+            <ul class="loginbar pull-right">
+                <li><a href="userCenter.html" class="login-btn" style="text-transform: none;">
+                    <img class="media-object" src="assets/img/unlogin.png" alt="" /> UserCenter
+                </a></li>
+                <li class="divider">&nbsp;</li>
+                <li><a href="messages" class="login-btn">Messages</a></li>
+                <li class="divider">&nbsp;</li>
+                <li><a href="#" id="logout-link" class="login-btn">Log out</a></li>
+            </ul>
+        </div>
     </div>
 </div><!--/top-->
 <!--=== End Top ===-->
+
 
 <!--=== Header ===-->
 <div class="header margin-bottom-20">
@@ -127,125 +137,26 @@
 <div class="container">
     <div class="row-fluid blog-page">
         <!-- Left Sidebar -->
-        <div class="span7" th:fragment="data">
-            <div th:each="pollInfo : ${data}">
-                <div class="blog margin-bottom-30 bg-light" th:if="${data.poll.options.size() <= 2}">
-                    <div class="special-button">
-                        <span class="blog-title" style="color: #72c02c;font-size: 22px; line-height: 24px; display: inline;float: left;" th:text="${data.poll.title}"></span>
-                        <ul class="unstyled">
-                            <a class="praise" style="text-decoration:none;font-size: 16px;" href="javascript:void(0);" onclick="praiseBox(this);"><li style="list-style: none;display: inline;"><i class="icon-star"></i></li>star</a>
-                        </ul>
-                    </div>
-                    <ul class="unstyled inline blog-info blog-tags" >
-                        <li th:text="${data.poll.creatorId}"><img class="media-object" src="assets/img/sliders/elastislide/2.jpg" alt="" /></li>
-                        <li th:text="${data.poll.startTime} -- ${endTime}}"><i class="icon-calendar"></i></li>
-                        <li>
-                            <i class="icon-tags"></i>
-                            <a th:each="pollInfo : ${data.topics}}" th:text="${data.topics.name}}"></a>
-                        </li>
-                    </ul>
-                    <div class="blog_content">
-                        <div class="span6 gallery_img">
-                            <ul class="HTC_media_a">
-                                <li><a href="assets/img/posts/b1.jpg"><img src="assets/img/posts/b1.jpg" /></a></li>
-                                <li><a href="assets/img/posts/b2.jpg"><img src="assets/img/posts/b2.jpg" /></a></li>
-                                <li><a href="assets/img/posts/b3.jpg"><img src="assets/img/posts/b3.jpg" /></a></li>
-                                <li><a href="assets/img/posts/b4.jpg"><img src="assets/img/posts/b4.jpg" /></a></li>
-                            </ul>
-                        </div>
-                        <div class="span6 vote_bar">
-                            <div class="main-comment inline">
-                                <p class="qst-container" th:text="${data.poll.description}}"></p>
-                                <hr />
-                            </div>
-                            <div style="margin:10px auto; width: 190px;height: 75px; overflow: hidden;">
-                                <div class="votecolumn" style="">
-                                    <div class="votecard">
-                                        <div>
-                                            <em><strong>0</strong><span></span></em>
-                                        </div>
-                                    </div>
-                                    <a><img src="/img/good.png" class="resized-image"></a>
-                                </div>
-                                <div class="votecolumn2" style="margin-left: 20%;">
-                                    <div class="votecard2">
-                                        <div>
-                                            <em><strong>0</strong><span></span></em>
-                                        </div>
-                                    </div>
-                                    <a><img src="/img/bad.png" class="resized-image"></a>
-                                </div>
-                            </div>
-
-                            <div class="progress" style="width:85%;overflow: hidden; margin: 10px auto; ">
-                                <div class="bar bar-warning" style="width: 75%; background-color:#C5E1A5;color:#C5E1A5"></div>
-                                <div class="bar bar-danger" style="width: 25%; background-color:#558B2F;color:#558B2F"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <p><a class="btn-u btn-u-small" href="type1" style="margin-left: 20px;margin-top: 5px;">Read More</a></p>
-                </div><!--/blog-->
-
-                <div class="blog margin-bottom-30 bg-light" th:if="${data.poll.options.size() > 2}">
-                    <div class="special-button">
-                        <span class="blog-title" style="color: #72c02c;font-size: 22px; line-height: 24px; display: inline;float: left;">title</span>
-                        <ul class="unstyled">
-                            <a class="praise" style="text-decoration:none;font-size: 16px;" href="javascript:void(0);" onclick="praiseBox(this);"><li style="list-style: none;display: inline;"><i class="icon-star"></i></li>star</a>
-                        </ul>
-                    </div>
-                    <ul class="unstyled inline blog-info blog-tags" >
-                        <li><a href="userCenter.html" class="login-btn" style="text-transform: none;"><img class="media-object" src="assets/img/sliders/elastislide/2.jpg" alt="" />author</a></li>
-                        <li><i class="icon-calendar"></i> time</li>
-                        <li>
-                            <i class="icon-tags"></i>
-                            <a href="javascript:void(0);">Daily Life</a>
-                            <a href="javascript:void(0);">Artork</a>
-                        </li>
-                    </ul>
-                    <div class="blog_content">
-                        <div class="span6 gallery_img">
-                            <ul class="HTC_media_a">
-                                <li><a href="assets/img/posts/b1.jpg"><img src="assets/img/posts/b1.jpg" /></a></li>
-                                <li><a href="assets/img/posts/b2.jpg"><img src="assets/img/posts/b2.jpg" /></a></li>
-                                <li><a href="assets/img/posts/b3.jpg"><img src="assets/img/posts/b3.jpg" /></a></li>
-                                <li><a href="assets/img/posts/b4.jpg"><img src="assets/img/posts/b4.jpg" /></a></li>
-                            </ul>
-                        </div>
-                        <div class="span6 vote_bar">
-                            <div class="main-comment inline">
-                                <p class="cm-container">Description</p>
-                                <hr />
-                            </div>
-                            <div class ="vote4content">
-                                <div class="btncontent"><span class="vote1btn">A </span> Options1</div>
-                                <div class="btncontent"><span class="vote2btn">B </span> Options2</div>
-                                <div class="btncontent"><span class="vote3btn">C </span> Options3</div>
-                                <div class="btncontent"><span class="vote4btn">D </span> Options4</div>
-                            </div>
-                            <div style="text-align: left; margin-top: 10px;">
-                                <button type="submit" class="submitbtn">
-                                    Submit
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    <p><a class="btn-u btn-u-small" href="type2" style="margin-left: 20px;margin-top: 5px;">Read More</a></p>
-                </div>
+        <div class="span7">
+            <!--blog-->
+            <div id="pollsContainer">
+                <!-- 这里会动态插入投票内容 -->
             </div>
 
-            <!-- 扉页 -->
-            <div class="pagination pagination-centered">
+            <div class="pagination pagination-centered" id="pagination">
                 <ul>
-                    <li class="disabled"><a href="#">Prev</a></li>
-                    <li class="active"><a href="#">1</a></li>
-                    <li><a href="#">2</a></li>
-                    <li><a href="#">3</a></li>
-                    <li><a href="#">4</a></li>
-                    <li><a href="#">5</a></li>
-                    <li><a href="#">6</a></li>
-                    <li><a href="#">Next</a></li>
+                    <!-- 动态生成的页码将替换这些静态内容 -->
+                    <li><a href="#" data-page="prev">Prev</a></li>
+                    <li class="active"><a href="#" data-page="1">1</a></li>
+                    <li><a href="#" data-page="2">2</a></li>
+                    <li><a href="#" data-page="3">3</a></li>
+                    <li><a href="#" data-page="4">4</a></li>
+                    <li><a href="#" data-page="5">5</a></li>
+                    <li><a href="#" data-page="6">6</a></li>
+                    <li><a href="#" data-page="next">Next</a></li>
                 </ul>
             </div>
+        </div>
         </div><!--/span9-->
 
         <!-- Right Sidebar -->
@@ -312,21 +223,353 @@
 </div><!--/copyright-->
 <!--=== End Copyright ===-->
 
-<script type="text/javascript">
-    document.addEventListener('DOMContentLoaded', function() {
-        // 发起异步请求
-        instance.get('/poll/main')
-					.then(response => {
-						if (response.data.code == 0) {
-							alert("success");
-						}else {
-							throw new Error('Login failed with code: ' + response.data.msg);
-						}
-					})
-					.catch(error => {
-						alert("error");
-					});
+<script type="module">
+    // Function to check if the user is logged in based on the presence of an auth token.
+    function isLoggedIn() {
+        const token = localStorage.getItem('authToken');
+        console.log('Checking login status:', !!token, 'Token:', token);
+        return !!token && token.trim(); // Ensure the token is not just whitespace
+    }
+
+    // Function to toggle visibility of authentication states.
+    function toggleAuthState() {
+        console.log('Toggling authentication state...');
+        const unauthenticatedDiv = document.getElementById('unauthenticated');
+        const authenticatedDiv = document.getElementById('authenticated');
+
+        if (isLoggedIn()) {
+            console.log('User is logged in.');
+            unauthenticatedDiv.style.display = 'none';
+            authenticatedDiv.style.display = 'block';
+        } else {
+            console.log('User is not logged in.');
+            unauthenticatedDiv.style.display = 'block';
+            authenticatedDiv.style.display = 'none';
+        }
+    }
+
+    // Function to handle logout process.
+    async function logout(event) {
+        event.preventDefault(); // Prevent default link behavior.
+
+        try {
+            // Optionally, you can make a request to your server to invalidate the token.
+            // await instance.post('/user/logout'); // Uncomment this line if needed.
+
+            // Remove the token from local storage.
+            localStorage.removeItem('authToken');
+            console.log('User logged out.');
+
+            // Toggle the authentication state display.
+            toggleAuthState();
+
+            // Optionally, you can redirect to a different page or refresh the current one.
+            // window.location.reload(); // Uncomment this line if you want to reload the page.
+        } catch (error) {
+            console.error('Error during logout:', error);
+        }
+    }
+
+    // Existing login function with added call to toggleAuthState upon successful login.
+    async function login(event) {
+        event.preventDefault(); // Prevent form's default submit behavior.
+
+        try {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            await instance.post('/user/login', {
+                email: email,
+                password: password
+            }).then(response => {
+                if (response.data.code == 0) {
+                    alert("success");
+                    const token = response.data.data;
+                    if (token) {
+                        localStorage.setItem('authToken', token);
+                        console.log('Token stored successfully:', token);
+
+                        // Debugging: Check if token is being sent in headers
+                        console.log('Authorization header:', { authorization: `Bearer ${token}` });
+
+                        toggleAuthState(); // Update nav links after successful login.
+                    } else {
+                        console.warn('No token received from the server.');
+                    }
+                } else {
+                    throw new Error('Login failed with code: ' + response.data.msg);
+                }
+            }).catch(error => {
+                alert("error");
+            });
+
+        } catch (error) {
+            console.error('Error during login:', error);
+        }
+    }
+
+    // Add event listener for logout link
+    document.addEventListener('DOMContentLoaded', () => {
+        const logoutLink = document.getElementById('logout-link');
+        if (logoutLink) {
+            logoutLink.addEventListener('click', logout);
+        }
+
+        // Initialize the authentication state when the DOM is fully loaded.
+        console.log('DOM fully loaded, initializing authentication state...');
+        toggleAuthState();
     });
+
+    // Listen for form submission.
+    document.addEventListener('DOMContentLoaded', () => {
+        const loginForm = document.getElementById('loginForm');
+        if (loginForm) {
+            loginForm.addEventListener('submit', login);
+        }
+    });
+
+    // Prevent double submission on "Log in" button click.
+    document.addEventListener('DOMContentLoaded', () => {
+        const submitButton = document.querySelector('.submit');
+        if (submitButton) {
+            submitButton.addEventListener('click', function(event) {
+                login(event); // Call login function and pass event object.
+            });
+        }
+    });
+</script>
+
+<script>
+    let currentPage = 1;
+const pageSize = 3; // 每页显示的项目数量
+let totalPages = 0; // 总页数，由 fetchTotalPages 函数填充
+
+async function fetchPollsAndRender(page) {
+    try {
+        const response = await axios.get(`/poll/main?page=${page}&size=${pageSize}`); // 替换为实际的API路径
+
+        if (response.data.code !== 0) {
+            throw new Error(response.data.msg || 'Failed to fetch polls');
+        }
+
+        const pollsData = response.data.data;
+        renderPolls(pollsData);
+        currentPage = page; // 更新当前页
+        updatePagination(currentPage, totalPages); // 使用全局变量totalPages
+    } catch (error) {
+        console.error('Error fetching polls:', error);
+        alert('There was an error loading the polls.');
+    }
+}
+
+function renderPolls(polls) {
+    const container = document.getElementById('pollsContainer');
+    container.innerHTML = ''; // 清空当前内容
+
+    polls.forEach(pollItem => {
+        const poll = pollItem.poll;
+        const options = pollItem.options;
+        const topics = pollItem.topics;
+        const images = pollItem.images;
+
+        let template;
+        if (options.length <= 2) {
+            template = createSimplePollTemplate(poll, options, topics, images);
+        } else {
+            template = createComplexPollTemplate(poll, options, topics, images);
+        }
+
+        container.appendChild(template);
+    });
+}
+
+function createSimplePollTemplate(poll, options, topics, images) {
+    const pollDiv = document.createElement('div');
+    pollDiv.className = 'blog margin-bottom-30 bg-light';
+
+    pollDiv.innerHTML = `
+        <div class="special-button">
+            <span class="blog-title" style="color: #72c02c;font-size: 22px; line-height: 24px; display: inline;float: left;">${poll.title}</span>
+            <ul class="unstyled">
+                <a class="praise" style="text-decoration:none;font-size: 16px;" href="javascript:void(0);" onclick="praiseBox(this);"><li style="list-style: none;display: inline;"><i class="icon-star"></i></li>star</a>
+            </ul>
+        </div>
+        <ul class="unstyled inline blog-info blog-tags">
+            <li><a href="userCenter.html" class="login-btn" style="text-transform: none;"><img class="media-object" src="assets/img/sliders/elastislide/2.jpg" alt="" />${poll.creatorId}</a></li>
+            <li><i class="icon-calendar"></i> ${new Date(poll.startTime).toLocaleString()}</li>
+            <li>
+                <i class="icon-tags"></i>
+                ${topics.map(topic => `<a href="javascript:void(0);">${topic.name}</a>`).join('')}
+            </li>
+        </ul>
+        <div class="blog_content">
+            <div class="span6 gallery_img">
+                <ul class="HTC_media_a">
+                    ${images.map(image => `<li><a href="${image.path}"><img src="${image.path}" /></a></li>`).join('')}
+                </ul>
+            </div>
+            <div class="span6 vote_bar">
+                <div class="main-comment inline">
+                    <p class="qst-container">${poll.description}</p>
+                    <hr />
+                </div>
+                <div style="margin:10px auto; width: 190px;height: 75px; overflow: hidden;">
+                    ${options.map((option, index) => `
+                        <div class="votecolumn" style="">
+                            <div class="votecard">
+                                <div>
+                                    <em><strong>0</strong><span></span></em>
+                                </div>
+                            </div>
+                            <a><img src="/img/${index === 0 ? 'good' : 'bad'}.png" class="resized-image"></a>
+                            <a class="voteaction${index + 1}" href="javascript:void(0);">${index === 0 ? 'Up' : 'Down'}</a>
+                        </div>
+                    `).join('')}
+                </div>
+
+                <div class="progress" style="width:85%;overflow: hidden; margin: 10px auto; ">
+                    <div class="bar bar-warning" style="width: 75%; background-color:#C5E1A5;color:#C5E1A5"></div>
+                    <div class="bar bar-danger" style="width: 25%; background-color:#558B2F;color:#558B2F"></div>
+                </div>
+            </div>
+        </div>
+        <p><a class="btn-u btn-u-small" href="type1" style="margin-left: 20px;margin-top: 5px;">Read More</a></p>
+    `;
+
+    return pollDiv;
+}
+
+function createComplexPollTemplate(poll, options, topics, images) {
+    const pollDiv = document.createElement('div');
+    pollDiv.className = 'blog margin-bottom-30 bg-light';
+
+    pollDiv.innerHTML = `
+        <div class="special-button">
+            <span class="blog-title" style="color: #72c02c;font-size: 22px; line-height: 24px; display: inline;float: left;">${poll.title}</span>
+            <ul class="unstyled">
+                <a class="praise" style="text-decoration:none;font-size: 16px;" href="javascript:void(0);" onclick="praiseBox(this);"><li style="list-style: none;display: inline;"><i class="icon-star"></i></li>star</a>
+            </ul>
+        </div>
+        <ul class="unstyled inline blog-info blog-tags">
+            <li><a href="userCenter.html" class="login-btn" style="text-transform: none;"><img class="media-object" src="assets/img/sliders/elastislide/2.jpg" alt="" />${poll.creatorId}</a></li>
+            <li><i class="icon-calendar"></i> ${new Date(poll.startTime).toLocaleString()}</li>
+            <li>
+                <i class="icon-tags"></i>
+                ${topics.map(topic => `<a href="javascript:void(0);">${topic.name}</a>`).join('')}
+            </li>
+        </ul>
+        <div class="blog_content">
+            <div class="span6 gallery_img">
+                <ul class="HTC_media_a">
+                    ${images.map(image => `<li><a href="${image.path}"><img src="${image.path}" /></a></li>`).join('')}
+                </ul>
+            </div>
+            <div class="span6 vote_bar">
+                <div class="main-comment inline">
+                    <p class="cm-container">${poll.description}</p>
+                    <hr />
+                </div>
+                <div class="vote4content">
+                    ${options.map(option => `
+                        <div class="btncontent"><span class="vote${option.order}btn">${String.fromCharCode(64 + option.order)} </span>${option.description}</div>
+                    `).join('')}
+                </div>
+                <div style="text-align: left; margin-top: 10px;">
+                    <button type="submit" class="submitbtn">Submit</button>
+                </div>
+            </div>
+        </div>
+        <p><a class="btn-u btn-u-small" href="type2" style="margin-left: 20px;margin-top: 5px;">Read More</a></p>
+    `;
+
+    return pollDiv;
+}
+
+async function fetchTotalPages() {
+    try {
+        const response = await axios.get(`/poll/size?size=${pageSize}`);
+
+        if (response.data.code !== 0) {
+            throw new Error(response.data.msg || 'Failed to fetch total pages');
+        }
+
+        return response.data.data; // 返回总页数
+    } catch (error) {
+        console.error('Error fetching total pages:', error);
+        alert('There was an error fetching the total pages.');
+        return 0;
+    }
+}
+
+function updatePagination(currentPage, totalPages) {
+    const paginationUl = document.querySelector('#pagination ul');
+    paginationUl.innerHTML = ''; // 清空当前内容
+
+    // 添加“上一页”链接
+    const prevLi = document.createElement('li');
+    prevLi.className = currentPage === 1 ? 'disabled' : '';
+    prevLi.innerHTML = `<a href="#" data-page="prev">Prev</a>`;
+    paginationUl.appendChild(prevLi);
+
+    // 定义要显示的页码范围
+    const pagesToShow = 5; // 每侧显示的页码数量
+    let startPage = Math.max(1, currentPage - Math.floor(pagesToShow / 2));
+    let endPage = Math.min(totalPages, startPage + pagesToShow - 1);
+
+    // 如果接近尾部，调整起始页以保持显示的页码数量
+    if (endPage - startPage < pagesToShow - 1) {
+        startPage = Math.max(1, endPage - pagesToShow + 1);
+    }
+
+    // 如果起始页不是第一页，则添加“...”链接
+    if (startPage > 1) {
+        const ellipsisLi = document.createElement('li');
+        ellipsisLi.innerHTML = '<a href="#">...</a>';
+        paginationUl.appendChild(ellipsisLi);
+    }
+
+    // 动态生成页码链接
+    for (let i = startPage; i <= endPage; i++) {
+        const li = document.createElement('li');
+        li.className = i === currentPage ? 'active' : '';
+        li.innerHTML = `<a href="#" data-page="${i}">${i}</a>`;
+        paginationUl.appendChild(li);
+    }
+
+    // 如果结束页不是最后一页，则添加“...”链接
+    if (endPage < totalPages) {
+        const ellipsisLi = document.createElement('li');
+        ellipsisLi.innerHTML = '<a href="#">...</a>';
+        paginationUl.appendChild(ellipsisLi);
+    }
+
+    // 添加“下一页”链接
+    const nextLi = document.createElement('li');
+    nextLi.className = currentPage === totalPages ? 'disabled' : '';
+    nextLi.innerHTML = `<a href="#" data-page="next">Next</a>`;
+    paginationUl.appendChild(nextLi);
+
+    // 为所有分页链接添加点击事件监听器
+    paginationUl.querySelectorAll('a').forEach(a => {
+        a.addEventListener('click', async (event) => {
+            event.preventDefault();
+            const page = a.getAttribute('data-page');
+            if (page === 'prev' && currentPage > 1) {
+                await fetchPollsAndRender(currentPage - 1);
+            } else if (page === 'next' && currentPage < totalPages) {
+                await fetchPollsAndRender(currentPage + 1);
+            } else if (page !== 'prev' && page !== 'next') {
+                await fetchPollsAndRender(Number(page));
+            }
+        });
+    });
+}
+
+// 页面加载时先获取总页数，然后获取第一页的数据并更新分页
+window.addEventListener('load', async () => {
+    totalPages = await fetchTotalPages(); // 获取总页数并存储在全局变量中
+    await fetchPollsAndRender(currentPage);
+});
 </script>
 
 </body>

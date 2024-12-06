@@ -142,16 +142,17 @@
             <div id="pollsContainer"></div>
 
             <!-- 扉页 -->
-            <div class="pagination pagination-centered">
+            <div class="pagination pagination-centered" id="pagination">
                 <ul>
-                    <li class="disabled"><a href="#">Prev</a></li>
-                    <li class="active"><a href="#">1</a></li>
-                    <li><a href="#">2</a></li>
-                    <li><a href="#">3</a></li>
-                    <li><a href="#">4</a></li>
-                    <li><a href="#">5</a></li>
-                    <li><a href="#">6</a></li>
-                    <li><a href="#">Next</a></li>
+                    <!-- 动态生成的页码将替换这些静态内容 -->
+                    <li><a href="#" data-page="prev">Prev</a></li>
+                    <li class="active"><a href="#" data-page="1">1</a></li>
+                    <li><a href="#" data-page="2">2</a></li>
+                    <li><a href="#" data-page="3">3</a></li>
+                    <li><a href="#" data-page="4">4</a></li>
+                    <li><a href="#" data-page="5">5</a></li>
+                    <li><a href="#" data-page="6">6</a></li>
+                    <li><a href="#" data-page="next">Next</a></li>
                 </ul>
             </div>
         </div><!--/span9-->
@@ -337,9 +338,13 @@
 </script>
 
 <script>
-    async function fetchPollsAndRender() {
+    let currentPage = 1;
+const pageSize = 3; // 每页显示的项目数量
+let totalPages = 0; // 总页数，由 fetchTotalPages 函数填充
+
+async function fetchPollsAndRender(page) {
     try {
-        const response = await instance.get('/poll/main'); // 替换为实际的API路径
+        const response = await axios.get(`/poll/main?page=${page}&size=${pageSize}`); // 替换为实际的API路径
 
         if (response.data.code !== 0) {
             throw new Error(response.data.msg || 'Failed to fetch polls');
@@ -347,7 +352,8 @@
 
         const pollsData = response.data.data;
         renderPolls(pollsData);
-
+        currentPage = page; // 更新当前页
+        updatePagination(currentPage, totalPages); // 使用全局变量totalPages
     } catch (error) {
         console.error('Error fetching polls:', error);
         alert('There was an error loading the polls.');
@@ -388,7 +394,7 @@ function createSimplePollTemplate(poll, options, topics, images) {
         </div>
         <ul class="unstyled inline blog-info blog-tags">
             <li><a href="userCenter.html" class="login-btn" style="text-transform: none;"><img class="media-object" src="assets/img/sliders/elastislide/2.jpg" alt="" />${poll.creatorId}</a></li>
-            <li><i class="icon-calendar"></i> ${new Date(poll.startTime).toLocaleString()}--${poll.endTime ? new Date(poll.endTime).toLocaleString() : ""}</li>
+            <li><i class="icon-calendar"></i> ${new Date(poll.startTime).toLocaleString()} ${poll.endTime ? `~${new Date(poll.endTime).toLocaleString()}` : ''}</li>
             <li>
                 <i class="icon-tags"></i>
                 ${topics.map(topic => `<a href="javascript:void(0);">${topic.name}</a>`).join('')}
@@ -397,7 +403,7 @@ function createSimplePollTemplate(poll, options, topics, images) {
         <div class="blog_content">
             <div class="span6 gallery_img">
                 <ul class="HTC_media_a">
-                    ${images.map(image => `<li><img src="static/image/${image.path}" /></li>`).join('')}
+                    ${images.map(image => `<li><img src="/static/image/${image.path}" /></li>`).join('')}
                 </ul>
             </div>
             <div class="span6 vote_bar">
@@ -443,7 +449,7 @@ function createComplexPollTemplate(poll, options, topics, images) {
         </div>
         <ul class="unstyled inline blog-info blog-tags">
             <li><a href="userCenter.html" class="login-btn" style="text-transform: none;"><img class="media-object" src="assets/img/sliders/elastislide/2.jpg" alt="" />${poll.creatorId}</a></li>
-            <li><i class="icon-calendar"></i> ${new Date(poll.startTime).toLocaleString()}--${poll.endTime ? new Date(poll.endTime).toLocaleString() : ""} </li>
+            <li><i class="icon-calendar"></i> ${new Date(poll.startTime).toLocaleString()} ${poll.endTime ? `~${new Date(poll.endTime).toLocaleString()}` : ''}</li>
             <li>
                 <i class="icon-tags"></i>
                 ${topics.map(topic => `<a href="javascript:void(0);">${topic.name}</a>`).join('')}
@@ -452,7 +458,7 @@ function createComplexPollTemplate(poll, options, topics, images) {
         <div class="blog_content">
             <div class="span6 gallery_img">
                 <ul class="HTC_media_a">
-                    ${images.map(image => `<li><img src="static/image/${image.path}" /></li>`).join('')}
+                    ${images.map(image => `<li><img src="/static/image/${image.path}" /></li>`).join('')}
                 </ul>
             </div>
             <div class="span6 vote_bar">
@@ -476,8 +482,91 @@ function createComplexPollTemplate(poll, options, topics, images) {
     return pollDiv;
 }
 
-// 页面加载时获取投票数据
-window.addEventListener('load', fetchPollsAndRender);
+async function fetchTotalPages() {
+    try {
+        const response = await axios.get(`/poll/size?size=${pageSize}`);
+
+        if (response.data.code !== 0) {
+            throw new Error(response.data.msg || 'Failed to fetch total pages');
+        }
+
+        return response.data.data; // 返回总页数
+    } catch (error) {
+        console.error('Error fetching total pages:', error);
+        alert('There was an error fetching the total pages.');
+        return 0;
+    }
+}
+
+function updatePagination(currentPage, totalPages) {
+    const paginationUl = document.querySelector('#pagination ul');
+    paginationUl.innerHTML = ''; // 清空当前内容
+
+    // 添加“上一页”链接
+    const prevLi = document.createElement('li');
+    prevLi.className = currentPage === 1 ? 'disabled' : '';
+    prevLi.innerHTML = `<a href="#" data-page="prev">Prev</a>`;
+    paginationUl.appendChild(prevLi);
+
+    // 定义要显示的页码范围
+    const pagesToShow = 5; // 每侧显示的页码数量
+    let startPage = Math.max(1, currentPage - Math.floor(pagesToShow / 2));
+    let endPage = Math.min(totalPages, startPage + pagesToShow - 1);
+
+    // 如果接近尾部，调整起始页以保持显示的页码数量
+    if (endPage - startPage < pagesToShow - 1) {
+        startPage = Math.max(1, endPage - pagesToShow + 1);
+    }
+
+    // 如果起始页不是第一页，则添加“...”链接
+    if (startPage > 1) {
+        const ellipsisLi = document.createElement('li');
+        ellipsisLi.innerHTML = '<a href="#">...</a>';
+        paginationUl.appendChild(ellipsisLi);
+    }
+
+    // 动态生成页码链接
+    for (let i = startPage; i <= endPage; i++) {
+        const li = document.createElement('li');
+        li.className = i === currentPage ? 'active' : '';
+        li.innerHTML = `<a href="#" data-page="${i}">${i}</a>`;
+        paginationUl.appendChild(li);
+    }
+
+    // 如果结束页不是最后一页，则添加“...”链接
+    if (endPage < totalPages) {
+        const ellipsisLi = document.createElement('li');
+        ellipsisLi.innerHTML = '<a href="#">...</a>';
+        paginationUl.appendChild(ellipsisLi);
+    }
+
+    // 添加“下一页”链接
+    const nextLi = document.createElement('li');
+    nextLi.className = currentPage === totalPages ? 'disabled' : '';
+    nextLi.innerHTML = `<a href="#" data-page="next">Next</a>`;
+    paginationUl.appendChild(nextLi);
+
+    // 为所有分页链接添加点击事件监听器
+    paginationUl.querySelectorAll('a').forEach(a => {
+        a.addEventListener('click', async (event) => {
+            event.preventDefault();
+            const page = a.getAttribute('data-page');
+            if (page === 'prev' && currentPage > 1) {
+                await fetchPollsAndRender(currentPage - 1);
+            } else if (page === 'next' && currentPage < totalPages) {
+                await fetchPollsAndRender(currentPage + 1);
+            } else if (page !== 'prev' && page !== 'next') {
+                await fetchPollsAndRender(Number(page));
+            }
+        });
+    });
+}
+
+// 页面加载时先获取总页数，然后获取第一页的数据并更新分页
+window.addEventListener('load', async () => {
+    totalPages = await fetchTotalPages(); // 获取总页数并存储在全局变量中
+    await fetchPollsAndRender(currentPage);
+});
 </script>
 
 </body>
