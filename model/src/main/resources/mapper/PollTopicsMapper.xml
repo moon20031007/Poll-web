@@ -14,4 +14,23 @@
         poll_topics_id
         ,poll_id,topic_id
     </sql>
+
+    <select id="getPolls" resultType="com.poll.pojo.Poll">
+        select p.*
+        from poll p
+        join poll_topics pt
+        on pt.poll_id = p.poll_id
+        where pt.topic_id = #{id}
+        order by p.start_time desc
+        limit #{size} offset #{offset}
+    </select>
+
+    <select id="getTopicCount" resultType="java.lang.Integer">
+        select count(*)
+        from poll_topics pt
+        join poll p
+        on pt.poll_id = p.poll_id
+        and p.enabled = true
+        where pt.topic_id = #{id}
+    </select>
 </mapper>

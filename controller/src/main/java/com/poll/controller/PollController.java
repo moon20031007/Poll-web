@@ -22,7 +22,6 @@ import java.util.*;
 public class PollController {
 
     private final PollService pollService;
-
     private final ImageService imageService;
 
     public PollController(PollService pollService, ImageService imageService) {
@@ -43,8 +42,8 @@ public class PollController {
 
     @GetMapping("/size")
     public Result getSizePages(@RequestParam(defaultValue = "3") int size) {
-        Integer result = pollService.getPageSize(size);
-        return Result.success(result);
+        Integer count = pollService.getPageSize(size);
+        return Result.success(count);
     }
 
     @PostMapping("/add")
