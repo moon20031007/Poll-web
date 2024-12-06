@@ -1,7 +1,10 @@
 package com.poll.service;
 
 import com.poll.DTO.PollInfoDTO;
+import com.poll.pojo.Options;
 import com.poll.pojo.Poll;
+import com.poll.pojo.Topic;
+import com.poll.pojo.User;
 
 import java.util.List;
 
@@ -13,5 +16,5 @@ public interface PollService {
 
     PollInfoDTO getPollInfo(Integer id);
 
-    Poll insert(Integer id, Poll poll);
+    Integer create(User user, Poll poll, List<Options> options, List<Topic> topics, List<String> Images);
 }

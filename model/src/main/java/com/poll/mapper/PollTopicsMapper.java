@@ -11,4 +11,6 @@ public interface PollTopicsMapper {
     List<Poll> getPolls(Integer id, Integer offset, Integer size);
 
     Integer getTopicCount(Integer id);
+
+    void insert(Integer pollId, Integer topicId);
 }

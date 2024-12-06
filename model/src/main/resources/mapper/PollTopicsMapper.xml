@@ -33,4 +33,9 @@
         and p.enabled = true
         where pt.topic_id = #{id}
     </select>
+
+    <insert id="insert">
+        insert into poll_topics (poll_id, topic_id)
+        values (#{pollId}, #{topicId})
+    </insert>
 </mapper>

@@ -20,14 +20,16 @@ public class PollServiceImpl implements PollService {
     private final VoteMapper voteMapper;
     private final TopicMapper topicMapper;
     private final UserMapper userMapper;
+    private final PollTopicsMapper pollTopicsMapper;
 
-    public PollServiceImpl(PollMapper pollMapper, OptionsMapper optionsMapper, ImageMapper imageMapper, VoteMapper voteMapper, TopicMapper topicMapper, UserMapper userMapper) {
+    public PollServiceImpl(PollMapper pollMapper, OptionsMapper optionsMapper, ImageMapper imageMapper, VoteMapper voteMapper, TopicMapper topicMapper, UserMapper userMapper, PollTopicsMapper pollTopicsMapper) {
         this.pollMapper = pollMapper;
         this.optionsMapper = optionsMapper;
         this.imageMapper = imageMapper;
         this.voteMapper = voteMapper;
         this.topicMapper = topicMapper;
         this.userMapper = userMapper;
+        this.pollTopicsMapper = pollTopicsMapper;
     }
 
     @Override
@@ -97,9 +99,22 @@ public class PollServiceImpl implements PollService {
     }
 
     @Override
-    public Poll insert(Integer id, Poll poll) {
-        poll.setCreatorId(id);
+    public Integer create(User user, Poll poll, List<Options> options, List<Topic> topics, List<String> images) {
+        poll.setCreatorId(user.getUserId());
         pollMapper.insert(poll);
-        return poll;
+        Integer pollId = poll.getPollId();
+        options.forEach(option -> {
+            option.setPollId(pollId);
+            optionsMapper.insert(option);
+        });
+        topics.forEach(topic -> pollTopicsMapper.insert(pollId, topic.getTopicId()));
+        for (int i = 0; i < images.size(); i++) {
+            Image image = new Image();
+            image.setPollId(pollId);
+            image.setOrder(i + 1);
+            image.setPath(images.get(i));
+            imageMapper.insert(image);
+        }
+        return pollId;
     }
 }
