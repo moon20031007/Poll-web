@@ -77,13 +77,14 @@
 								document.getElementById('step1').style.display = 'none';
 								document.getElementById('step2').style.display = 'block';
 							}else {
-								throw new Error('Failed to send verification code: ' + response.data.msg);
+								alert('Failed to send verification code: ' + response.data.msg);
 							}
 						})
 
 			} catch (error) {
-				console.error('Error during verification code request:', error);
-				alert(error.message || 'An error occurred while sending the verification code.');
+				// 处理网络错误或其他客户端错误
+				console.error('Network Error:', error.message);
+				alert('A network error occurred. Please check your connection and try again.');
 			}
 		}
 		//重设密码
@@ -118,8 +119,9 @@
 							}
 						})
 			}catch (error) {
-			 console.error('Error during reset:', error);
-			 alert(error.message || 'An error occurred while reset.');
+				// 处理网络错误或其他客户端错误
+				console.error('Network Error:', error.message);
+				alert('A network error occurred. Please check your connection and try again.');
 		 }
 		}
 		 // 为 "submit" 按钮添加点击事件监听器

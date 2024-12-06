@@ -108,13 +108,14 @@
 							if (response.data.code == 0) {
 								alert("Verification code sent successfully!");
 							}else {
-								throw new Error('Failed to send verification code: ' + response.data.msg);
+								alert('Failed to send verification code: ' + response.data.msg);
 							}
 						})
 
 			} catch (error) {
-				console.error('Error during verification code request:', error);
-				showError(error.message || 'An error occurred while sending the verification code.');
+				// 处理网络错误或其他客户端错误
+				console.error('Network Error:', error.message);
+				alert('A network error occurred. Please check your connection and try again.');
 			}
 		}
 
@@ -143,15 +144,17 @@
 							if (response.data.code == 0) {
 								alert("Registered successfully!");
 								// 注册成功后，可以重定向到主页或其他页面
-								// window.location.href = '/login'; // 替换为实际的重定向URL
+								window.location.href = '/login'; // 替换为实际的重定向URL
 							}else {
 								alert('Registration failure: ' + response.data.msg);
 							}
 						})
 
-			} catch (error) {
-				console.error('Error during register request:', error);
-				showError(error.message || 'An error occurred while sending the register request.');
+			}catch (error) {
+				// 处理网络错误或其他客户端错误
+				console.error('Network Error:', error.message);
+				alert('A network error occurred. Please check your connection and try again.');
+				}
 			}
 		}
 
