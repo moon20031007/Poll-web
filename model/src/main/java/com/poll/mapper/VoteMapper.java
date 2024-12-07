@@ -13,4 +13,6 @@ public interface VoteMapper {
     List<Vote> selectByUserId(Integer id);
 
     void insert(Vote vote);
+
+    List<Vote> recent();
 }

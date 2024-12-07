@@ -4,8 +4,11 @@ import com.poll.pojo.User;
 import com.poll.pojo.Vote;
 
 import java.util.List;
+import java.util.Map;
 
 public interface VoteService {
 
     void insert(User user, List<Vote> votes);
+
+    Map<Vote, User> recent();
 }

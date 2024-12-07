@@ -46,4 +46,11 @@
                 <if test="isAnonymous != null">#{isAnonymous},</if>
             </trim>
     </insert>
+
+    <select id="recent" resultType="com.poll.pojo.Vote">
+        select <include refid="Base_Column_List"/>
+        from vote
+        order by vote_id desc
+        limit 10
+    </select>
 </mapper>
