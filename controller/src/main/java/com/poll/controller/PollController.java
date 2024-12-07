@@ -5,6 +5,7 @@ import com.poll.DTO.PollInfoDTO;
 import com.poll.pojo.Image;
 import com.poll.pojo.Options;
 import com.poll.pojo.Poll;
+import com.poll.pojo.Topic;
 import com.poll.result.Result;
 import com.poll.result.ResultCode;
 import com.poll.service.ImageService;
@@ -15,17 +16,13 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 @RequestMapping("/poll")
 public class PollController {
 
     private final PollService pollService;
-
     private final ImageService imageService;
 
     public PollController(PollService pollService, ImageService imageService) {
@@ -44,10 +41,42 @@ public class PollController {
         }
     }
 
-    @PostMapping("/add")
-    public Result addPoll(@RequestHeader("Authorization") String jwt, @ModelAttribute Poll poll, @RequestParam(value = "files", required = false) MultipartFile[] files) {
-        List<String> imageNames = new ArrayList<>();
+    @GetMapping("/size")
+    public Result getSizePages(@RequestParam(defaultValue = "3") int size) {
         try {
+            Integer count = pollService.getPageSize(size);
+            return Result.success(count);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.error(ResultCode.ERROR);
+        }
+    }
+
+    @GetMapping("/info/{id}")
+    public Result getInfo(@PathVariable Integer id) {
+        try {
+            PollInfoDTO pollInfo = pollService.getPollInfo(id);
+            return Result.success(pollInfo);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.error(ResultCode.ERROR);
+        }
+    }
+
+    @PostMapping("/add")
+    public Result test(@RequestHeader("Authorization") String jwt,
+                       @RequestParam(value = "poll") String pollJson,
+                       @RequestParam(value = "options") String optionsJson,
+                       @RequestParam(value = "topics") String topicsJson,
+                       @RequestParam(value = "files", required = false) MultipartFile[] files) {
+
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        try {
+            Poll poll = objectMapper.readValue(pollJson, Poll.class);
+            List<Options> options = objectMapper.readValue(optionsJson, objectMapper.getTypeFactory().constructCollectionType(List.class, Options.class));
+            List<Topic> topics = objectMapper.readValue(topicsJson, objectMapper.getTypeFactory().constructCollectionType(List.class, Topic.class));
+            List<String> imageNames = new ArrayList<>();
             if (files != null) {
                 for (MultipartFile file : files) {
                     if (!file.isEmpty()) {
@@ -56,54 +85,8 @@ public class PollController {
                     }
                 }
             }
-            Poll pollWithId = pollService.insert(JwtUtils.parseJwt(jwt).getUserId(), poll);
-            for (int i = 0; i < imageNames.size(); i++) {
-                Image image = new Image();
-                image.setPollId(pollWithId.getPollId());
-                image.setOrder(i + 1);
-                image.setPath(imageNames.get(i));
-                imageService.insert(image);
-            }
-            return Result.success();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return Result.error(ResultCode.ERROR);
-        }
-    }
-
-    @PostMapping("/test")
-    public Result test(@RequestParam(value = "poll") String pollJson,
-                       @RequestParam(value = "options") String optionsJson,
-                       @RequestParam(value = "files", required = false) MultipartFile[] files) {
-
-        ObjectMapper objectMapper = new ObjectMapper();
-
-        try {
-            // 解析JSON字符串
-            Poll poll = objectMapper.readValue(pollJson, Poll.class);
-            List<Options> options = objectMapper.readValue(optionsJson, objectMapper.getTypeFactory().constructCollectionType(List.class, Options.class));
-
-            // 打印接收到的Poll对象
-            System.out.println("Received Poll: " + poll);
-
-            // 打印接收到的Options列表
-            System.out.println("Received Options: " + options);
-
-            List<String> imageNames = new ArrayList<>();
-            if (files != null) {
-                for (MultipartFile file : files) {
-                    if (!file.isEmpty()) {
-                        imageNames.add(file.getOriginalFilename());
-                    }
-                }
-            }
-
-            // 打印文件名
-            for (String imageName : imageNames) {
-                System.out.println("File Name: " + imageName);
-            }
-
-            return Result.success();
+            Integer pollId = pollService.create(JwtUtils.parseJwt(jwt), poll, options, topics, imageNames);
+            return Result.success(pollId);
         } catch (IOException e) {
             e.printStackTrace();
             return Result.error(ResultCode.ERROR);

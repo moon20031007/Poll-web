@@ -1,5 +1,6 @@
 package com.poll.controller;
 
+import com.poll.DTO.UserInfoDTO;
 import com.poll.pojo.User;
 import com.poll.service.UserService;
 import com.poll.utils.HashUtils;
@@ -24,11 +25,16 @@ public class UserController {
 
     @GetMapping("/info/{username}")
     public Result getUser(@PathVariable String username) {
-        User user = userService.selectByUsername(username);
-        if (user == null) {
-            return Result.error(ResultCode.USER_NOT_EXIST);
+        try {
+            UserInfoDTO userInfo = userService.selectUserInfo(username);
+            if (userInfo == null) {
+                return Result.error(ResultCode.USER_NOT_EXIST);
+            }
+            return Result.success(userInfo);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.error(ResultCode.ERROR);
         }
-        return Result.success(user);
     }
 
     @PostMapping("/login")

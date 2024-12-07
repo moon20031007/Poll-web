@@ -9,4 +9,8 @@ import java.util.List;
 public interface OptionsMapper {
 
     List<Options> selectByPollId(Integer id);
+
+    Options selectById(Integer id);
+
+    void insert(Options options);
 }

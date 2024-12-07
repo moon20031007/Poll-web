@@ -9,4 +9,10 @@ import java.util.List;
 public interface VoteMapper {
 
     List<Vote> selectByPollId(Integer id);
+
+    List<Vote> selectByUserId(Integer id);
+
+    void insert(Vote vote);
+
+    List<Vote> recent();
 }

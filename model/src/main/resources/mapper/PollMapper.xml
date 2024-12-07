@@ -33,6 +33,12 @@
         limit #{size} offset #{offset}
     </select>
 
+    <select id="getPollCount" resultType="java.lang.Integer">
+        select count(*)
+        from poll
+        where enabled = true
+    </select>
+
     <insert id="insert" useGeneratedKeys="true" keyProperty="pollId">
         insert into poll
             <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -47,4 +53,24 @@
                 <if test="allowAnonymous != null">#{allowAnonymous},</if>
             </trim>
     </insert>
+
+    <select id="selectById" resultType="com.poll.pojo.Poll">
+        select <include refid="Base_Column_List"/>
+        from poll
+        where poll_id = #{id}
+    </select>
+
+    <select id="selectPost" resultType="com.poll.pojo.Poll">
+        select <include refid="Base_Column_List"/>
+        from poll
+        where creator_id = #{id}
+    </select>
+
+    <select id="selectStar" resultType="com.poll.pojo.Poll">
+        select p.poll_id, p.creator_id, p.type, p.title, p.star_count, p.description, p.start_time, p.end_time, p.allow_anonymous, p.enabled
+        from poll p
+        join star s
+        on s.poll_id = p.poll_id
+        where s.user_id = #{id}
+    </select>
 </mapper>
