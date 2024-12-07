@@ -18,4 +18,16 @@
         ,sender_id,receiver_id,
         content,time,is_read
     </sql>
+
+    <insert id="send">
+        insert into message (sender_id, receiver_id, content)
+        values (#{senderId}, #{receiverId}, #{content})
+    </insert>
+
+    <select id="getMessages" resultType="com.poll.pojo.Message">
+        select <include refid="Base_Column_List"/>
+        from message
+        where sender_id = #{userId}
+        or receiver_id = #{userId}
+    </select>
 </mapper>
