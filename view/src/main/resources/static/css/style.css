@@ -2288,8 +2288,8 @@ a.voted,a.voted:hover{outline:none;background-position:-3px -96px;cursor:default
 }
 
 .HTC_media_a_pro li {
-    flex: 1 1 calc(50% - 10px); /* 50% of the container width minus some margin */
-    max-width: calc(50% - 10px);
+    flex: 1 1 calc(40% - 10px); /* 调整为40%或更小，根据需求 */
+    max-width: calc(40% - 10px);
     margin: 5px;
     box-sizing: border-box;
 }

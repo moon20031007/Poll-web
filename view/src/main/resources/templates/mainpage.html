@@ -160,47 +160,16 @@
         <!-- Right Sidebar -->
         <div class="span3">
             <!-- Posts -->
-            <div class="posts margin-bottom-20">
+            <div class="posts margin-bottom-20" id="recent-votes">
                 <div class="wrapper-inner-tab">
-                    <div class="wrapper-inner-tab-backgrounds-first"><a href="/post" style="text-decoration:none;"><div class="sim-button button5"><span>Post your question</span></div></a></div>
+                    <div class="wrapper-inner-tab-backgrounds-first">
+                        <a href="/post" style="text-decoration:none;">
+                            <div class="sim-button button5"><span>Post your question</span></div>
+                        </a>
+                    </div>
                 </div>
-                <div class="headline"><h3>Recent Questions</h3></div>
-                <dl class="dl-horizontal">
-                    <dt><a href="commentPage.html"><img src="assets/img/sliders/elastislide/6.jpg" alt="" /></a></dt>
-                    <dd>
-                        <p class="sidebar-contianer"><a href="commentPage.html">question1</a></p>
-                    </dd>
-                </dl>
-                <dl class="dl-horizontal">
-                    <dt><a href="commentPage2.html"><img src="assets/img/sliders/elastislide/10.jpg" alt="" /></a></dt>
-                    <dd>
-                        <p class="sidebar-contianer"><a href="commentPage2.html">question2</a></p>
-                    </dd>
-                </dl>
-                <dl class="dl-horizontal">
-                    <dt><a href="commentPage.html"><img src="assets/img/sliders/elastislide/11.jpg" alt="" /></a></dt>
-                    <dd>
-                        <p class="sidebar-contianer"><a href="commentPage.html">question3</a></p>
-                    </dd>
-                </dl>
-                <dl class="dl-horizontal">
-                    <dt><a href="commentPage.html"><img src="assets/img/sliders/elastislide/6.jpg" alt="" /></a></dt>
-                    <dd>
-                        <p class="sidebar-contianer"><a href="commentPage.html">question4 </a></p>
-                    </dd>
-                </dl>
-                <dl class="dl-horizontal">
-                    <dt><a href="commentPage2.html"><img src="assets/img/sliders/elastislide/10.jpg" alt="" /></a></dt>
-                    <dd>
-                        <p class="sidebar-contianer"><a href="commentPage2.html">question5</a></p>
-                    </dd>
-                </dl>
-                <dl class="dl-horizontal">
-                    <dt><a href="commentPage2.html"><img src="assets/img/sliders/elastislide/11.jpg" alt="" /></a></dt>
-                    <dd>
-                        <p class="sidebar-contianer"><a href="commentPage2.html">question6</a></p>
-                    </dd>
-                </dl>
+                <div class="headline"><h3>Recent Votes</h3></div>
+                <!-- 动态生成的投票记录将插入到这里 -->
             </div><!--/posts-->
         </div><!--/span3-->
     </div><!--/row-fluid-->
@@ -430,7 +399,7 @@ function createSimplePollTemplate(poll, options, topics, images) {
                 </div>
             </div>
         </div>
-        <p><a class="btn-u btn-u-small" href="type1" style="margin-left: 20px;margin-top: 5px;">Read More</a></p>
+        <p><a class="btn-u btn-u-small" href="/commentpage/${poll.pollId}" style="margin-left: 20px;margin-top: 5px;">Read More</a></p>
     `;
 
     return pollDiv;
@@ -476,7 +445,7 @@ function createComplexPollTemplate(poll, options, topics, images) {
                 </div>
             </div>
         </div>
-        <p><a class="btn-u btn-u-small" href="type2" style="margin-left: 20px;margin-top: 5px;">Read More</a></p>
+        <p><a class="btn-u btn-u-small" href="/commentpage/${poll.pollId}" style="margin-left: 20px;margin-top: 5px;">Read More</a></p>
     `;
 
     return pollDiv;
@@ -567,6 +536,49 @@ window.addEventListener('load', async () => {
     totalPages = await fetchTotalPages(); // 获取总页数并存储在全局变量中
     await fetchPollsAndRender(currentPage);
 });
+</script>
+
+<script>
+    function createRecentVoteTemplate(voteData) {
+        const dlElement = document.createElement('dl');
+        dlElement.className = 'dl-horizontal';
+
+        // 假设voteData是一个包含单个投票记录的对象
+        const user = voteData;
+
+        dlElement.innerHTML = `
+            <dt>
+                <a href="commentPage.html">
+                    <img src="${user.avatar ? `/static/avatar/${user.avatar}` : '/static/avatar/default.png'}" alt="${user.username}'s avatar" />
+                </a>
+            </dt>
+            <dd>
+                <p class="sidebar-contianer">
+                    <a href="commentPage.html">${user.username}</a>
+                </p>
+            </dd>
+        `;
+
+        return dlElement;
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        fetch('/vote/recent') // 请替换为实际的API路径
+            .then(response => response.json())
+            .then(data => {
+                if (data.code === 0) { // 请求成功
+                    const container = document.getElementById('recent-votes');
+                    Object.values(data.data).forEach(voteInfo => {
+                        const vote = voteInfo[Object.keys(voteInfo)[0]]; // 获取投票详情中的用户信息
+                        const voteElement = createRecentVoteTemplate(vote);
+                        container.appendChild(voteElement);
+                    });
+                } else {
+                    console.error('Failed to load recent votes:', data.msg);
+                }
+            })
+            .catch(error => console.error('Error fetching recent votes:', error));
+    });
 </script>
 
 </body>

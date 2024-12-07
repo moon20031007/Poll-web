@@ -19,9 +19,9 @@ public class TemplateController {
         return "mainpage";
     }
 
-    @GetMapping("/type/{id}")
+    @GetMapping("/commentpage/{id}")
     public String commentpage1(@PathVariable int id) {
-        return "commentpage1";
+        return "commentpage";
     }
 
     @GetMapping("/type1")
