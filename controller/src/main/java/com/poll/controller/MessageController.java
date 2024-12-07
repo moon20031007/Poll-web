@@ -24,7 +24,6 @@ public class MessageController {
 
     @GetMapping("/get")
     public Result getMessages(@RequestHeader("Authorization") String jwt) {
-        messageService.getMessages(JwtUtils.parseJwt(jwt));
-        return Result.success();
+        return Result.success(messageService.getMessages(JwtUtils.parseJwt(jwt)));
     }
 }
