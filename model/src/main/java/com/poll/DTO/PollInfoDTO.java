@@ -16,9 +16,9 @@ public class PollInfoDTO {
 
     private List<Image> images;
 
-    private List<Vote> votes;
+    private List<Map<Vote, User>> votes;
 
     private Map<Integer, Integer> results;
 
-    private String avatar;
+    private User creator;
 }

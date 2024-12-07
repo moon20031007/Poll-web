@@ -44,7 +44,7 @@ public class VoteServiceImpl implements VoteService {
                 userToPut.setAvatar(user.getAvatar());
             } else {
                 userToPut.setUsername("Anonymous Vote");
-                userToPut.setAvatar("default.jpg");
+                userToPut.setAvatar("default.png");
             }
             map.put(vote, userToPut);
         });

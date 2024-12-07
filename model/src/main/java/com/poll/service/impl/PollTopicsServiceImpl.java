@@ -43,6 +43,20 @@ public class PollTopicsServiceImpl implements PollTopicsService {
             if (poll.getAllowAnonymous()) {
                 votes.stream().filter(Vote::getIsAnonymous).forEach(vote -> vote.setVoterId(null));
             }
+            List<Map<Vote, User>> votesMap = votes.stream().map(vote -> {
+                Map<Vote, User> map = new HashMap<>();
+                if (vote.getIsAnonymous()) {
+                    User anonymousUser = new User();
+                    anonymousUser.setUsername("anonymous");
+                    anonymousUser.setAvatar("default.png");
+                    map.put(vote, anonymousUser);
+                } else {
+                    User voteUser = userMapper.selectById(vote.getVoterId());
+                    voteUser.setPassword(null);
+                    map.put(vote, voteUser);
+                }
+                return map;
+            }).toList();
             Map<Integer, Integer> results = new HashMap<>();
             for (Options option : options) {
                 results.put(option.getOptionId(), 0);
@@ -54,9 +68,11 @@ public class PollTopicsServiceImpl implements PollTopicsService {
             pollInfoDTO.setOptions(options);
             pollInfoDTO.setTopics(topics);
             pollInfoDTO.setImages(images);
-            pollInfoDTO.setVotes(votes);
+            pollInfoDTO.setVotes(votesMap);
             pollInfoDTO.setResults(results);
-            pollInfoDTO.setAvatar(userMapper.selectById(poll.getCreatorId()).getAvatar());
+            User creator = userMapper.selectById(poll.getCreatorId());
+            creator.setPassword(null);
+            pollInfoDTO.setCreator(creator);
             pollInfoList.add(pollInfoDTO);
         });
         return pollInfoList;

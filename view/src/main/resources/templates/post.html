@@ -22,6 +22,8 @@
     <!-- CSS Implementing Plugins -->    
     <link rel="stylesheet" href="/plugins/font-awesome/css/font-awesome.css" />
     <link rel="stylesheet" href="/css/postform.css">
+    <script src="/js/axios.min.js"></script>
+    <script src="/js/api.js"></script>
     <!-- CSS Theme -->    
 <!--     <link rel="stylesheet" href="assets/css/themes/default.css" id="style_color" />
     <link rel="stylesheet" href="assets/css/themes/headers/default.css" id="style_color-header-1" />     -->
@@ -60,7 +62,7 @@
             <li class="devider" style="visibility:visible;">&nbsp;</li>
             <li style="visibility:visible;"><a href="/userCenter" class="login-btn" style="text-transform: none;"><img class="media-object" src="assets/img/unlogin.png" alt="" /> Name</a></li>
             <li class="devider" style="visibility:visible;">&nbsp;</li>
-            <li style="visibility:visible;"><a href="page_faq.html" class="login-btn">Log out</a></li>    
+            <li><a href="#" id="logout-link" class="login-btn">Log out</a></li>
         </ul>
     </div>      
 </div><!--/top-->
@@ -148,7 +150,7 @@
                     <li>Step 2</li>
                     <li>Step 3</li>
                   </ul>
-                  <form class="form-wrapper">
+                    <form id="pollForm" enctype="multipart/form-data" class="form-wrapper">
                     <fieldset class="section is-active">
                         <label>Title</label>
                         <input type="text" name="title" id="qstTitle" placeholder="Title">
@@ -197,7 +199,7 @@
                             </div>
                         </div>
                         <label>Describe your question:</label>
-                        <textarea class="span10 border-radius-none" id="descripbeQst" rows="4"></textarea> 
+                        <textarea class="span10 border-radius-none" id="describeQst" rows="4"></textarea>
                         <label>You can upload at most 4 images:</label>
                         <!--    照片添加    -->
                         <div class="photoUpload">
@@ -236,14 +238,14 @@
                             </div>
                         </div>
                         <div class="buttonPre" style="bottom: -35px;">Previous</div>
-                        <div class="buttonNe2" style="bottom: -35px;" type="submit" value="Post">Post</div>
+                        <div class="buttonNe2" style="bottom: -35px;" type="button" onclick="submitForm()">Post</div>
                     </fieldset>
                     <fieldset class="section" style="height:400px;">
                       <h3>Question Created!</h3>
                       <p>Your question has now been posted.</p>
                       <div class="buttonFinish">Go to question</div> <!-- 跳转到对应的问题页面 -->
                     </fieldset>
-                  </form>
+                  </form><div id="response"></div>
                 </div>
             </div>
         </div>
@@ -461,39 +463,6 @@ function imgChange(obj1, obj2,obj3) {
     imgRemove(obj2path);
 };
 
-// function imgChange(obj1, obj2,obj3) {
-//     //获取点击的文本框
-//     var file = document.getElementById(ojb3);
-//     //存放图片的父级元素
-//     var imgContainer = document.getElementsByClassName(obj1)[0];
-//     //获取的图片文件
-//     var fileList = file.files;
-//     var fileNum = fileList.length;
-//     var nowNum = document.getElementsByClassName("z_addImg").length;
-//     var leastNum = (4-nowNum);
-//     //文本框的父级元素
-//     var input = document.getElementsByClassName(obj2)[0];
-//     var imgArr = [];
-//     //遍历获取到得图片文件
-//     if(fileNum<=leastNum){
-//         for (var i = 0; i < fileNum; i++) {
-//             var imgUrl = window.URL.createObjectURL(file.files[i]);
-//             imgArr.push(imgUrl);
-//             var img = document.createElement("img");
-//             img.setAttribute("src", imgArr[i]);
-//             var imgAdd = document.createElement("div");
-//             imgAdd.setAttribute("class", "z_addImg");
-//             imgAdd.appendChild(img);
-//             input.appendChild(imgAdd);
-//         };
-//         // if((nowNum+fileNum)==4){
-//             $(obj2).css("display","none");
-//         //}
-//     }else{
-//         alert("Maximum number of image is 4");
-//     }
-//     imgRemove(obj2);
-// };
 
 
 function imgRemove(obj2path) {
@@ -524,8 +493,54 @@ function imgRemove(obj2path) {
 };
 
 </script>
+
+<script>
+    function submitForm(event) {
+        const formData = new FormData(document.getElementById('pollForm'));
+
+        // 构建Poll对象
+        const poll = {
+            title: document.getElementById('qstTitle').value,
+            topic: Array.from(document.getElementById('qstTopic').selectedOptions).map(option => option.value).join(','),
+            type: document.querySelector('input[name="voteType"]:checked').value,
+            description: document.getElementById('describeQst').value,
+            endTime: new Date().toISOString(),
+            allowAnonymous: null
+        };
+
+        const options = [];
+        $('input[name^="choiceDetail"]').each(function(index) {
+            options.push({
+                description: this.value,
+                order: index + 1 // 选项的顺序从1开始
+            });
+        })
+
+
+        // 将Poll和Options转换为JSON字符串并添加到FormData
+        formData.append('poll', JSON.stringify(poll));
+        formData.append('options', JSON.stringify(options));
+
+        console.log(formData);
+
+        // 使用Axios或其他HTTP库发送请求
+        instance.post('/poll/add', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        })
+            .then(response => {
+                document.getElementById('response').innerText = JSON.stringify(response.data, null, 2);
+            })
+            .catch(error => {
+                document.getElementById('response').innerText = `Error: ${error.message}`;
+            });
+    }
+
+</script>
 <!--[if lt IE 9]>
-    <script src="assets/js/respond.js"></script>
+    <script src="/js/respond.js"></script>
+
 <![endif]-->
 
 </body>
