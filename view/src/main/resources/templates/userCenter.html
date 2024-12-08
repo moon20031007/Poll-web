@@ -435,8 +435,8 @@
 
         // Message Button Click Handler
         $('#messageButton').click(function() {
-            const recipientId = currentUserId; // Use the stored user ID
-            window.location.href = `/messages?recipientId=${recipientId}`;
+            const receiverId = currentUserId; // Use the stored user ID
+            window.location.href = `/messages?receiverId=${receiverId}`;
         });
     });
 
