@@ -338,19 +338,20 @@ function renderPolls(polls) {
         const options = pollItem.options;
         const topics = pollItem.topics;
         const images = pollItem.images;
+        const creator = pollItem.creator;
 
         let template;
         if (options.length <= 2) {
-            template = createSimplePollTemplate(poll, options, topics, images);
+            template = createSimplePollTemplate(poll, options, topics, images, creator);
         } else {
-            template = createComplexPollTemplate(poll, options, topics, images);
+            template = createComplexPollTemplate(poll, options, topics, images, creator);
         }
 
         container.appendChild(template);
     });
 }
 
-function createSimplePollTemplate(poll, options, topics, images) {
+function createSimplePollTemplate(poll, options, topics, images, creator) {
     const pollDiv = document.createElement('div');
     pollDiv.className = 'blog margin-bottom-30 bg-light';
 
@@ -362,7 +363,7 @@ function createSimplePollTemplate(poll, options, topics, images) {
             </ul>
         </div>
         <ul class="unstyled inline blog-info blog-tags">
-            <li><a href="userCenter.html" class="login-btn" style="text-transform: none;"><img class="media-object" src="assets/img/sliders/elastislide/2.jpg" alt="" />${poll.creatorId}</a></li>
+            <li><a href="/userCenter/${creator.username}" class="login-btn" style="text-transform: none;"><img class="media-object" src="/static/avatar/${creator.avatar}" alt="" />${creator.username}</a></li>
             <li><i class="icon-calendar"></i> ${new Date(poll.startTime).toLocaleString()} ${poll.endTime ? `~${new Date(poll.endTime).toLocaleString()}` : ''}</li>
             <li>
                 <i class="icon-tags"></i>
@@ -405,7 +406,7 @@ function createSimplePollTemplate(poll, options, topics, images) {
     return pollDiv;
 }
 
-function createComplexPollTemplate(poll, options, topics, images) {
+function createComplexPollTemplate(poll, options, topics, images, creator) {
     const pollDiv = document.createElement('div');
     pollDiv.className = 'blog margin-bottom-30 bg-light';
 
@@ -417,7 +418,7 @@ function createComplexPollTemplate(poll, options, topics, images) {
             </ul>
         </div>
         <ul class="unstyled inline blog-info blog-tags">
-            <li><a href="userCenter.html" class="login-btn" style="text-transform: none;"><img class="media-object" src="assets/img/sliders/elastislide/2.jpg" alt="" />${poll.creatorId}</a></li>
+            <li><a href="/userCenter/${creator.username}" class="login-btn" style="text-transform: none;"><img class="media-object" src="/static/avatar/${creator.avatar}" alt="" />${creator.username}</a></li>
             <li><i class="icon-calendar"></i> ${new Date(poll.startTime).toLocaleString()} ${poll.endTime ? `~${new Date(poll.endTime).toLocaleString()}` : ''}</li>
             <li>
                 <i class="icon-tags"></i>
@@ -539,21 +540,18 @@ window.addEventListener('load', async () => {
 </script>
 
 <script>
-    function createRecentVoteTemplate(voteData) {
+    function createRecentVoteTemplate(voteId, user) {
         const dlElement = document.createElement('dl');
         dlElement.className = 'dl-horizontal';
 
-        // 假设voteData是一个包含单个投票记录的对象
-        const user = voteData;
-
         dlElement.innerHTML = `
             <dt>
-                <a href="commentPage.html">
+                <a href="commentpage/${voteId}">
                     <img src="${user.avatar ? `/static/avatar/${user.avatar}` : '/static/avatar/default.png'}" alt="${user.username}'s avatar" />
                 </a>
             </dt>
             <dd>
-                <p class="sidebar-contianer">
+                <p class="sidebar-container">
                     <a href="commentPage.html">${user.username}</a>
                 </p>
             </dd>
@@ -568,9 +566,10 @@ window.addEventListener('load', async () => {
             .then(data => {
                 if (data.code === 0) { // 请求成功
                     const container = document.getElementById('recent-votes');
-                    Object.values(data.data).forEach(voteInfo => {
-                        const vote = voteInfo[Object.keys(voteInfo)[0]]; // 获取投票详情中的用户信息
-                        const voteElement = createRecentVoteTemplate(vote);
+                    Object.entries(data.data).forEach(([key, value]) => {
+                        const voteInfo = key.match(/voteId=(\d+)/);
+                        const voteId = voteInfo ? voteInfo[1] : 'N/A';
+                        const voteElement = createRecentVoteTemplate(voteId, value);
                         container.appendChild(voteElement);
                     });
                 } else {
