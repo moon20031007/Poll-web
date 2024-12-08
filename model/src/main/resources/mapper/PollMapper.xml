@@ -42,13 +42,13 @@
     <insert id="insert" useGeneratedKeys="true" keyProperty="pollId">
         insert into poll
             <trim prefix="(" suffix=")" suffixOverrides=",">
-                creator_id, type, title, description
+                creator_id, type, title, description,
                 <if test="endTime != null">end_time,</if>
                 <if test="allowAnonymous != null">allow_anonymous,</if>
             </trim>
         values
             <trim prefix="(" suffix=")" suffixOverrides=",">
-                #{creatorId}, #{type}, #{title}, #{description}
+                #{creatorId}, #{type}, #{title}, #{description},
                 <if test="endTime != null">#{endTime},</if>
                 <if test="allowAnonymous != null">#{allowAnonymous},</if>
             </trim>
