@@ -54,8 +54,8 @@ public class TemplateController {
         return "resetpw";
     }
 
-    @GetMapping("/userCenter")
-    public String userCenter() {
+    @GetMapping("/userCenter/{userName}")
+    public String userCenter(@PathVariable String userName) {
         return "userCenter";
     }
 
