@@ -73,51 +73,16 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
-                </a><!-- /nav-collapse -->
-                <div class="nav-collapse collapse">
-                    <ul class="nav top-2">
-                        <li>
-                            <a href="/" class="dropdown-toggle" data-toggle="dropdown">Home
-                            </a>
-                            <b class="caret-out"></b>
-                        </li>
-                        <li>
-                            <a href="/Dailylife" class="dropdown-toggle" data-toggle="dropdown">Daily life
-                            </a>
-                            <b class="caret-out"></b>
-                        </li>
-                        <li class="active">
-                            <a href="/Entertainment" class="dropdown-toggle" data-toggle="dropdown">Entertainment
-                            </a>
-                            <b class="caret-out"></b>
-                        </li>
-                        <li>
-                            <a href="/Artwork" class="dropdown-toggle" data-toggle="dropdown">Artwork
-                            </a>
-                            <b class="caret-out"></b>
-                        </li>
-                        <li>
-                            <a href="/Sport" class="dropdown-toggle" data-toggle="dropdown">Sport
-                            </a>
-                            <b class="caret-out"></b>
-                        </li>
-                        <li>
-                            <a href="/SocialEvent" class="dropdown-toggle" data-toggle="dropdown">Social Event
-                            </a>
-                            <b class="caret-out"></b>
-                        </li>
-                        <li>
-                            <a href="/Fashion" class="dropdown-toggle" data-toggle="dropdown">Fashion
-                            </a>
-                            <b class="caret-out"></b>
-                        </li>
-                        <li><a class="search" href="searchResult"><i class="icon-search search-btn"></i></a></li>
+                </a>
+                <div class="nav-collapse collapse" id="dynamic-nav">
+                    <ul class="nav top-2" id="nav-links">
+                        <!-- Home link will be inserted here dynamically -->
                     </ul>
                     <div class="search-open">
                         <div class="input-append">
-                            <form />
-                            <input type="text" class="span3" placeholder="Search" />
-                            <button type="submit" class="btn-u"><a href="searchResult.html" style="color:#fff;">Go</a></button>
+                            <form action="searchResult.html" method="get">
+                                <input type="text" class="span3" placeholder="Search" name="query"/>
+                                <button type="submit" class="btn-u">Go</button>
                             </form>
                         </div>
                     </div>
@@ -330,13 +295,48 @@
 </script>
 
 <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Create the Home link and add it to the navigation bar
+        const navLinks = document.getElementById('nav-links');
+        const homeLi = document.createElement('li');
+        const homeA = document.createElement('a');
+        homeA.href = '/'; // URL for the home page
+        homeA.textContent = 'Home';
+        homeLi.appendChild(homeA);
+        navLinks.appendChild(homeLi);
+
+        fetch('/topic/all') // Replace with your actual API endpoint
+            .then(response => response.json())
+            .then(data => {
+                if (data.code === 0 && Array.isArray(data.data)) {
+                    data.data.forEach(topic => {
+                        const li = document.createElement('li');
+                        const a = document.createElement('a');
+                        a.href = `/topic/${topic.topicId}`; // New URL format using topicId
+                        a.textContent = topic.name;
+                        a.className = 'dropdown-toggle';
+                        a.setAttribute('data-toggle', 'dropdown');
+                        li.appendChild(a);
+                        li.innerHTML += '<b class="caret-out"></b>';
+                        navLinks.appendChild(li);
+                    });
+                }
+            })
+            .catch(error => console.error('Error fetching topics:', error));
+    });
+</script>
+
+<script>
+    const pathArray = window.location.pathname.split('/');
+    const topicId = pathArray[pathArray.length - 1]
+
     let currentPage = 1;
 const pageSize = 3; // 每页显示的项目数量
 let totalPages = 0; // 总页数，由 fetchTotalPages 函数填充
 
-async function fetchPollsAndRender(page) {
+async function fetchPollsAndRender(page, id) {
     try {
-        const response = await instance.get(`/topic/info/2?page=${page}&size=${pageSize}`);
+        const response = await instance.get(`/topic/info/${id}?page=${page}&size=${pageSize}`);
         if (response.data.code !== 0) {
             throw new Error(response.data.msg || 'Failed to fetch polls');
         }
@@ -471,9 +471,9 @@ function createComplexPollTemplate(poll, options, topics, images, creator) {
     return pollDiv;
 }
 
-async function fetchTotalPages() {
+async function fetchTotalPages(id) {
     try {
-        const response = await axios.get(`/topic/size/2?size=${pageSize}`);
+        const response = await axios.get(`/topic/size/${id}?size=${pageSize}`);
 
         if (response.data.code !== 0) {
             throw new Error(response.data.msg || 'Failed to fetch total pages');
@@ -553,8 +553,8 @@ function updatePagination(currentPage, totalPages) {
 
 // 页面加载时先获取总页数，然后获取第一页的数据并更新分页
 window.addEventListener('load', async () => {
-    totalPages = await fetchTotalPages(); // 获取总页数并存储在全局变量中
-    await fetchPollsAndRender(currentPage);
+    totalPages = await fetchTotalPages(topicId); // 获取总页数并存储在全局变量中
+    await fetchPollsAndRender(currentPage, topicId);
 });
 </script>
 
