@@ -20,7 +20,7 @@ public class TemplateController {
     }
 
     @GetMapping("/commentpage/{id}")
-    public String commentpage1(@PathVariable int id) {
+    public String commentpage(@PathVariable int id) {
         return "commentpage";
     }
 
@@ -54,8 +54,8 @@ public class TemplateController {
         return "resetpw";
     }
 
-    @GetMapping("/userCenter")
-    public String userCenter() {
+    @GetMapping("/userCenter/{username}")
+    public String userCenter(@PathVariable String username) {
         return "userCenter";
     }
 
