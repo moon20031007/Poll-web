@@ -62,9 +62,9 @@
 			password: password
 		})
 				.then(response => {
-					// 检查业务逻辑是否成功
+					console.log(response);
+					// Check whether the service logic is successful
 					if (response.data.code === 0) {
-						alert("success");
 						const token = response.data.data;
 						if (token) {
 							localStorage.setItem('authToken', token);
@@ -72,10 +72,10 @@
 						} else {
 							console.warn('No token received from the server.');
 						}
-						// 登录成功后，可以重定向到主页或其他页面
-						window.location.href = '/'; // 替换为实际的重定向URL
+						// After successful login, you can redirect to the home page or other pages
+						window.location.href = '/'; // Replace with the actual redirect URL
 					} else {
-						// 如果业务逻辑失败
+						// If the business logic fails
 						alert('Login failed with code: ' + response.data.msg);
 					}
 				})

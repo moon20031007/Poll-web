@@ -29,22 +29,25 @@
     <!-- CSS Theme -->
     <!--     <link rel="stylesheet" href="assets/css/themes/default.css" id="style_color" /> -->
     <!--     <link rel="stylesheet" href="assets/css/themes/headers/default.css" id="style_color-header-1" />   -->
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /></head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <script src="/js/axios.min.js"></script>
+    <script src="/js/api.js"></script>
+</head>
 
 <body>
 <!--=== Top ===-->
 <div class="top">
     <div class="container">
         <ul class="loginbar pull-right">
-            <li style="visibility:visible;"><a href="login" class="login-btn">Login</a></li>
+            <li style="visibility:visible;"><a href="/login" class="login-btn">Login</a></li>
             <li class="devider" style="visibility:visible;">&nbsp;</li>
-            <li style="visibility:visible;"><a href="register" class="login-btn">Register</a></li>
+            <li style="visibility:visible;"><a href="/register" class="login-btn">Register</a></li>
             <li class="devider" style="visibility:visible;">&nbsp;</li>
-            <li style="visibility:visible;"><a href="userCenter.html" class="login-btn" style="text-transform: none;"><img class="media-object" src="assets/img/unlogin.png" alt="" /> UserCenter</a></li>
+            <li style="visibility:visible;"><a href="/userCenter" class="login-btn" style="text-transform: none;"><img class="media-object" src="assets/img/unlogin.png" alt="" /> UserCenter</a></li>
             <li class="devider" style="visibility:visible;">&nbsp;</li>
-            <li style="visibility:visible;"><a href="messages" class="login-btn">Messages</a></li>
+            <li style="visibility:visible;"><a href="/messages" class="login-btn">Messages</a></li>
             <li class="devider" style="visibility:visible;">&nbsp;</li>
-            <li style="visibility:visible;"><a href="login.html" class="login-btn">Log out</a></li>
+            <li style="visibility:visible;"><a href="/login" class="login-btn">Log out</a></li>
         </ul>
     </div>
 </div><!--/top-->
@@ -70,7 +73,7 @@
                             <b class="caret-out"></b>
                         </li>
                         <li>
-                            <a href="mainpage.html" class="dropdown-toggle" data-toggle="dropdown">Daily life
+                            <a href="/" class="dropdown-toggle" data-toggle="dropdown">Daily life
                             </a>
                             <b class="caret-out"></b>
                         </li>
@@ -126,44 +129,9 @@
             <div class="posts margin-bottom-20">
 
                 <div class="headline"><h3>Messages</h3></div>
-                <dl class="dl-horizontal">
-                    <dt><a href="commentPage.html"><img src="assets/img/sliders/elastislide/6.jpg" alt="" /></a></dt>
-                    <dd>
-                        <p class="sidebar-contianer"><a href="commentPage.html">User1</a></p>
-                    </dd>
-                </dl>
-                <dl class="dl-horizontal">
-                    <dt><a href="commentPage2.html"><img src="assets/img/sliders/elastislide/10.jpg" alt="" /></a></dt>
-                    <dd>
-                        <p class="sidebar-contianer"><a href="commentPage2.html">User2</a></p>
-                    </dd>
-                </dl>
-                <dl class="dl-horizontal">
-                    <dt><a href="commentPage.html"><img src="assets/img/sliders/elastislide/11.jpg" alt="" /></a></dt>
-                    <dd>
-                        <p class="sidebar-contianer"><a href="commentPage.html">User3</a></p>
-                    </dd>
-                </dl>
-                <dl class="dl-horizontal">
-                    <dt><a href="commentPage.html"><img src="assets/img/sliders/elastislide/6.jpg" alt="" /></a></dt>
-                    <dd>
-                        <p class="sidebar-contianer"><a href="commentPage.html">User4 </a></p>
-                    </dd>
-                </dl>
-                <dl class="dl-horizontal">
-                    <dt><a href="commentPage2.html"><img src="assets/img/sliders/elastislide/10.jpg" alt="" /></a></dt>
-                    <dd>
-                        <p class="sidebar-contianer"><a href="commentPage2.html">User5</a></p>
-                    </dd>
-                </dl>
-                <dl class="dl-horizontal">
-                    <dt><a href="commentPage2.html"><img src="assets/img/sliders/elastislide/11.jpg" alt="" /></a></dt>
-                    <dd>
-                        <p class="sidebar-contianer"><a href="commentPage2.html">User6</a></p>
-                    </dd>
-                </dl>
-            </div><!--/posts-->
-        </div><!--/span3-->
+
+                </div><!--/posts-->
+            </div><!--/span3-->
 
         <!-- Right Sidebar -->
         <div class="span7">
@@ -196,7 +164,201 @@
 <!--=== End Copyright ===-->
 
 </div>>
+<script type="module">
 
+    // 页面加载时加载聊天记录
+    window.onload = function() {
+            loadReceiverList(); // 加载接收者列表
+    };
+
+    function loadMessages() {
+        // 从URL中获取receiverId
+        let urlParams = new URLSearchParams(window.location.search);
+        let receiverId = urlParams.get('receiverId');
+        console.log(receiverId);
+
+        if (!receiverId) {
+            console.warn("No receiverId found in URL. Please select a receiver.");
+            return;
+        }
+        receiverId = parseInt(receiverId); // 确保是数字类型
+
+        instance.get(`/message/get`)
+            .then(response => {
+                const { currentUser, messages, userList } = response.data.data;
+                const currentUserId = currentUser.userId;
+
+                // 获取消息显示容器（span7）
+                let messagesContainer = document.querySelector('.span7 .messages');
+
+                // 清空现有的内容
+                messagesContainer.innerHTML = '';
+
+                // 如果有消息
+                if (messages.length > 0) {
+                    // 创建一个映射，用于快速查找用户信息
+                    const userMap = new Map(userList.map(user => [user.userId, user]));
+
+                    // 筛选符合条件的消息
+                    const filteredMessages = messages.filter(message =>
+                        (message.senderId === currentUserId && message.receiverId === receiverId) ||
+                        (message.senderId === receiverId && message.receiverId === currentUserId)
+                    );
+
+                    // 按时间排序消息
+                    filteredMessages.sort((a, b) => new Date(a.time) - new Date(b.time));
+
+                    filteredMessages.forEach(message => {
+                        // 确定消息是来自自己还是对方
+                        const isOwnMessage = message.senderId === currentUserId;
+                        const sender = userMap.get(message.senderId);
+                        const senderName = sender ? sender.username : 'Unknown';
+
+                        // 生成每条消息的 HTML
+                        let messageHTML = `
+                    <div class="message ${isOwnMessage ? 'sent' : 'received'}">
+                        <strong>${isOwnMessage ? 'You' : senderName}:</strong>
+                        <p class="message-text">${message.content}</p>
+                        <span class="timestamp">${new Date(message.time).toLocaleString()}</span>
+                    </div>
+                `;
+
+                        // 根据消息的来源，决定插入位置
+                        messagesContainer.innerHTML += messageHTML;
+                    });
+                } else {
+                    messagesContainer.innerHTML = '<p>No messages yet.</p>';
+                }
+            })
+            .catch(error => {
+                console.error("Error loading messages:", error);
+            });
+    }
+
+
+    function loadReceiverList() {
+        instance.get('/message/get')
+            .then(response => {
+                console.log(response.data);
+                const { currentUser, messages, userList } = response.data.data;
+                const currentUserId = currentUser.userId;
+                console.log(messages);
+
+                // 获取左侧接收者列表容器（span3）
+                let receiverListContainer = document.querySelector('.span3 .posts');
+                receiverListContainer.innerHTML = ''; // 清空现有内容
+
+                // 用来存储已渲染的 receiverId，避免重复渲染
+                let renderedReceivers = {};
+
+                // 如果有消息
+                if (messages.length > 0) {
+                    // 遍历消息并为每个接收者创建一个新的 dl-horizontal
+                    messages.forEach(message => {
+                        const receiverId = message.receiverId;
+                        const senderId = message.senderId;
+
+                        // 判断是否是与当前用户相关的消息
+                        if (receiverId === currentUserId || senderId === currentUserId) {
+                            // 判断是接收者还是发送者
+                            const userId = receiverId === currentUserId ? senderId : receiverId;
+
+                            // 如果该接收者没有渲染过
+                            if (!renderedReceivers[userId]) {
+                                const user = userList.find(user => user.userId === userId);
+                                const username = user ? user.username : `User ${userId}`;  // 获取用户名
+                                const avatar = user ? user.avatar : 'default.png';  // 获取头像
+                                // 生成每个接收者的 dl-horizontal 元素
+                                let receiverHTML = `
+                                <dl class="dl-horizontal" data-receiver-id="${userId}">
+                                    <dt><a href="?receiverId=${userId}"><img src="/static/avatar/${avatar}" alt="" /></a></dt>
+                                    <dd>
+                                        <p class="sidebar-contianer"><a href="?receiverId=${userId}">${username}</a></p>
+                                    </dd>
+                                </dl>
+                            `;
+                                receiverListContainer.innerHTML += receiverHTML;
+
+                                // 标记该接收者为已渲染
+                                renderedReceivers[userId] = true;
+                            }
+                        }
+                    });
+
+                    // 给每个 dl-horizontal 元素添加点击事件监听器
+                    const receiverItems = document.querySelectorAll('.dl-horizontal');
+                    receiverItems.forEach(item => {
+                        item.addEventListener('click', function(event) {
+                            // 阻止默认的链接跳转行为
+                            event.preventDefault();
+
+                            const receiverId = this.getAttribute('data-receiver-id');
+
+                            // 更新 URL 并触发消息加载
+                            window.history.pushState({}, '', `?receiverId=${receiverId}`);
+
+                            // 直接调用 loadMessages() 加载消息
+                            loadMessages();
+                        });
+                    });
+
+                } else {
+                    receiverListContainer.innerHTML = '<p>No receivers available.</p>';
+                }
+            })
+            .catch(error => {
+                console.error("Error loading receivers:", error);
+            });
+    }
+
+
+
+    // 发送消息的函数
+    function sendMessage() {
+        // 从URL中获取receiverId
+        let urlParams = new URLSearchParams(window.location.search);
+        let receiverId = urlParams.get('receiverId');
+        let messageContent = document.getElementById("chatInput").value;
+
+        // 如果消息为空，则不发送
+        if (!messageContent.trim()) {
+            alert("Please enter a message.");
+            return;
+        }
+
+        // 使用 instance.post() 发送消息到后端
+        instance.post('/message/send', {
+            receiverId: receiverId,  // 将接收者的ID传递给后端
+            content: messageContent,
+        })
+            .then(response => {
+                console.log("Message sent successfully:", response);
+                let messageHTML = `
+        <div class="message sent">
+            <p class="message-text">${messageContent}</p>
+        </div>
+    `;
+                // 添加到消息容器
+                let messagesContainer = document.getElementById("messages");
+                messagesContainer.innerHTML += messageHTML;
+
+                // 清空输入框
+                document.getElementById("chatInput").value = '';
+            })
+            .catch(error => {
+                console.error("Error sending message:", error);
+            });
+    }
+
+    // 监听键盘输入，支持回车键发送消息
+    document.getElementById("chatInput").addEventListener("keypress", function(event) {
+        if (event.key === "Enter") {
+            sendMessage();
+            window.location.reload(); // 刷新页面，重新加载数据
+        }
+    });
+
+</script>
 
 </body>
 </html>
