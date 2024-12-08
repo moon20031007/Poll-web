@@ -249,7 +249,7 @@
                         <fieldset class="section" style="height:400px;">
                             <h3>Question Created!</h3>
                             <p>Your question has now been posted.</p>
-                            <div class="buttonFinish">Go to question</div> <!-- 跳转到对应的问题页面 -->
+                            <div class="buttonFinish" id="goToCommentPageButton">Go to question</div> <!-- 跳转到对应的问题页面 -->
                         </fieldset>
                     </form><div id="response"></div>
                 </div>
@@ -563,7 +563,14 @@
             }
         })
             .then(response => {
-                document.getElementById('response').innerText = JSON.stringify(response.data, null, 2);
+                if (response.data.code === 0) {
+                    document.getElementById('goToCommentPageButton').onclick = function() {
+                        window.location.href = `/commentpage/${response.data.data}`;
+                    };
+                    document.getElementById('response').innerText = JSON.stringify(response.data, null, 2);
+                } else {
+                    document.getElementById('response').innerText = JSON.stringify(response.data, null, 2);
+                }
             })
             .catch(error => {
                 document.getElementById('response').innerText = `Error: ${error.message}`;
