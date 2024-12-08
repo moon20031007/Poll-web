@@ -363,6 +363,7 @@ function getVoteOptionIds(votes) {
 
 function renderLessThanOrTwoOptionsPage(data) {
     // 提取所有投票的 optionId 到一个新的数组中
+    let pollId = data.poll.pollId;
     const voteOptionIds = getVoteOptionIds(data.votes);
 
     return `
@@ -399,17 +400,22 @@ function renderLessThanOrTwoOptionsPage(data) {
                             <div class="vote_bar" style="font-size: 18px; width: 100%; max-width: 300px; display: flex; justify-content: space-between; align-items: center;">
                                 ${data.options.map((option, index) => `
                                     <div class="votecolumn" style="display: flex; flex-direction: column; align-items: center; text-align: center;">
-                                        <div class="votecard" style="width: 100%;">
-                                            <div style="margin: 5px 0; margin-left: 20px;">
-                                                <em><strong>${data.results[option.optionId] || 0}</strong></em>
+                                        <!-- Radio Button -->
+                                        <input type="radio" id="voteOption${index}" name="voteType" value="${option.optionId}" style="margin-bottom: 5px;">
+                                        <label for="voteOption${index}" style="cursor: pointer;">
+                                            <div class="votecard" style="width: 100%;">
+                                                <div style="margin: 5px 0; margin-left: 20px;">
+                                                    <em><strong>${data.results[option.optionId] || 0}</strong></em>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <a>
-                                          <img src="/img/${index === 0 ? 'good' : 'bad'}.png" class="resized-image"/>
-                                        </a>
+                                            <a>
+                                                <img src="/img/${index === 0 ? 'good' : 'bad'}.png" class="resized-image"/>
+                                            </a>
+                                        </label>
                                     </div>
                                 `).join('')}
                             </div>
+                            <button style="padding: 10px 20px; font-size: 16px; margin-left: 10px;" onclick="submitVotes('${pollId}')">sumbit</button>
                             <div class="progress" style="width: 85%; max-width: 300px; margin: 10px auto; display: flex; justify-content: center; align-items: center;">
                                 ${createProgressBars(data)}
                             </div>
@@ -420,6 +426,26 @@ function renderLessThanOrTwoOptionsPage(data) {
         </div>
     `;
 }
+
+    function submitVotes(pollId) {
+        const selectedOption = document.querySelector('input[name="voteType"]:checked');
+        const voteData = {
+            pollId: pollId,
+            optionId: selectedOption.value
+        };
+        let voteList = [voteData];
+        instance.post('/vote/operate', voteList)
+            .then(response => {
+                if (response.data.code === 0) {
+                    alert("success!");
+                    window.location.reload();
+                }
+            })
+            .catch(error => {
+                console.error('There was an error submitting the vote!', error);
+                alert('error!');
+            });
+    }
 
     function createProgressBars(data) {
     const totalVotes = Object.values(data.results).reduce((a, b) => a + b, 0);

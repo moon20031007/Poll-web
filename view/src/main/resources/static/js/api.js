@@ -1,6 +1,6 @@
 // 创建一个 Axios 实例
 const instance = axios.create({
-  baseURL: 'http://localhost/', // 你的API基础URL
+  baseURL: '/', // 你的API基础URL
   timeout: 10000, // 请求超时时间
 });
 
