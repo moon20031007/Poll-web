@@ -74,8 +74,33 @@ public class TemplateController {
     	return "messages";
     }
 
-    @GetMapping("/test")
-    public String test() {
-    	return "mainpage1";
+    @GetMapping("/Dailylife")
+    public String Dailylife() {
+        return "Dailylife";
+    }
+
+    @GetMapping("/Entertainment")
+    public String Entertainment() {
+        return "Entertainment";
+    }
+
+    @GetMapping("/Artwork")
+    public String Artwork() {
+        return "Artwork";
+    }
+
+    @GetMapping("/Sport")
+    public String Sport() {
+        return "Sport";
+    }
+
+    @GetMapping("/SocialEvent")
+    public String SocialEvent() {
+        return "SocialEvent";
+    }
+
+    @GetMapping("/Fashion")
+    public String Fashion() {
+        return "Fashion";
     }
 }
