@@ -131,11 +131,16 @@
                 <div class="basic-info-img">
                     <div class="basic-info-img-inner" id="bannerImageContainer">
                         <!-- Banner image will be loaded here -->
+                        <img id="purchaseProfilePicture" src="" alt="Profile Picture" width="100" height="100" style="border-radius: 50%; display:none;">
                     </div>
                 </div>
                 <div class="basic-info-content">
                     <div class="basic-info-contentHead" id="userNameDisplay">Loading...</div>
                     <div class="basic-info-description" id="userDescriptionDisplay">Loading...</div>
+                    <div class="basic-info-buttons">
+                        <button class="btn btn-primary" id="followButton">Follow</button>
+                        <button class="btn btn-success" id="messageButton">Message</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -364,6 +369,7 @@
                 updateUIWithUserData(response.data.userInfo);
                 if (profilePictureFile) {
                     $('#profilePicture').attr('src', URL.createObjectURL(profilePictureFile)).show();
+                    $('#purchaseProfilePicture').attr('src', URL.createObjectURL(profilePictureFile)).show();
                 }
             })
             .catch((error) => {
@@ -409,6 +415,29 @@
                 });
             }
         });
+
+        // Follow Button Click Handler
+        $('#followButton').click(function() {
+            const userId = 'ld'; // Assuming 'ld' is the user ID of the current user's profile being viewed
+
+            instance.post('/api/followUser', { userId: userId })
+                .then(response => {
+                    console.log('Success:', response.data);
+                    alert('You are now following this user!');
+                    // Optionally, update UI to reflect follow status
+                    $('#followButton').prop('disabled', true).text('Following');
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Failed to follow user.');
+                });
+        });
+
+        // Message Button Click Handler
+        $('#messageButton').click(function() {
+            const userId = 'ld'; // Assuming 'ld' is the user ID of the current user's profile being viewed
+            window.location.href = `/messages?userId=${userId}`;
+        });
     });
 
     function loadUserInfo() {
@@ -416,7 +445,8 @@
             .then(response => {
                 const userData = response.data.data;
                 updateUIWithUserData(userData);
-                $('#profilePicture').attr('src', `assets/img/${userData.user.avatar}`).show();
+                $('#profilePicture').attr('src', `/static/avatar/${userData.user.avatar}`).show();
+                $('#purchaseProfilePicture').attr('src', `/static/avatar/${userData.user.avatar}`).show();
                 $('#uploadPlaceholder').hide();
             });
     }
@@ -468,14 +498,18 @@
         const myVotedContainer = $('#myVotedContainer');
         myVotedContainer.empty();
         userData.votes.forEach(vote => {
-            const poll = Object.keys(vote)[0];
-            const voteDetails = vote[poll];
+            const pollString = Object.keys(vote)[0];
+            const voteDetails = vote[pollString];
+
+            // Parse the poll string into an object
+            const pollObject = parsePollString(pollString);
+
             myVotedContainer.append(`
                 <div class="ps-post-title">
                     <a href="#" style="text-decoration: none;">
                         <blockquote>
-                            <div class="ps-post-time">${formatDate(new Date(JSON.parse(poll).startTime))}</div>
-                            <h4><strong>${JSON.parse(poll).title}</strong></h4>
+                            <div class="ps-post-time">${formatDate(new Date(pollObject.startTime))}</div>
+                            <h4><strong>${pollObject.title}</strong></h4>
                             <p>Voted on option: ${voteDetails.description}</p>
                         </blockquote>
                     </a>
@@ -520,6 +554,20 @@
                 </li>
             `);
         });
+    }
+
+    function parsePollString(pollString) {
+        const pollRegex = /Poll\((.*?)\)/;
+        const match = pollString.match(pollRegex);
+        if (!match) return {};
+
+        const fields = match[1].split(', ');
+        const pollObject = {};
+        fields.forEach(field => {
+            const [key, value] = field.split('=');
+            pollObject[key.trim()] = value.replace(/"/g, '');
+        });
+        return pollObject;
     }
 
     function calculateAge(birthdate) {
