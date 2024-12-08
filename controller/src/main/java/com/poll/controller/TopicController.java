@@ -1,6 +1,7 @@
 package com.poll.controller;
 
 import com.poll.DTO.PollInfoDTO;
+import com.poll.pojo.Topic;
 import com.poll.result.Result;
 import com.poll.result.ResultCode;
 import com.poll.service.PollTopicsService;
@@ -14,14 +15,22 @@ import java.util.List;
 public class TopicController {
 
     private final PollTopicsService pollTopicsService;
+    private final TopicService topicService;
 
-    public TopicController(PollTopicsService pollTopicsService) {
+    public TopicController(PollTopicsService pollTopicsService, TopicService topicService) {
         this.pollTopicsService = pollTopicsService;
+        this.topicService = topicService;
     }
 
     @GetMapping("/all")
     public Result getAllTopics() {
-        return Result.success();
+        try {
+            List<Topic> topics = topicService.getAllTopics();
+            return Result.success(topics);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.error(ResultCode.ERROR);
+        }
     }
 
     @GetMapping("/info/{id}")

@@ -31,11 +31,6 @@ public class PollTopicsServiceImpl implements PollTopicsService {
     }
 
     @Override
-    public List<Topic> getAllTopics() {
-        return topicMapper.getAllTopics();
-    }
-
-    @Override
     public List<PollInfoDTO> getPolls(Integer id, Integer page, Integer size) {
         List<PollInfoDTO> pollInfoList = new ArrayList<>();
         List<Poll> polls = pollTopicsMapper.getPolls(id, (page - 1) * size, size);
