@@ -40,6 +40,7 @@ public class MessageServiceImpl implements MessageService {
                 userList.add(receiver);
             } else {
                 User sender = userMapper.selectById(message.getSenderId());
+                sender.setPassword(null);
                 userList.add(sender);
             }
         });
