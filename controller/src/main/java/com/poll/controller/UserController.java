@@ -130,4 +130,9 @@ public class UserController {
         userService.enableOperate(user);
         return Result.success();
     }
+
+    @GetMapping("/check")
+    public Result check(@RequestHeader("Authorization") String jwt) {
+        return Result.success(JwtUtils.parseJwt(jwt));
+    }
 }
