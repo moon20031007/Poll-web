@@ -40,9 +40,9 @@
         <!-- Unauthenticated state -->
         <div id="unauthenticated" style="display: block;">
             <ul class="loginbar pull-right">
-                <li><a href="login" class="login-btn">Login</a></li>
+                <li><a href="/login" class="login-btn">Login</a></li>
                 <li class="divider">&nbsp;</li>
-                <li><a href="register" class="login-btn">Register</a></li>
+                <li><a href="/register" class="login-btn">Register</a></li>
             </ul>
         </div>
         <!-- Authenticated state -->
@@ -52,7 +52,7 @@
                     <img class="media-object" src="assets/img/unlogin.png" alt="" /> UserCenter
                 </a></li>
                 <li class="divider">&nbsp;</li>
-                <li><a href="messages" class="login-btn">Messages</a></li>
+                <li><a href="/messages" class="login-btn">Messages</a></li>
                 <li class="divider">&nbsp;</li>
                 <li><a href="#" id="logout-link" class="login-btn">Log out</a></li>
             </ul>
@@ -183,7 +183,7 @@
                 // Update the User Center link with the username.
                 const userCenterLink = document.querySelector('#authenticated ul li a[href="userCenter.html"]');
                 if (userCenterLink) {
-                    userCenterLink.href = `userCenter/${userData.username}`;
+                    userCenterLink.href = `/userCenter/${userData.username}`;
                     userCenterLink.textContent = `UserCenter`;
                 }
 
