@@ -47,31 +47,35 @@
 
 <!--=== Top ===-->
 <div class="top">
-    <div class="container">
-        <ul class="loginbar pull-right">
-            <li style="visibility:visible;"><i class="icon-globe"></i><a>Languages <i class="icon-sort-up"></i></a>
-                <ul class="nav-list">
-                    <li class="active"><a href="useCenter.html">English</a> <i class="icon-ok"></i></li> <!-- 目前选择的写icon-ok，href写本页面的html名 -->
-                    <li><a href="#">Chinese</a></li> <!-- href写本页面对应的中文页面的html名 -->
-                </ul>
-            </li>
-            <li class="devider">&nbsp;</li>
-            <li style="visibility:visible;"><a href="/login" class="login-btn">Login</a></li>
-            <li class="devider" style="visibility:visible;">&nbsp;</li>
-            <li style="visibility:visible;"><a href="/register" class="login-btn">Register</a></li>
-            <li class="devider" style="visibility:visible;">&nbsp;</li>
-            <li style="visibility:visible;"><a href="/userCenter" class="login-btn" style="text-transform: none;"><img class="media-object" src="assets/img/unlogin.png" alt="" /> Name</a></li>
-            <li class="devider" style="visibility:visible;">&nbsp;</li>
-            <li><a href="#" id="logout-link" class="login-btn">Log out</a></li>
-        </ul>
+    <div id="status" class="container">
+        <!-- Unauthenticated state -->
+        <div id="unauthenticated" style="display: block;">
+            <ul class="loginbar pull-right">
+                <li><a href="/login" class="login-btn">Login</a></li>
+                <li class="divider">&nbsp;</li>
+                <li><a href="/register" class="login-btn">Register</a></li>
+            </ul>
+        </div>
+        <!-- Authenticated state -->
+        <div id="authenticated" style="display: none;">
+            <ul class="loginbar pull-right">
+                <li><a href="userCenter.html" class="login-btn" style="text-transform: none;">
+                    <img class="media-object" src="assets/img/unlogin.png" alt="" /> UserCenter
+                </a></li>
+                <li class="divider">&nbsp;</li>
+                <li><a href="/messages" class="login-btn">Messages</a></li>
+                <li class="divider">&nbsp;</li>
+                <li><a href="#" id="logout-link" class="login-btn">Log out</a></li>
+            </ul>
+        </div>
     </div>
 </div><!--/top-->
 <!--=== End Top ===-->
 
-<!--=== Header ===-->
-<div class="header">
-    <div class="container">
 
+<!--=== Header ===-->
+<div class="header margin-bottom-20">
+    <div class="container">
 
         <!-- Menu -->
         <div class="navbar">
@@ -80,51 +84,16 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
-                </a><!-- /nav-collapse -->
-                <div class="nav-collapse collapse">
-                    <ul class="nav top-2">
-                        <li>
-                            <a href="/" class="dropdown-toggle">Home
-                            </a>
-                            <b class="caret-out"></b>
-                        </li>
-                        <li>
-                            <a href="blog.html" class="dropdown-toggle">Daily life
-                            </a>
-                            <b class="caret-out"></b>
-                        </li>
-                        <li>
-                            <a href="personInfo.html" class="dropdown-toggle">Entertainment
-                            </a>
-                            <b class="caret-out"></b>
-                        </li>
-                        <li>
-                            <a href="blog.html" class="dropdown-toggle">Artwork
-                            </a>
-                            <b class="caret-out"></b>
-                        </li>
-                        <li>
-                            <a href="blog.html" class="dropdown-toggle">Sport
-                            </a>
-                            <b class="caret-out"></b>
-                        </li>
-                        <li>
-                            <a href="blog.html" class="dropdown-toggle">Social Event
-                            </a>
-                            <b class="caret-out"></b>
-                        </li>
-                        <li>
-                            <a href="blog.html" class="dropdown-toggle">Fashion
-                            </a>
-                            <b class="caret-out"></b>
-                        </li>
-                        <li><a class="search"><i class="icon-search search-btn"></i></a></li>
+                </a>
+                <div class="nav-collapse collapse" id="dynamic-nav">
+                    <ul class="nav top-2" id="nav-links">
+                        <!-- Home link will be inserted here dynamically -->
                     </ul>
                     <div class="search-open">
                         <div class="input-append">
-                            <form />
-                            <input type="text" class="span3" placeholder="Search" />
-                            <button type="submit" class="btn-u"><a href="searchResult.html" style="color:#fff;">Go</a></button>
+                            <form action="searchResult.html" method="get">
+                                <input type="text" class="span3" placeholder="Search" name="query"/>
+                                <button type="submit" class="btn-u">Go</button>
                             </form>
                         </div>
                     </div>
@@ -270,6 +239,178 @@
     </div><!--/container-->
 </div><!--/copyright-->
 <!--=== End Copyright ===-->
+
+<script type="module">
+    // Function to check if the user is logged in based on the presence of an auth token.
+    function isLoggedIn() {
+        const token = localStorage.getItem('authToken');
+        console.log('Checking login status:', !!token, 'Token:', token);
+        return !!token && token.trim(); // Ensure the token is not just whitespace
+    }
+
+    // Function to toggle visibility of authentication states.
+    function toggleAuthState() {
+    console.log('Toggling authentication state...');
+    const unauthenticatedDiv = document.getElementById('unauthenticated');
+    const authenticatedDiv = document.getElementById('authenticated');
+
+    if (isLoggedIn()) {
+        console.log('User is logged in.');
+        unauthenticatedDiv.style.display = 'none';
+        authenticatedDiv.style.display = 'block';
+
+        // Fetch user information and update the DOM elements accordingly.
+        instance.get('/user/check')
+            .then(response => {
+                console.log('User info:', response.data);
+                const userData = response.data.data;
+
+                // Update the User Center link with the username.
+                const userCenterLink = document.querySelector('#authenticated ul li a[href="userCenter.html"]');
+                if (userCenterLink) {
+                    userCenterLink.href = `/userCenter/${userData.username}`;
+                    userCenterLink.textContent = `UserCenter`;
+                }
+
+                // Update the avatar image source if available.
+                const avatarImg = document.querySelector('#authenticated img.media-object');
+                if (avatarImg && userData.avatar) {
+                    avatarImg.src = userData.avatar;
+                }
+            })
+            .catch(error => {
+                console.error('Error checking user info:', error);
+            });
+    } else {
+        console.log('User is not logged in.');
+        unauthenticatedDiv.style.display = 'block';
+        authenticatedDiv.style.display = 'none';
+    }
+}
+
+    // Function to handle logout process.
+    async function logout(event) {
+        event.preventDefault(); // Prevent default link behavior.
+
+        try {
+            // Optionally, you can make a request to your server to invalidate the token.
+            // await instance.post('/user/logout'); // Uncomment this line if needed.
+
+            // Remove the token from local storage.
+            localStorage.removeItem('authToken');
+            console.log('User logged out.');
+
+            // Toggle the authentication state display.
+            toggleAuthState();
+
+            // Optionally, you can redirect to a different page or refresh the current one.
+            // window.location.reload(); // Uncomment this line if you want to reload the page.
+        } catch (error) {
+            console.error('Error during logout:', error);
+        }
+    }
+
+    // Existing login function with added call to toggleAuthState upon successful login.
+    async function login(event) {
+        event.preventDefault(); // Prevent form's default submit behavior.
+
+        try {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            await instance.post('/user/login', {
+                email: email,
+                password: password
+            }).then(response => {
+                if (response.data.code == 0) {
+                    alert("success");
+                    const token = response.data.data;
+                    if (token) {
+                        localStorage.setItem('authToken', token);
+                        console.log('Token stored successfully:', token);
+
+                        // Debugging: Check if token is being sent in headers
+                        console.log('Authorization header:', { authorization: `Bearer ${token}` });
+
+                        toggleAuthState(); // Update nav links after successful login.
+                    } else {
+                        console.warn('No token received from the server.');
+                    }
+                } else {
+                    throw new Error('Login failed with code: ' + response.data.msg);
+                }
+            }).catch(error => {
+                alert("error");
+            });
+
+        } catch (error) {
+            console.error('Error during login:', error);
+        }
+    }
+
+    // Add event listener for logout link
+    document.addEventListener('DOMContentLoaded', () => {
+        const logoutLink = document.getElementById('logout-link');
+        if (logoutLink) {
+            logoutLink.addEventListener('click', logout);
+        }
+
+        // Initialize the authentication state when the DOM is fully loaded.
+        console.log('DOM fully loaded, initializing authentication state...');
+        toggleAuthState();
+    });
+
+    // Listen for form submission.
+    document.addEventListener('DOMContentLoaded', () => {
+        const loginForm = document.getElementById('loginForm');
+        if (loginForm) {
+            loginForm.addEventListener('submit', login);
+        }
+    });
+
+    // Prevent double submission on "Log in" button click.
+    document.addEventListener('DOMContentLoaded', () => {
+        const submitButton = document.querySelector('.submit');
+        if (submitButton) {
+            submitButton.addEventListener('click', function(event) {
+                login(event); // Call login function and pass event object.
+            });
+        }
+    });
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Create the Home link and add it to the navigation bar
+        const navLinks = document.getElementById('nav-links');
+        const homeLi = document.createElement('li');
+        const homeA = document.createElement('a');
+        homeA.href = '/'; // URL for the home page
+        homeA.textContent = 'Home';
+        homeLi.appendChild(homeA);
+        navLinks.appendChild(homeLi);
+
+        fetch('/topic/all') // Replace with your actual API endpoint
+            .then(response => response.json())
+            .then(data => {
+                if (data.code === 0 && Array.isArray(data.data)) {
+                    data.data.forEach(topic => {
+                        const li = document.createElement('li');
+                        const a = document.createElement('a');
+                        a.href = `/topic/${topic.topicId}`; // New URL format using topicId
+                        a.textContent = topic.name;
+                        a.className = 'dropdown-toggle';
+                        a.setAttribute('data-toggle', 'dropdown');
+                        li.appendChild(a);
+                        li.innerHTML += '<b class="caret-out"></b>';
+                        navLinks.appendChild(li);
+                    });
+                }
+            })
+            .catch(error => console.error('Error fetching topics:', error));
+    });
+</script>
+
 
 <!-- JS Global Compulsory -->
 <script type="text/javascript" src="/js/jquery-1.8.2.min.js"></script>
