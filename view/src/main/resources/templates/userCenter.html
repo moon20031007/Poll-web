@@ -418,7 +418,7 @@
 
         // Follow Button Click Handler
         $('#followButton').click(function() {
-            const userId = 'ld'; // Assuming 'ld' is the user ID of the current user's profile being viewed
+            const userId = currentUserId; // Use the stored user ID
 
             instance.post('/api/followUser', { userId: userId })
                 .then(response => {
@@ -435,20 +435,38 @@
 
         // Message Button Click Handler
         $('#messageButton').click(function() {
-            const userId = 'ld'; // Assuming 'ld' is the user ID of the current user's profile being viewed
-            window.location.href = `/messages?userId=${userId}`;
+            const recipientId = currentUserId; // Use the stored user ID
+            window.location.href = `/messages?recipientId=${recipientId}`;
         });
     });
 
+    let currentUserId;
+
     function loadUserInfo() {
-        instance.get('/user/info/ld')
+        const username = getUsernameFromUrl();
+        if (!username) {
+            alert('Username not found in URL');
+            return;
+        }
+
+        instance.get(`/user/info/${username}`)
             .then(response => {
                 const userData = response.data.data;
+                currentUserId = userData.user.userId; // Store the user ID
                 updateUIWithUserData(userData);
                 $('#profilePicture').attr('src', `/static/avatar/${userData.user.avatar}`).show();
                 $('#purchaseProfilePicture').attr('src', `/static/avatar/${userData.user.avatar}`).show();
                 $('#uploadPlaceholder').hide();
+            })
+            .catch(error => {
+                console.error('Error loading user info:', error);
+                alert('Failed to load user information.');
             });
+    }
+
+    function getUsernameFromUrl() {
+        const pathArray = window.location.pathname.split('/');
+        return pathArray[pathArray.length - 1]; // Last segment of the URL is the username
     }
 
     function updateUIWithUserData(userData) {
