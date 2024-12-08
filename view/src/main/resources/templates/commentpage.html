@@ -6,6 +6,8 @@
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml"> <!--<![endif]-->
 <head>
     <title>VoteEase</title>
+    <script src="/js/axios.min.js"></script>
+    <script src="/js/api.js"></script>
 
     <!-- Meta -->
     <meta charset="utf-8" />
@@ -316,9 +318,9 @@
     }
 
     function fetchDataAndRender(id) {
-        fetch(`/poll/info/${id}`)
-            .then(response => response.json())
-            .then(data => {
+        instance.get(`/poll/info/${id}`) // 使用instance.get代替fetch
+            .then(response => {
+                const data = response.data; // Axios默认解析json，所以直接访问response.data
                 if (data.code === 0) { // 检查API返回的状态码是否为成功
                     if (data.data.options.length <= 2) {
                         document.getElementById('content').innerHTML = renderLessThanOrTwoOptionsPage(data.data);
@@ -332,60 +334,92 @@
             .catch(error => console.error('Error fetching data:', error));
     }
 
-    function renderLessThanOrTwoOptionsPage(data) {
-        return `
-            <div class="container">
-                <div class="row-fluid blog-page blog-item">
-                    <div>
-                        <div class="blog margin-bottom-30">
-                            <div class="special-button">
-                                <span class="blog-title" style="color: #72c02c;font-size: 22px; line-height: 24px; display: inline;float: left;">${data.poll.title}</span>
-                                <ul class="unstyled">
-                                    <a class="praise" style="text-decoration:none;font-size: 16px;" href="javascript:void(0);" onclick="praiseBox(this);"><li style="list-style: none;display: inline;"><i class="icon-star"></i>star</a>
+function parseVoteString(voteString) {
+    const pollRegex = /Vote\((.*?)\)/;
+    const match = voteString.match(pollRegex);
+    if (!match) return {};
+
+    const fields = match[1].split(', ');
+    const pollObject = {};
+    fields.forEach(field => {
+        const [key, value] = field.split('=');
+        pollObject[key.trim()] = value.replace(/"/g, '');
+    });
+    return pollObject;
+}
+
+function getVoteOptionIds(votes) {
+
+    // 使用map和flat方法来提取每个vote对象中的optionId
+    return votes.map(vote => {
+        const voteKey = Object.keys(vote)[0];
+        if (voteKey) {
+            return parseVoteString(voteKey).optionId;
+        }
+        return null; // 如果没有匹配的键或optionId不存在，则返回null
+    })
+}
+
+
+function renderLessThanOrTwoOptionsPage(data) {
+    // 提取所有投票的 optionId 到一个新的数组中
+    const voteOptionIds = getVoteOptionIds(data.votes);
+
+    return `
+        <div class="container">
+            <div class="row-fluid blog-page blog-item">
+                <div>
+                    <div class="blog margin-bottom-30">
+                        <div class="special-button">
+                            <span class="blog-title" style="color: #72c02c;font-size: 22px; line-height: 24px; display: inline;float: left;">${data.poll.title}</span>
+                            <ul class="unstyled">
+                                <a class="praise" style="text-decoration:none;font-size: 16px;" href="javascript:void(0);" onclick="praiseBox(this);"><li style="list-style: none;display: inline;"><i class="icon-star"></i>star</a>
+                            </ul>
+                        </div>
+                        <ul class="unstyled inline blog-info blog-tags">
+                            <li><a href="userCenter.html" class="login-btn" style="text-transform: none;"><img class="media-object" src="/static/avatar/${data.creator.avatar}">${data.creator.username}</a></li>
+                            <li><i class="icon-calendar"></i>${new Date(data.poll.startTime).toLocaleDateString()} ${data.poll.endTime ? `~${new Date(data.poll.endTime).toLocaleString()}` : ''}</li>
+                            <li>
+                                <i class="icon-tags"></i>
+                                ${data.topics.map(topic => `<a href="#">${topic.name}</a>`).join(' ')}
+                            </li>
+                        </ul>
+                        <hr>
+                        <div class="blog_content">
+                            <div class="gallery_img_pro">
+                                <ul class="HTC_media_a_pro">
+                                    ${data.images.map(image => `<li><img src="/static/image/${image.path}" /></li>`).join('')}
                                 </ul>
                             </div>
-                            <ul class="unstyled inline blog-info blog-tags">
-                                <li><a href="userCenter.html" class="login-btn" style="text-transform: none;"><img class="media-object" src="/static/avatar/${data.creator.avatar}">${data.poll.creatorId}</a></li>
-                                <li><i class="icon-calendar"></i>${new Date(data.poll.startTime).toLocaleDateString()} ${data.poll.endTime ? `~${new Date(data.poll.endTime).toLocaleString()}` : ''}</li>
-                                <li>
-                                    <i class="icon-tags"></i>
-                                    ${data.topics.map(topic => `<a href="#">${topic.name}</a>`).join(' ')}
-                                </li>
-                            </ul>
-                            <hr>
-                            <div class="blog_content">
-                                <div class="gallery_img_pro">
-                                    <ul class="HTC_media_a_pro">
-                                        ${data.images.map(image => `<li><img src="/static/image/${image.path}" /></li>`).join('')}
-                                    </ul>
-                                </div>
-                                <p class="qst-container_pro" style="font-size: 18px; margin-top: 20px;">${data.poll.description}</p>
-                            </div>
-                            <hr>
-                            <div class="vote_section" style="text-align: center; display: flex; flex-direction: column; align-items: center;">
-                                <div class="headline"><h3 style="font-size: 24px;">Cast your vote</h3></div>
-                                <div class="vote_bar" style="font-size: 18px; width: 100%; max-width: 300px; display: flex; justify-content: space-between; align-items: center;">
-                                    ${data.options.map(option => `
-                                        <div class="votecolumn" style="display: flex; flex-direction: column; align-items: center; text-align: center;">
-                                            <div class="votecard" style="width: 100%;">
-                                                <div style="margin: 5px 0; margin-left: 20px;">
-                                                    <em><strong>${data.results[option.optionId] || 0}</strong></em>
-                                                </div>
+                            <p class="qst-container_pro" style="font-size: 18px; margin-top: 20px;">${data.poll.description}</p>
+                        </div>
+                        <hr>
+                        <div class="vote_section" style="text-align: center; display: flex; flex-direction: column; align-items: center;">
+                            <div class="headline"><h3 style="font-size: 24px;">Cast your vote</h3></div>
+                            <div class="vote_bar" style="font-size: 18px; width: 100%; max-width: 300px; display: flex; justify-content: space-between; align-items: center;">
+                                ${data.options.map((option, index) => `
+                                    <div class="votecolumn" style="display: flex; flex-direction: column; align-items: center; text-align: center;">
+                                        <div class="votecard" style="width: 100%;">
+                                            <div style="margin: 5px 0; margin-left: 20px;">
+                                                <em><strong>${data.results[option.optionId] || 0}</strong></em>
                                             </div>
-                                            <a><img src="/img/${option.optionId === data.votes[0]?.optionId ? 'good' : 'bad'}.png" class="resized-image"/></a>
                                         </div>
-                                    `).join('')}
-                                </div>
-                                <div class="progress" style="width: 85%; max-width: 300px; margin: 10px auto; display: flex; justify-content: center; align-items: center;">
-                                    ${createProgressBars(data)}
-                                </div>
+                                        <a>
+                                          <img src="/img/${index === 0 ? 'good' : 'bad'}.png" class="resized-image"/>
+                                        </a>
+                                    </div>
+                                `).join('')}
+                            </div>
+                            <div class="progress" style="width: 85%; max-width: 300px; margin: 10px auto; display: flex; justify-content: center; align-items: center;">
+                                ${createProgressBars(data)}
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        `;
-    }
+        </div>
+    `;
+}
 
     function createProgressBars(data) {
     const totalVotes = Object.values(data.results).reduce((a, b) => a + b, 0);
@@ -428,7 +462,7 @@
                                 </ul>
                             </div>
                             <ul class="unstyled inline blog-info blog-tags">
-                                <li><a href="userCenter.html" class="login-btn" style="text-transform: none;"><img class="media-object" src="/static/avatar/${data.creator.avatar}">${data.poll.creatorId}</a></li>
+                                <li><a href="userCenter.html" class="login-btn" style="text-transform: none;"><img class="media-object" src="/static/avatar/${data.creator.avatar}">${data.creator.username}</a></li>
                                 <li><i class="icon-calendar"></i>${new Date(data.poll.startTime).toLocaleDateString()} ${data.poll.endTime ? `~${new Date(data.poll.endTime).toLocaleString()}` : ''}</li>
                                 <li>
                                     <i class="icon-tags"></i>
