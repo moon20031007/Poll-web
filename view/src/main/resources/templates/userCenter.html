@@ -14,9 +14,7 @@
 
     <!-- CSS Global Compulsory-->
     <link rel="stylesheet" href="/plugins/bootstrap/css/bootstrap.min.css" />
-
     <link rel="stylesheet" href="/css/header.css" />
-    <link rel="stylesheet" href="/css/header1.css" />
     <link rel="stylesheet" href="/plugins/bootstrap/css/bootstrap-responsive.min.css" />
     <link rel="stylesheet" href="/css/style.css" />
     <link rel="stylesheet" href="/css/style_responsive.css" />
@@ -31,23 +29,23 @@
     <!-- CSS Theme -->
     <!--     <link rel="stylesheet" href="assets/css/themes/default.css" id="style_color" /> -->
     <!--     <link rel="stylesheet" href="assets/css/themes/headers/default.css" id="style_color-header-1" />   -->
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /></head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+    <!-- 引入 axios 和 api.js -->
+    <script src="/js/axios.min.js"></script>
+    <script src="/js/api.js"></script>
+</head>
 
 <body>
 <!--=== Top ===-->
 <div class="top">
     <div class="container">
         <ul class="loginbar pull-right">
-            <li style="visibility:visible;"><i class="icon-globe"></i><a>Languages <i class="icon-sort-up"></i></a>
-                <ul class="nav-list">
-                    <li class="active"><a href="userCenter.html">English</a> <i class="icon-ok"></i></li> <!-- 目前选择的写icon-ok，href写本页面的html名 -->
-                    <li><a href="#">Chinese</a></li> <!-- href写本页面对应的中文页面的html名 -->
-                </ul>
-            </li>
-            <li class="devider">&nbsp;</li>
-            <li style="visibility:visible;"><a href="/login" class="login-btn">Login</a></li>
+            <li style="visibility:visible;"><a href="login" class="login-btn">Login</a></li>
             <li class="devider" style="visibility:visible;">&nbsp;</li>
-            <li style="visibility:visible;"><a href="/register" class="login-btn">Register</a></li>
+            <li style="visibility:visible;"><a href="register" class="login-btn">Register</a></li>
+            <li class="devider" style="visibility:visible;">&nbsp;</li>
+            <li style="visibility:visible;"><a href="userCenter.html" class="login-btn" style="text-transform: none;"><img class="media-object" src="assets/img/unlogin.png" alt="" /> UserCenter</a></li>
             <li class="devider" style="visibility:visible;">&nbsp;</li>
             <li style="visibility:visible;"><a href="messages" class="login-btn">Messages</a></li>
             <li class="devider" style="visibility:visible;">&nbsp;</li>
@@ -131,11 +129,18 @@
             <div class="basic-info-banner" style="background-image: url('assets/img/sliders/revolution/bg4.jpg');"></div>
             <div class="basic-info">
                 <div class="basic-info-img">
-                    <div class="basic-info-img-inner"><img src="assets/img/work/work3.jpg"/></div>
+                    <div class="basic-info-img-inner" id="bannerImageContainer">
+                        <!-- Banner image will be loaded here -->
+                        <img id="purchaseProfilePicture" src="" alt="Profile Picture" width="100" height="100" style="border-radius: 50%; display:none;">
+                    </div>
                 </div>
                 <div class="basic-info-content">
-                    <div class="basic-info-contentHead">Donald Trump<div id="heartbtn"><div class="heart" id="like1" rel="like" style="background: url(assets/img/web_heart_animation.png);"></div></div></div>
-                    <div class="basic-info-description">My personal description. My personal description. My personal description. My personal description.</div>
+                    <div class="basic-info-contentHead" id="userNameDisplay">Loading...</div>
+                    <div class="basic-info-description" id="userDescriptionDisplay">Loading...</div>
+                    <div class="basic-info-buttons">
+                        <button class="btn btn-primary" id="followButton">Follow</button>
+                        <button class="btn btn-success" id="messageButton">Message</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -154,9 +159,9 @@
             <ul class="nav nav-tabs tabs">
                 <li class="active"><a href="#post" data-toggle="tab">Post</a></li>
                 <li><a href="#star" data-toggle="tab">Star</a></li>
-                <li><a href="#history" data-toggle="tab">History</a></li>
+                <li><a href="#myvoted" data-toggle="tab">My Voted</a></li>
                 <li><a href="#follow" data-toggle="tab">Follow</a></li>
-                <li><a href="#beFollowed" data-toggle="tab">Be Followed</a></li>
+                <li><a href="#befollowed" data-toggle="tab">Be Followed</a></li>
                 <li><a href="#information" data-toggle="tab">Information</a></li>
                 <li><a href="#security" data-toggle="tab">Security</a></li>
             </ul><!--/tabs-->
@@ -164,227 +169,61 @@
             <div class="tab-content margin-bottom-20">
                 <div class="tab-pane active" id="post">
                     <div class="headline"><h4>My posted questions</h4></div>
-                    <div class="ps-post-title">
-                        <a href="commentPage.html" style="text-decoration: none;">
-                            <blockquote>
-                                <div class="ps-post-time">1 hr ago</div>
-                                <button type="button" class="close" data-dismiss="alert"><i class="icon-trash"></i></button>
-                                <h4><strong>Is he the best president in the history of American?</strong></h4>
-                            </blockquote></a>
-                    </div>
-                    <div class="ps-post-title">
-                        <a href="commentPage2.html" style="text-decoration: none;">
-                            <blockquote>
-                                <div class="ps-post-time">2 days ago</div>
-                                <button type="button" class="close" data-dismiss="alert"><i class="icon-trash"></i></button>
-                                <h4><strong>How to make friends with China?</strong></h4>
-                            </blockquote></a>
-                    </div>
-                    <div class="ps-post-title">
-                        <a href="commentPage.html" style="text-decoration: none;">
-                            <blockquote>
-                                <div class="ps-post-time">3 days ago</div>
-                                <button type="button" class="close" data-dismiss="alert"><i class="icon-trash"></i></button>
-                                <h4><strong>Is he the best president in the history of American?</strong></h4>
-                            </blockquote></a>
-                    </div>
-                    <div class="ps-post-title">
-                        <a href="commentPage.html" style="text-decoration: none;">
-                            <blockquote>
-                                <div class="ps-post-time">1 week ago</div>
-                                <button type="button" class="close" data-dismiss="alert"><i class="icon-trash"></i></button>
-                                <h4><strong>Is he the best president in the history of American?</strong></h4>
-                            </blockquote></a>
+                    <div id="postsContainer">
+                        <!-- Posts will be loaded here -->
                     </div>
                 </div>
                 <div class="tab-pane" id="star">
                     <div class="headline"><h4>My collection</h4></div>
-                    <div class="ps-post-title">
-                        <a href="commentPage.html" style="text-decoration: none;">
-                            <blockquote>
-                                <div class="ps-post-time">1 hr ago</div>
-                                <button type="button" class="close" data-dismiss="alert"><i class="icon-trash"></i></button>
-                                <h4><strong>Is he the best president in the history of American?</strong></h4>
-                            </blockquote></a>
-                    </div>
-                    <div class="ps-post-title">
-                        <a href="commentPage2.html" style="text-decoration: none;">
-                            <blockquote>
-                                <div class="ps-post-time">2 days ago</div>
-                                <button type="button" class="close" data-dismiss="alert"><i class="icon-trash"></i></button>
-                                <h4><strong>How to make friends with China?</strong></h4>
-                            </blockquote></a>
-                    </div>
-                    <div class="ps-post-title">
-                        <a href="commentPage.html" style="text-decoration: none;">
-                            <blockquote>
-                                <div class="ps-post-time">3 days ago</div>
-                                <button type="button" class="close" data-dismiss="alert"><i class="icon-trash"></i></button>
-                                <h4><strong>Is he the best president in the history of American?</strong></h4>
-                            </blockquote></a>
-                    </div>
-                    <div class="ps-post-title">
-                        <a href="commentPage.html" style="text-decoration: none;">
-                            <blockquote>
-                                <div class="ps-post-time">1 week ago</div>
-                                <button type="button" class="close" data-dismiss="alert"><i class="icon-trash"></i></button>
-                                <h4><strong>Is he the best president in the history of American?</strong></h4>
-                            </blockquote></a>
+                    <div id="starsContainer">
+                        <!-- Stars will be loaded here -->
                     </div>
                 </div>
-                <div class="tab-pane" id="history">
-                    <div class="headline"><h4>My voted history</h4></div>
-                    <div class="ps-post-title">
-                        <a href="commentPage.html" style="text-decoration: none;">
-                            <blockquote>
-                                <div class="ps-post-time">1 hr ago</div>
-                                <h4><strong>Is he the best president in the history of American?</strong><i class="icon-thumbs-up color-green"></i></h4>
-                            </blockquote></a>
-                    </div>
-                    <div class="ps-post-title">
-                        <a href="commentPage2.html" style="text-decoration: none;">
-                            <blockquote>
-                                <div class="ps-post-time">2 days ago</div>
-                                <h4><strong>How to make friends with China?</strong><i class="icon-thumbs-down color-green"></i></h4>
-                            </blockquote></a>
-                    </div>
-                    <div class="ps-post-title">
-                        <a href="commentPage.html" style="text-decoration: none;">
-                            <blockquote>
-                                <div class="ps-post-time">3 days ago</div>
-                                <h4><strong>Is he the best president in the history of American?</strong><i class="color-green">A</i></h4>
-                            </blockquote></a>
-                    </div>
-                    <div class="ps-post-title">
-                        <a href="commentPage.html" style="text-decoration: none;">
-                            <blockquote>
-                                <div class="ps-post-time">1 week ago</div>
-                                <h4><strong>Is he the best president in the history of American?</strong><i class="color-green">D</i></h4>
-                            </blockquote></a>
+                <div class="tab-pane" id="myvoted">
+                    <div class="headline"><h4>My Voted</h4></div>
+                    <div id="myVotedContainer">
+                        <!-- My Voted will be loaded here -->
                     </div>
                 </div>
                 <div class="tab-pane" id="follow">
                     <div class="headline"><h4>My followed users</h4></div>
-                    <ul class="thumbnails team">
-                        <li class="span3">
-                            <div class="thumbnail-style">
-                                <a href="userCenter.html">
-                                    <img src="assets/img/others/2.jpg" alt="" style="width:100%; height:auto;" /></a>
-                                <h3><a href="userCenter.html">Jack Bour</a></h3>
-                                <small><a class="glyphicons no-js user"><i></i></a>
-                                    <a class="glyphicons no-js calendar" style="margin-left: 40px;width:20px;"><i></i></a><span style="font-size:18px;">34</span>
-                                </small>
-                                <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, justo sit amet risus etiam porta sem...</p>
-                            </div>
-                        </li>
-                        <li class="span3">
-                            <div class="thumbnail-style">
-                                <a href="userCenter.html">
-                                    <img src="assets/img/others/7.jpg" alt="" style="width:100%; height:auto;" /></a>
-                                <h3><a href="userCenter.html">Kate Metus</a></h3>
-                                <small><a class="glyphicons no-js woman"><i></i></a>
-                                    <a class="glyphicons no-js calendar" style="margin-left: 40px;width:20px;"><i></i></a><span style="font-size:18px;">32</span>
-                                </small>
-                                <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, justo sit amet risus etiam porta sem...</p>
-                            </div>
-                        </li>
-                        <li class="span3">
-                            <div class="thumbnail-style">
-                                <a href="userCenter.html">
-                                    <img src="assets/img/others/3.jpg" alt="" style="width:100%; height:auto;" /></a>
-                                <h3><a href="userCenter.html">Porta Gravida</a></h3>
-                                <small><a class="glyphicons no-js woman"><i></i></a>
-                                    <a class="glyphicons no-js calendar" style="margin-left: 40px;width:20px;"><i></i></a><span style="font-size:18px;">35</span>
-                                </small>
-                                <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, justo sit amet risus etiam porta sem...</p>
-                            </div>
-                        </li>
-                        <li class="span3">
-                            <div class="thumbnail-style">
-                                <a href="userCenter.html">
-                                    <img src="assets/img/others/6.jpg" alt="" style="width:100%; height:auto;" /></a>
-                                <h3><a href="userCenter.html">Donec Elit</a></h3>
-                                <small><a class="glyphicons no-js user"><i></i></a>
-                                    <a class="glyphicons no-js calendar" style="margin-left: 40px;width:20px;"><i></i></a><span style="font-size:18px;">29</span>
-                                </small>
-                                <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, justo sit amet risus etiam porta sem...</p>
-                            </div>
-                        </li>
-                    </ul><!--/thumbnails-->
+                    <div id="followContainer">
+                        <!-- Follows will be loaded here -->
+                    </div>
                 </div>
-                <div class="tab-pane" id="beFollowed">
+                <div class="tab-pane" id="befollowed">
                     <div class="headline"><h4>Users following me</h4></div>
-                    <ul class="thumbnails team">
-                        <li class="span3">
-                            <div class="thumbnail-style">
-                                <a href="userCenter.html">
-                                    <img src="assets/img/others/4.jpg" alt="" style="width:100%; height:auto;" /></a>
-                                <h3><a href="userCenter.html">Alice Johnson</a></h3>
-                                <small><a class="glyphicons no-js woman"><i></i></a>
-                                    <a class="glyphicons no-js calendar" style="margin-left: 40px;width:20px;"><i></i></a><span style="font-size:18px;">45</span>
-                                </small>
-                                <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, justo sit amet risus etiam porta sem...</p>
-                            </div>
-                        </li>
-                        <li class="span3">
-                            <div class="thumbnail-style">
-                                <a href="userCenter.html">
-                                    <img src="assets/img/others/5.jpg" alt="" style="width:100%; height:auto;" /></a>
-                                <h3><a href="userCenter.html">Bob Smith</a></h3>
-                                <small><a class="glyphicons no-js man"><i></i></a>
-                                    <a class="glyphicons no-js calendar" style="margin-left: 40px;width:20px;"><i></i></a><span style="font-size:18px;">38</span>
-                                </small>
-                                <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, justo sit amet risus etiam porta sem...</p>
-                            </div>
-                        </li>
-                        <li class="span3">
-                            <div class="thumbnail-style">
-                                <a href="userCenter.html">
-                                    <img src="assets/img/others/8.jpg" alt="" style="width:100%; height:auto;" /></a>
-                                <h3><a href="userCenter.html">Charlie Brown</a></h3>
-                                <small><a class="glyphicons no-js man"><i></i></a>
-                                    <a class="glyphicons no-js calendar" style="margin-left: 40px;width:20px;"><i></i></a><span style="font-size:18px;">42</span>
-                                </small>
-                                <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, justo sit amet risus etiam porta sem...</p>
-                            </div>
-                        </li>
-                        <li class="span3">
-                            <div class="thumbnail-style">
-                                <a href="userCenter.html">
-                                    <img src="assets/img/others/9.jpg" alt="" style="width:100%; height:auto;" /></a>
-                                <h3><a href="userCenter.html">Diana Prince</a></h3>
-                                <small><a class="glyphicons no-js woman"><i></i></a>
-                                    <a class="glyphicons no-js calendar" style="margin-left: 40px;width:20px;"><i></i></a><span style="font-size:18px;">37</span>
-                                </small>
-                                <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, justo sit amet risus etiam porta sem...</p>
-                            </div>
-                        </li>
-                    </ul><!--/thumbnails-->
+                    <div id="beFollowedContainer">
+                        <!-- Be Followeds will be loaded here -->
+                    </div>
                 </div>
                 <div class="tab-pane" id="information">
                     <div class="headline"><h4>Personal Information</h4></div>
                     <div class="profile-picture-container text-center">
-                        <img id="profilePicture" src="assets/img/work/work3.jpg" alt="Profile Picture" width="150" height="150" style="border-radius: 50%;">
+                        <img id="profilePicture" src="" alt="Profile Picture" width="150" height="150" style="border-radius: 50%; display:none;">
                         <input type="file" id="newProfilePicture" accept="image/*" style="display:none;">
+                        <div id="uploadPlaceholder" style="width: 150px; height: 150px; border: 2px dashed #ccc; line-height: 150px; text-align: center; border-radius: 50%;">
+                            Upload New Photo
+                        </div>
                     </div>
                     <form id="infoForm">
                         <div class="control-group">
                             <label class="control-label" for="name">Name:</label>
                             <div class="controls">
-                                <input type="text" class="span6" id="name" value="Donald Trump" readonly>
+                                <input type="text" class="span6" id="name" value="" readonly>
                             </div>
                         </div>
                         <div class="control-group">
                             <label class="control-label" for="age">Age:</label>
                             <div class="controls">
-                                <input type="number" class="span6" id="age" value="77" readonly>
+                                <input type="number" class="span6" id="age" value="" readonly>
                             </div>
                         </div>
                         <div class="control-group">
                             <label class="control-label" for="gender">Gender:</label>
                             <div class="controls">
                                 <select class="span6" id="gender" disabled>
-                                    <option value="male" selected>Male</option>
+                                    <option value="male">Male</option>
                                     <option value="female">Female</option>
                                 </select>
                             </div>
@@ -392,13 +231,13 @@
                         <div class="control-group">
                             <label class="control-label" for="occupation">Occupation:</label>
                             <div class="controls">
-                                <input type="text" class="span6" id="occupation" value="Businessman" readonly>
+                                <input type="text" class="span6" id="occupation" value="" readonly>
                             </div>
                         </div>
                         <div class="control-group">
                             <label class="control-label" for="bio">Bio:</label>
                             <div class="controls">
-                                <textarea class="span6" id="bio" rows="3" readonly>My personal description. My personal description. My personal description. My personal description.</textarea>
+                                <textarea class="span6" id="bio" rows="3" readonly></textarea>
                             </div>
                         </div>
                         <button type="button" class="btn btn-primary" id="editInfoBtn">Edit Information</button>
@@ -484,6 +323,9 @@
             $(this).tab('show');
         });
 
+        // Load user information from database
+        loadUserInfo();
+
         // Edit and Save Information Functionality
         $('#editInfoBtn').click(function() {
             $('#name, #age, #occupation, #bio').prop('readonly', false);
@@ -492,6 +334,7 @@
             $('#saveInfoBtn').show();
             $('#profilePicture').hide();
             $('#newProfilePicture').show();
+            $('#uploadPlaceholder').hide();
         });
 
         $('#saveInfoBtn').click(function() {
@@ -515,15 +358,19 @@
                 formData.append('profilePicture', profilePictureFile);
             }
 
-            fetch('/api/updateUserInfo', {
-                method: 'POST',
-                body: formData
+            instance.post('/api/updateUserInfo', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
             })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Success:', data);
+            .then(response => {
+                console.log('Success:', response.data);
                 alert('Information saved successfully!');
-                $('#profilePicture').attr('src', URL.createObjectURL(profilePictureFile)).show();
+                updateUIWithUserData(response.data.userInfo);
+                if (profilePictureFile) {
+                    $('#profilePicture').attr('src', URL.createObjectURL(profilePictureFile)).show();
+                    $('#purchaseProfilePicture').attr('src', URL.createObjectURL(profilePictureFile)).show();
+                }
             })
             .catch((error) => {
                 console.error('Error:', error);
@@ -536,6 +383,7 @@
             $('#saveInfoBtn').hide();
             $('#profilePicture').show();
             $('#newProfilePicture').hide();
+            $('#uploadPlaceholder').show();
         });
 
         // Change Password Functionality
@@ -552,16 +400,11 @@
                     newPassword: newPassword
                 };
 
-                fetch('/api/changePassword', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(passwordData)
+                instance.post('/api/changePassword', {
+                    ...passwordData
                 })
-                .then(response => response.json())
-                .then(data => {
-                    console.log('Success:', data);
+                .then(response => {
+                    console.log('Success:', response.data);
                     alert('Password changed successfully!');
                     $('#newPassword').val('');
                     $('#confirmPassword').val('');
@@ -572,7 +415,192 @@
                 });
             }
         });
+
+        // Follow Button Click Handler
+        $('#followButton').click(function() {
+            const userId = currentUserId; // Use the stored user ID
+
+            instance.post('/api/followUser', { userId: userId })
+                .then(response => {
+                    console.log('Success:', response.data);
+                    alert('You are now following this user!');
+                    // Optionally, update UI to reflect follow status
+                    $('#followButton').prop('disabled', true).text('Following');
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Failed to follow user.');
+                });
+        });
+
+        // Message Button Click Handler
+        $('#messageButton').click(function() {
+            const recipientId = currentUserId; // Use the stored user ID
+            window.location.href = `/messages?recipientId=${recipientId}`;
+        });
     });
+
+    let currentUserId;
+
+    function loadUserInfo() {
+        const username = getUsernameFromUrl();
+        if (!username) {
+            alert('Username not found in URL');
+            return;
+        }
+
+        instance.get(`/user/info/${username}`)
+            .then(response => {
+                const userData = response.data.data;
+                currentUserId = userData.user.userId; // Store the user ID
+                updateUIWithUserData(userData);
+                $('#profilePicture').attr('src', `/static/avatar/${userData.user.avatar}`).show();
+                $('#purchaseProfilePicture').attr('src', `/static/avatar/${userData.user.avatar}`).show();
+                $('#uploadPlaceholder').hide();
+            })
+            .catch(error => {
+                console.error('Error loading user info:', error);
+                alert('Failed to load user information.');
+            });
+    }
+
+    function getUsernameFromUrl() {
+        const pathArray = window.location.pathname.split('/');
+        return pathArray[pathArray.length - 1]; // Last segment of the URL is the username
+    }
+
+    function updateUIWithUserData(userData) {
+        $('#userNameDisplay').text(userData.user.username);
+        $('#userDescriptionDisplay').text(userData.user.profile);
+        $('#name').val(userData.user.username);
+        $('#age').val(calculateAge(new Date(userData.user.birth)));
+        $('#gender').val(userData.user.gender ? 'male' : 'female');
+        $('#occupation').val(''); // Occupation is not provided in your sample data
+        $('#bio').val(userData.user.profile);
+
+        // Update posts container
+        const postsContainer = $('#postsContainer');
+        postsContainer.empty();
+        userData.posts.forEach(post => {
+            postsContainer.append(`
+                <div class="ps-post-title">
+                    <a href="#" style="text-decoration: none;">
+                        <blockquote>
+                            <div class="ps-post-time">${formatDate(new Date(post.startTime))}</div>
+                            <h4><strong>${post.title}</strong></h4>
+                            <p>${post.description}</p>
+                        </blockquote>
+                    </a>
+                </div>
+            `);
+        });
+
+        // Update stars container
+        const starsContainer = $('#starsContainer');
+        starsContainer.empty();
+        userData.stars.forEach(star => {
+            starsContainer.append(`
+                <div class="ps-post-title">
+                    <a href="#" style="text-decoration: none;">
+                        <blockquote>
+                            <div class="ps-post-time">${formatDate(new Date(star.startTime))}</div>
+                            <h4><strong>${star.title}</strong></h4>
+                            <p>${star.description}</p>
+                        </blockquote>
+                    </a>
+                </div>
+            `);
+        });
+
+        // Update my voted container
+        const myVotedContainer = $('#myVotedContainer');
+        myVotedContainer.empty();
+        userData.votes.forEach(vote => {
+            const pollString = Object.keys(vote)[0];
+            const voteDetails = vote[pollString];
+
+            // Parse the poll string into an object
+            const pollObject = parsePollString(pollString);
+
+            myVotedContainer.append(`
+                <div class="ps-post-title">
+                    <a href="#" style="text-decoration: none;">
+                        <blockquote>
+                            <div class="ps-post-time">${formatDate(new Date(pollObject.startTime))}</div>
+                            <h4><strong>${pollObject.title}</strong></h4>
+                            <p>Voted on option: ${voteDetails.description}</p>
+                        </blockquote>
+                    </a>
+                </div>
+            `);
+        });
+
+        // Update follow container
+        const followContainer = $('#followContainer');
+        followContainer.empty();
+        userData.followings.forEach(follow => {
+            followContainer.append(`
+                <li class="span3">
+                    <div class="thumbnail-style">
+                        <a href="#">
+                            <img src="assets/img/${follow.avatar}" alt="" style="width:100%; height:auto;" /></a>
+                        <h3><a href="#">${follow.username}</a></h3>
+                        <small><a class="glyphicons no-js user_add"><i></i></a>
+                            <a class="glyphicons no-js calendar" style="margin-left: 40px;width:20px;"><i></i></a><span style="font-size:18px;">${formatDate(new Date(follow.birth))}</span>
+                        </small>
+                        <p>${follow.profile}</p>
+                    </div>
+                </li>
+            `);
+        });
+
+        // Update be followed container
+        const beFollowedContainer = $('#beFollowedContainer');
+        beFollowedContainer.empty();
+        userData.followers.forEach(beFollowed => {
+            beFollowedContainer.append(`
+                <li class="span3">
+                    <div class="thumbnail-style">
+                        <a href="#">
+                            <img src="assets/img/${beFollowed.avatar}" alt="" style="width:100%; height:auto;" /></a>
+                        <h3><a href="#">${beFollowed.username}</a></h3>
+                        <small><a class="glyphicons no-js user_add"><i></i></a>
+                            <a class="glyphicons no-js calendar" style="margin-left: 40px;width:20px;"><i></i></a><span style="font-size:18px;">${formatDate(new Date(beFollowed.birth))}</span>
+                        </small>
+                        <p>${beFollowed.profile}</p>
+                    </div>
+                </li>
+            `);
+        });
+    }
+
+    function parsePollString(pollString) {
+        const pollRegex = /Poll\((.*?)\)/;
+        const match = pollString.match(pollRegex);
+        if (!match) return {};
+
+        const fields = match[1].split(', ');
+        const pollObject = {};
+        fields.forEach(field => {
+            const [key, value] = field.split('=');
+            pollObject[key.trim()] = value.replace(/"/g, '');
+        });
+        return pollObject;
+    }
+
+    function calculateAge(birthdate) {
+        const today = new Date();
+        const age = today.getFullYear() - birthdate.getFullYear();
+        const monthDifference = today.getMonth() - birthdate.getMonth();
+        if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birthdate.getDate())) {
+            return age - 1;
+        }
+        return age;
+    }
+
+    function formatDate(date) {
+        return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+    }
 
     jQuery(document).ready(function() {
         App.init();
@@ -585,5 +613,6 @@
 <![endif]-->
 </body>
 </html>
+
 
 
