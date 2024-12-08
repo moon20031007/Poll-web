@@ -76,38 +76,38 @@
                 </a><!-- /nav-collapse -->
                 <div class="nav-collapse collapse">
                     <ul class="nav top-2">
-                        <li class="active">
+                        <li>
                             <a href="/" class="dropdown-toggle" data-toggle="dropdown">Home
                             </a>
                             <b class="caret-out"></b>
                         </li>
                         <li>
-                            <a href="mainpage.html" class="dropdown-toggle" data-toggle="dropdown">Daily life
+                            <a href="/Dailylife" class="dropdown-toggle" data-toggle="dropdown">Daily life
+                            </a>
+                            <b class="caret-out"></b>
+                        </li>
+                        <li class="active">
+                            <a href="/Entertainment" class="dropdown-toggle" data-toggle="dropdown">Entertainment
                             </a>
                             <b class="caret-out"></b>
                         </li>
                         <li>
-                            <a href="mainpage.html" class="dropdown-toggle" data-toggle="dropdown">Entertainment
+                            <a href="/Artwork" class="dropdown-toggle" data-toggle="dropdown">Artwork
                             </a>
                             <b class="caret-out"></b>
                         </li>
                         <li>
-                            <a href="mainpage.html" class="dropdown-toggle" data-toggle="dropdown">Artwork
+                            <a href="/Sport" class="dropdown-toggle" data-toggle="dropdown">Sport
                             </a>
                             <b class="caret-out"></b>
                         </li>
                         <li>
-                            <a href="mainpage.html" class="dropdown-toggle" data-toggle="dropdown">Sport
+                            <a href="/SocialEvent" class="dropdown-toggle" data-toggle="dropdown">Social Event
                             </a>
                             <b class="caret-out"></b>
                         </li>
                         <li>
-                            <a href="mainpage.html" class="dropdown-toggle" data-toggle="dropdown">Social Event
-                            </a>
-                            <b class="caret-out"></b>
-                        </li>
-                        <li>
-                            <a href="mainpage.html" class="dropdown-toggle" data-toggle="dropdown">Fashion
+                            <a href="/Fashion" class="dropdown-toggle" data-toggle="dropdown">Fashion
                             </a>
                             <b class="caret-out"></b>
                         </li>
@@ -160,47 +160,16 @@
         <!-- Right Sidebar -->
         <div class="span3">
             <!-- Posts -->
-            <div class="posts margin-bottom-20">
+            <div class="posts margin-bottom-20" id="recent-votes">
                 <div class="wrapper-inner-tab">
-                    <div class="wrapper-inner-tab-backgrounds-first"><a href="/post" style="text-decoration:none;"><div class="sim-button button5"><span>Post your question</span></div></a></div>
+                    <div class="wrapper-inner-tab-backgrounds-first">
+                        <a href="/post" style="text-decoration:none;">
+                            <div class="sim-button button5"><span>Post your question</span></div>
+                        </a>
+                    </div>
                 </div>
-                <div class="headline"><h3>Recent Questions</h3></div>
-                <dl class="dl-horizontal">
-                    <dt><a href="commentPage.html"><img src="assets/img/sliders/elastislide/6.jpg" alt="" /></a></dt>
-                    <dd>
-                        <p class="sidebar-contianer"><a href="commentPage.html">question1</a></p>
-                    </dd>
-                </dl>
-                <dl class="dl-horizontal">
-                    <dt><a href="commentPage2.html"><img src="assets/img/sliders/elastislide/10.jpg" alt="" /></a></dt>
-                    <dd>
-                        <p class="sidebar-contianer"><a href="commentPage2.html">question2</a></p>
-                    </dd>
-                </dl>
-                <dl class="dl-horizontal">
-                    <dt><a href="commentPage.html"><img src="assets/img/sliders/elastislide/11.jpg" alt="" /></a></dt>
-                    <dd>
-                        <p class="sidebar-contianer"><a href="commentPage.html">question3</a></p>
-                    </dd>
-                </dl>
-                <dl class="dl-horizontal">
-                    <dt><a href="commentPage.html"><img src="assets/img/sliders/elastislide/6.jpg" alt="" /></a></dt>
-                    <dd>
-                        <p class="sidebar-contianer"><a href="commentPage.html">question4 </a></p>
-                    </dd>
-                </dl>
-                <dl class="dl-horizontal">
-                    <dt><a href="commentPage2.html"><img src="assets/img/sliders/elastislide/10.jpg" alt="" /></a></dt>
-                    <dd>
-                        <p class="sidebar-contianer"><a href="commentPage2.html">question5</a></p>
-                    </dd>
-                </dl>
-                <dl class="dl-horizontal">
-                    <dt><a href="commentPage2.html"><img src="assets/img/sliders/elastislide/11.jpg" alt="" /></a></dt>
-                    <dd>
-                        <p class="sidebar-contianer"><a href="commentPage2.html">question6</a></p>
-                    </dd>
-                </dl>
+                <div class="headline"><h3>Recent Votes</h3></div>
+                <!-- 动态生成的投票记录将插入到这里 -->
             </div><!--/posts-->
         </div><!--/span3-->
     </div><!--/row-fluid-->
@@ -231,20 +200,43 @@
 
     // Function to toggle visibility of authentication states.
     function toggleAuthState() {
-        console.log('Toggling authentication state...');
-        const unauthenticatedDiv = document.getElementById('unauthenticated');
-        const authenticatedDiv = document.getElementById('authenticated');
+    console.log('Toggling authentication state...');
+    const unauthenticatedDiv = document.getElementById('unauthenticated');
+    const authenticatedDiv = document.getElementById('authenticated');
 
-        if (isLoggedIn()) {
-            console.log('User is logged in.');
-            unauthenticatedDiv.style.display = 'none';
-            authenticatedDiv.style.display = 'block';
-        } else {
-            console.log('User is not logged in.');
-            unauthenticatedDiv.style.display = 'block';
-            authenticatedDiv.style.display = 'none';
-        }
+    if (isLoggedIn()) {
+        console.log('User is logged in.');
+        unauthenticatedDiv.style.display = 'none';
+        authenticatedDiv.style.display = 'block';
+
+        // Fetch user information and update the DOM elements accordingly.
+        instance.get('/user/check')
+            .then(response => {
+                console.log('User info:', response.data);
+                const userData = response.data.data;
+
+                // Update the User Center link with the username.
+                const userCenterLink = document.querySelector('#authenticated ul li a[href="userCenter.html"]');
+                if (userCenterLink) {
+                    userCenterLink.href = `userCenter/${userData.username}`;
+                    userCenterLink.textContent = `UserCenter`;
+                }
+
+                // Update the avatar image source if available.
+                const avatarImg = document.querySelector('#authenticated img.media-object');
+                if (avatarImg && userData.avatar) {
+                    avatarImg.src = userData.avatar;
+                }
+            })
+            .catch(error => {
+                console.error('Error checking user info:', error);
+            });
+    } else {
+        console.log('User is not logged in.');
+        unauthenticatedDiv.style.display = 'block';
+        authenticatedDiv.style.display = 'none';
     }
+}
 
     // Function to handle logout process.
     async function logout(event) {
@@ -344,8 +336,7 @@ let totalPages = 0; // 总页数，由 fetchTotalPages 函数填充
 
 async function fetchPollsAndRender(page) {
     try {
-        const response = await axios.get(`/poll/main?page=${page}&size=${pageSize}`); // 替换为实际的API路径
-
+        const response = await instance.get(`/topic/info/2?page=${page}&size=${pageSize}`);
         if (response.data.code !== 0) {
             throw new Error(response.data.msg || 'Failed to fetch polls');
         }
@@ -369,19 +360,20 @@ function renderPolls(polls) {
         const options = pollItem.options;
         const topics = pollItem.topics;
         const images = pollItem.images;
+        const creator = pollItem.creator;
 
         let template;
         if (options.length <= 2) {
-            template = createSimplePollTemplate(poll, options, topics, images);
+            template = createSimplePollTemplate(poll, options, topics, images, creator);
         } else {
-            template = createComplexPollTemplate(poll, options, topics, images);
+            template = createComplexPollTemplate(poll, options, topics, images, creator);
         }
 
         container.appendChild(template);
     });
 }
 
-function createSimplePollTemplate(poll, options, topics, images) {
+function createSimplePollTemplate(poll, options, topics, images, creator) {
     const pollDiv = document.createElement('div');
     pollDiv.className = 'blog margin-bottom-30 bg-light';
 
@@ -393,7 +385,7 @@ function createSimplePollTemplate(poll, options, topics, images) {
             </ul>
         </div>
         <ul class="unstyled inline blog-info blog-tags">
-            <li><a href="userCenter.html" class="login-btn" style="text-transform: none;"><img class="media-object" src="assets/img/sliders/elastislide/2.jpg" alt="" />${poll.creatorId}</a></li>
+            <li><a href="/userCenter/${creator.username}" class="login-btn" style="text-transform: none;"><img class="media-object" src="/static/avatar/${creator.avatar}" alt="" />${creator.username}</a></li>
             <li><i class="icon-calendar"></i> ${new Date(poll.startTime).toLocaleString()} ${poll.endTime ? `~${new Date(poll.endTime).toLocaleString()}` : ''}</li>
             <li>
                 <i class="icon-tags"></i>
@@ -401,7 +393,7 @@ function createSimplePollTemplate(poll, options, topics, images) {
             </li>
         </ul>
         <div class="blog_content">
-            <div class="span6 gallery_img_pro">
+            <div class="span6 gallery_img">
                 <ul class="HTC_media_a_pro">
                     ${images.map(image => `<li><img src="/static/image/${image.path}" /></li>`).join('')}
                 </ul>
@@ -430,13 +422,13 @@ function createSimplePollTemplate(poll, options, topics, images) {
                 </div>
             </div>
         </div>
-        <p><a class="btn-u btn-u-small" href="type1" style="margin-left: 20px;margin-top: 5px;">Read More</a></p>
+        <p><a class="btn-u btn-u-small" href="/commentpage/${poll.pollId}" style="margin-left: 20px;margin-top: 5px;">Read More</a></p>
     `;
 
     return pollDiv;
 }
 
-function createComplexPollTemplate(poll, options, topics, images) {
+function createComplexPollTemplate(poll, options, topics, images, creator) {
     const pollDiv = document.createElement('div');
     pollDiv.className = 'blog margin-bottom-30 bg-light';
 
@@ -448,7 +440,7 @@ function createComplexPollTemplate(poll, options, topics, images) {
             </ul>
         </div>
         <ul class="unstyled inline blog-info blog-tags">
-            <li><a href="userCenter.html" class="login-btn" style="text-transform: none;"><img class="media-object" src="assets/img/sliders/elastislide/2.jpg" alt="" />${poll.creatorId}</a></li>
+            <li><a href="/userCenter/${creator.username}" class="login-btn" style="text-transform: none;"><img class="media-object" src="/static/avatar/${creator.avatar}" alt="" />${creator.username}</a></li>
             <li><i class="icon-calendar"></i> ${new Date(poll.startTime).toLocaleString()} ${poll.endTime ? `~${new Date(poll.endTime).toLocaleString()}` : ''}</li>
             <li>
                 <i class="icon-tags"></i>
@@ -456,7 +448,7 @@ function createComplexPollTemplate(poll, options, topics, images) {
             </li>
         </ul>
         <div class="blog_content">
-            <div class="span6 gallery_img_pro">
+            <div class="span6 gallery_img">
                 <ul class="HTC_media_a_pro">
                     ${images.map(image => `<li><img src="/static/image/${image.path}" /></li>`).join('')}
                 </ul>
@@ -471,12 +463,9 @@ function createComplexPollTemplate(poll, options, topics, images) {
                         <div class="btncontent"><span class="vote${option.order}btn">${String.fromCharCode(64 + option.order)} </span>${option.description}</div>
                     `).join('')}
                 </div>
-                <div style="text-align: left; margin-top: 10px;">
-                    <button type="submit" class="submitbtn">Submit</button>
-                </div>
             </div>
         </div>
-        <p><a class="btn-u btn-u-small" href="type2" style="margin-left: 20px;margin-top: 5px;">Read More</a></p>
+        <p><a class="btn-u btn-u-small" href="/commentpage/${poll.pollId}" style="margin-left: 20px;margin-top: 5px;">Read More</a></p>
     `;
 
     return pollDiv;
@@ -484,7 +473,7 @@ function createComplexPollTemplate(poll, options, topics, images) {
 
 async function fetchTotalPages() {
     try {
-        const response = await axios.get(`/poll/size?size=${pageSize}`);
+        const response = await axios.get(`/topic/size/2?size=${pageSize}`);
 
         if (response.data.code !== 0) {
             throw new Error(response.data.msg || 'Failed to fetch total pages');
@@ -567,6 +556,47 @@ window.addEventListener('load', async () => {
     totalPages = await fetchTotalPages(); // 获取总页数并存储在全局变量中
     await fetchPollsAndRender(currentPage);
 });
+</script>
+
+<script>
+    function createRecentVoteTemplate(voteId, user) {
+        const dlElement = document.createElement('dl');
+        dlElement.className = 'dl-horizontal';
+
+        dlElement.innerHTML = `
+            <dt>
+                <a href="commentpage/${voteId}">
+                    <img src="${user.avatar ? `/static/avatar/${user.avatar}` : '/static/avatar/default.png'}" alt="${user.username}'s avatar" />
+                </a>
+            </dt>
+            <dd>
+                <p class="sidebar-container">
+                    <a href="commentPage/${voteId}}">${user.username}</a>
+                </p>
+            </dd>
+        `;
+
+        return dlElement;
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        fetch('/vote/recent') // 请替换为实际的API路径
+            .then(response => response.json())
+            .then(data => {
+                if (data.code === 0) { // 请求成功
+                    const container = document.getElementById('recent-votes');
+                    Object.entries(data.data).forEach(([key, value]) => {
+                        const voteInfo = key.match(/voteId=(\d+)/);
+                        const voteId = voteInfo ? voteInfo[1] : 'N/A';
+                        const voteElement = createRecentVoteTemplate(voteId, value);
+                        container.appendChild(voteElement);
+                    });
+                } else {
+                    console.error('Failed to load recent votes:', data.msg);
+                }
+            })
+            .catch(error => console.error('Error fetching recent votes:', error));
+    });
 </script>
 
 </body>

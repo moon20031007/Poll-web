@@ -76,7 +76,7 @@
                 </a><!-- /nav-collapse -->
                 <div class="nav-collapse collapse">
                     <ul class="nav top-2">
-                        <li class="active">
+                        <li>
                             <a href="/" class="dropdown-toggle" data-toggle="dropdown">Home
                             </a>
                             <b class="caret-out"></b>
@@ -91,7 +91,7 @@
                             </a>
                             <b class="caret-out"></b>
                         </li>
-                        <li>
+                        <li class="active">
                             <a href="/Artwork" class="dropdown-toggle" data-toggle="dropdown">Artwork
                             </a>
                             <b class="caret-out"></b>
@@ -336,7 +336,7 @@ let totalPages = 0; // 总页数，由 fetchTotalPages 函数填充
 
 async function fetchPollsAndRender(page) {
     try {
-        const response = await instance.get(`/poll/main?page=${page}&size=${pageSize}`);
+        const response = await instance.get(`/topic/info/3?page=${page}&size=${pageSize}`);
         if (response.data.code !== 0) {
             throw new Error(response.data.msg || 'Failed to fetch polls');
         }
@@ -473,7 +473,7 @@ function createComplexPollTemplate(poll, options, topics, images, creator) {
 
 async function fetchTotalPages() {
     try {
-        const response = await axios.get(`/poll/size?size=${pageSize}`);
+        const response = await axios.get(`/topic/size/3?size=${pageSize}`);
 
         if (response.data.code !== 0) {
             throw new Error(response.data.msg || 'Failed to fetch total pages');
