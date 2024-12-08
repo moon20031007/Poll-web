@@ -18,7 +18,7 @@
     </sql>
 
     <select id="selectByPollId" resultType="com.poll.pojo.Topic">
-        select t.name, t.count
+        select t.*
         from topic t
         join poll_topics pt
         on t.topic_id = pt.topic_id
