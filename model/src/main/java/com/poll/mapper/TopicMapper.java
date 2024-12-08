@@ -8,5 +8,7 @@ import java.util.List;
 @Mapper
 public interface TopicMapper {
 
+    List<Topic> getAllTopics();
+
     List<Topic> selectByPollId(Integer id);
 }

@@ -19,6 +19,11 @@ public class TopicController {
         this.pollTopicsService = pollTopicsService;
     }
 
+    @GetMapping("/all")
+    public Result getAllTopics() {
+        return Result.success();
+    }
+
     @GetMapping("/info/{id}")
     public Result info(@PathVariable("id") int id, @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "3") int size) {
         try {

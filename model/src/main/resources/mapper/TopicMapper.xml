@@ -24,4 +24,9 @@
         on t.topic_id = pt.topic_id
         where pt.poll_id = #{id}
     </select>
+
+    <select id="getAllTopics" resultType="com.poll.pojo.Topic">
+        select <include refid="Base_Column_List"/>
+        from topic
+    </select>
 </mapper>
