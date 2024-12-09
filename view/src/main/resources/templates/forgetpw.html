@@ -2,6 +2,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+		<title>VoteEase</title>
 		<meta charset="utf-8">
 		<link href="/css/login.css" rel='stylesheet' type='text/css' />
 		<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -54,7 +55,7 @@
 		</div>
 		 <!-- start-copyright -->
    					<div class="copy-right" style="margin-top: 300px;">
-						<p>Copyright @ 2024 Online Polling System. All Rights Reserved.</p>
+						<p>Copyright @ 2024 VoteEase. All Rights Reserved.</p>
 					</div>
 				<!-- end-copyrigh -->
 	 <script type="module">
@@ -111,7 +112,7 @@
 							if (response.data.code == 0) {
 								alert("Reset successfully!");
 								// 注册成功后，可以重定向到主页或其他页面
-								// window.location.href = '/login'; // 替换为实际的重定向URL
+								window.location.href = '/login'; // 替换为实际的重定向URL
 							}else {
 								alert('Reset failure: ' + response.data.msg);
 							}

@@ -117,7 +117,7 @@
                 </div>
                 <div class="input-area">
                     <input type="text" id="chatInput" placeholder="Type a message...">
-                    <button onclick="sendMessage()">Send</button>
+                    <button id="sendButton">Send</button>
                 </div>
         </div>
     </div><!--/row-fluid-->
@@ -316,6 +316,7 @@
     // 页面加载时加载聊天记录
     window.onload = function() {
             loadReceiverList(); // 加载接收者列表
+            loadMessages();s
     };
 
     function loadMessages() {
@@ -480,14 +481,7 @@
         })
             .then(response => {
                 console.log("Message sent successfully:", response);
-                let messageHTML = `
-        <div class="message sent">
-            <p class="message-text">${messageContent}</p>
-        </div>
-    `;
-                // 添加到消息容器
-                let messagesContainer = document.getElementById("messages");
-                messagesContainer.innerHTML += messageHTML;
+                window.location.reload();
 
                 // 清空输入框
                 document.getElementById("chatInput").value = '';
@@ -501,7 +495,18 @@
     document.getElementById("chatInput").addEventListener("keypress", function(event) {
         if (event.key === "Enter") {
             sendMessage();
-            window.location.reload(); // 刷新页面，重新加载数据
+        }
+    });
+    document.addEventListener('DOMContentLoaded', function() {
+        // 获取发送按钮元素
+        const sendButton = document.getElementById("sendButton");
+        event.preventDefault(); // 阻止表单的默认提交行为
+
+        // 为发送按钮添加点击事件监听器
+        if (sendButton) {
+            sendButton.addEventListener('click', sendMessage);
+        } else {
+            console.error("Send button not found.");
         }
     });
 
