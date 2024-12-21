@@ -3,6 +3,8 @@ package com.poll.service;
 import com.poll.DTO.UserInfoDTO;
 import com.poll.pojo.User;
 
+import java.util.List;
+
 public interface UserService {
 
     UserInfoDTO selectUserInfo(String username);
@@ -26,4 +28,6 @@ public interface UserService {
     void updateInfo(Integer id, User user);
 
     void enableOperate(User user);
+
+    List<User> getAll();
 }

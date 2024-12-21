@@ -79,7 +79,7 @@
     <update id="updateInfo">
         update user
         <set>
-            <if test="user.username != null">gender = #{user.username},</if>
+            <if test="user.username != null">username = #{user.username},</if>
             <if test="user.gender != null">gender = #{user.gender},</if>
             <if test="user.birth != null">birth = #{user.birth},</if>
             <if test="user.email != null">email = #{user.email},</if>
@@ -93,4 +93,9 @@
         where user_id = #{id}
     </update>
 
+    <select id="selectAll" resultType="com.poll.pojo.User">
+        select
+        <include refid="Base_Column_List"/>
+        from user
+    </select>
 </mapper>

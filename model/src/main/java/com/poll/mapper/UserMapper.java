@@ -25,4 +25,6 @@ public interface UserMapper {
     void updateInfo(Integer id, User user);
 
     void operateEnable(Integer id);
+
+    List<User> selectAll();
 }

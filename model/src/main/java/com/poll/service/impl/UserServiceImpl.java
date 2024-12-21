@@ -166,4 +166,9 @@ public class UserServiceImpl implements UserService {
     public void enableOperate(User user) {
         userMapper.operateEnable(user.getUserId());
     }
+
+    @Override
+    public List<User> getAll() {
+        return userMapper.selectAll();
+    }
 }
