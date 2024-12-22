@@ -73,4 +73,10 @@
         on s.poll_id = p.poll_id
         where s.user_id = #{id}
     </select>
+
+    <update id="enableOperate">
+        update poll
+        set enabled = 1 - enabled
+        where poll_id = #{id}
+    </update>
 </mapper>

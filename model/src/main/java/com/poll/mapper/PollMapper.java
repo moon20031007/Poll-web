@@ -19,4 +19,6 @@ public interface PollMapper {
     List<Poll> selectPost(Integer id);
 
     List<Poll> selectStar(Integer id);
+
+    void enableOperate(Integer id);
 }

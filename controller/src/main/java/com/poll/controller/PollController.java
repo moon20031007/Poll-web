@@ -2,10 +2,7 @@ package com.poll.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.poll.DTO.PollInfoDTO;
-import com.poll.pojo.Image;
-import com.poll.pojo.Options;
-import com.poll.pojo.Poll;
-import com.poll.pojo.Topic;
+import com.poll.pojo.*;
 import com.poll.result.Result;
 import com.poll.result.ResultCode;
 import com.poll.service.ImageService;
@@ -91,5 +88,14 @@ public class PollController {
             e.printStackTrace();
             return Result.error(ResultCode.ERROR);
         }
+    }
+
+    @PutMapping("/enable")
+    public Result enable(@RequestHeader("Authorization") String jwt, @RequestBody Poll poll) {
+        if (!JwtUtils.parseJwt(jwt).getIsAdmin()) {
+            return Result.error(ResultCode.PERMISSION_NO_ACCESS);
+        }
+        pollService.enableOperate(poll);
+        return Result.success();
     }
 }

@@ -87,7 +87,7 @@
         where user_id = #{id}
     </update>
 
-    <update id="operateEnable">
+    <update id="enableOperate">
         update user
         set enabled = 1 - enabled
         where user_id = #{id}

@@ -138,10 +138,9 @@ public class UserController {
 
     @GetMapping("/all")
     public Result all(@RequestHeader("Authorization") String jwt) {
-        if (JwtUtils.parseJwt(jwt).getIsAdmin()) {
-            return Result.success(userService.getAll());
-        } else {
+        if (!JwtUtils.parseJwt(jwt).getIsAdmin()) {
             return Result.error(ResultCode.PERMISSION_NO_ACCESS);
         }
+        return Result.success(userService.getAll());
     }
 }

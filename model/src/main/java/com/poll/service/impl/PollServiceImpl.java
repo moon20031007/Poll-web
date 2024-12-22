@@ -149,4 +149,9 @@ public class PollServiceImpl implements PollService {
         }
         return pollId;
     }
+
+    @Override
+    public void enableOperate(Poll poll) {
+        pollMapper.enableOperate(poll.getPollId());
+    }
 }

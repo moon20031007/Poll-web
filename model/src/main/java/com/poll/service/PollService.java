@@ -17,4 +17,6 @@ public interface PollService {
     PollInfoDTO getPollInfo(Integer id);
 
     Integer create(User user, Poll poll, List<Options> options, List<Topic> topics, List<String> Images);
+
+    void enableOperate(Poll poll);
 }
