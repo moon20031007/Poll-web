@@ -27,4 +27,9 @@ public class StarServiceImpl implements StarService {
             starMapper.delete(isStarred.getStarId());
         }
     }
+
+    @Override
+    public Star select(User user, Poll poll) {
+        return starMapper.select(user.getUserId(), poll.getPollId());
+    }
 }

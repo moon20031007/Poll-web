@@ -24,4 +24,9 @@ public class FollowServiceImpl implements FollowService {
             followMapper.delete(isFollowed.getFollowId());
         }
     }
+
+    @Override
+    public Follow select(User follower, User following) {
+        return followMapper.select(follower.getUserId(), following.getUserId());
+    }
 }

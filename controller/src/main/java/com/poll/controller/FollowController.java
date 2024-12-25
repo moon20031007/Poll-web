@@ -1,5 +1,6 @@
 package com.poll.controller;
 
+import com.poll.pojo.Follow;
 import com.poll.pojo.User;
 import com.poll.service.FollowService;
 import com.poll.utils.JwtUtils;
@@ -21,6 +22,21 @@ public class FollowController {
         try {
             followService.followOperate(JwtUtils.parseJwt(jwt), user);
             return Result.success();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.error(ResultCode.ERROR);
+        }
+    }
+
+    @GetMapping("/check")
+    public Result check(@RequestHeader("Authorization") String jwt, @RequestBody User user) {
+        try {
+            Follow follow = followService.select(JwtUtils.parseJwt(jwt), user);
+            if (follow != null) {
+                return Result.success(true);
+            } else {
+                return Result.success(false);
+            }
         } catch (Exception e) {
             e.printStackTrace();
             return Result.error(ResultCode.ERROR);

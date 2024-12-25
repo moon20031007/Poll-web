@@ -1,6 +1,7 @@
 package com.poll.controller;
 
 import com.poll.pojo.Poll;
+import com.poll.pojo.Star;
 import com.poll.result.Result;
 import com.poll.result.ResultCode;
 import com.poll.service.StarService;
@@ -23,6 +24,21 @@ public class StarController {
         try {
             starService.starOperate(JwtUtils.parseJwt(jwt), poll);
             return Result.success();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.error(ResultCode.ERROR);
+        }
+    }
+
+    @GetMapping("/check")
+    public Result check(@RequestHeader("Authorization") String jwt, @RequestBody Poll poll) {
+        try {
+            Star star = starService.select(JwtUtils.parseJwt(jwt), poll);
+            if (star != null) {
+                return Result.success(true);
+            } else {
+                return Result.success(false);
+            }
         } catch (Exception e) {
             e.printStackTrace();
             return Result.error(ResultCode.ERROR);
