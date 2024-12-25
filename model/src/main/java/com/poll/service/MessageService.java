@@ -9,4 +9,8 @@ public interface MessageService {
     void send(User sender, Message message);
 
     MessageInfoDTO getMessages(User user);
+
+    void read(User currentUser, User user);
+
+    Integer getUnreadMessages(User user);
 }

@@ -8,8 +8,7 @@ import com.poll.pojo.User;
 import com.poll.service.MessageService;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class MessageServiceImpl implements MessageService {
@@ -32,21 +31,40 @@ public class MessageServiceImpl implements MessageService {
     public MessageInfoDTO getMessages(User user) {
         List<Message> messages = messageMapper.getMessages(user);
         MessageInfoDTO messageInfoDTO = new MessageInfoDTO();
-        List<User> userList = new ArrayList<>();
+        Map<User, Integer> userList = new HashMap<>();
         messages.forEach(message -> {
             if (message.getSenderId().equals(user.getUserId())) {
-                User receiver = userMapper.selectById(message.getReceiverId());
-                receiver.setPassword(null);
-                userList.add(receiver);
+                message.setIsRead(null);
+            }
+            Integer counterpartUserId = message.getSenderId().equals(user.getUserId()) ? message.getReceiverId() : message.getSenderId();
+            User counterpartUser = userList.keySet().stream().filter(u -> u.getUserId().equals(counterpartUserId)).findFirst().orElse(null);
+            if (counterpartUser == null) {
+                counterpartUser = userMapper.selectById(counterpartUserId);
+                counterpartUser.setPassword(null);
+                if (!message.getIsRead() && message.getReceiverId().equals(user.getUserId())) {
+                    userList.put(counterpartUser, 1);
+                } else {
+                    userList.put(counterpartUser, 0);
+                }
             } else {
-                User sender = userMapper.selectById(message.getSenderId());
-                sender.setPassword(null);
-                userList.add(sender);
+                if (!message.getIsRead() && message.getReceiverId().equals(user.getUserId())) {
+                    userList.merge(counterpartUser, 1, Integer::sum);
+                }
             }
         });
         messageInfoDTO.setMessages(messages);
         messageInfoDTO.setCurrentUser(user);
-        messageInfoDTO.setUserList(userList.stream().distinct().toList());
+        messageInfoDTO.setUserList(userList);
         return messageInfoDTO;
+    }
+
+    @Override
+    public void read(User currentUser, User user) {
+        messageMapper.read(currentUser.getUserId(), user.getUserId());
+    }
+
+    @Override
+    public Integer getUnreadMessages(User user) {
+        return messageMapper.getUnreadMessages(user.getUserId());
     }
 }

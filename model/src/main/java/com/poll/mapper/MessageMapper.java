@@ -12,4 +12,8 @@ public interface MessageMapper {
     void send(Message message);
 
     List<Message> getMessages(User user);
+
+    void read(Integer receiverId, Integer senderId);
+
+    Integer getUnreadMessages(Integer receiverId);
 }

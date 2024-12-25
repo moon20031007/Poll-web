@@ -30,4 +30,16 @@
         where sender_id = #{userId}
         or receiver_id = #{userId}
     </select>
+
+    <update id="read">
+        update message
+        set is_read = 1
+        where receiver_id = #{receiverId} and sender_id = #{senderId}
+    </update>
+
+    <select id="getUnreadMessages" resultType="java.lang.Integer">
+        select count(*)
+        from message
+        where receiver_id = #{receiverId} and is_read = 0
+    </select>
 </mapper>

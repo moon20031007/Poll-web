@@ -5,6 +5,7 @@ import com.poll.pojo.User;
 import lombok.Data;
 
 import java.util.List;
+import java.util.Map;
 
 @Data
 public class MessageInfoDTO {
@@ -13,5 +14,5 @@ public class MessageInfoDTO {
 
     private User currentUser;
 
-    private List<User> userList;
+    private Map<User, Integer> userList;
 }
