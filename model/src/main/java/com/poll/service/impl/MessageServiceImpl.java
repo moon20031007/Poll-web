@@ -33,9 +33,6 @@ public class MessageServiceImpl implements MessageService {
         MessageInfoDTO messageInfoDTO = new MessageInfoDTO();
         Map<User, Integer> userList = new HashMap<>();
         messages.forEach(message -> {
-            if (message.getSenderId().equals(user.getUserId())) {
-                message.setIsRead(null);
-            }
             Integer counterpartUserId = message.getSenderId().equals(user.getUserId()) ? message.getReceiverId() : message.getSenderId();
             User counterpartUser = userList.keySet().stream().filter(u -> u.getUserId().equals(counterpartUserId)).findFirst().orElse(null);
             if (counterpartUser == null) {
@@ -50,6 +47,9 @@ public class MessageServiceImpl implements MessageService {
                 if (!message.getIsRead() && message.getReceiverId().equals(user.getUserId())) {
                     userList.merge(counterpartUser, 1, Integer::sum);
                 }
+            }
+            if (message.getSenderId().equals(user.getUserId())) {
+                message.setIsRead(null);
             }
         });
         messageInfoDTO.setMessages(messages);

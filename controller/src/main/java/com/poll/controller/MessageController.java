@@ -36,6 +36,7 @@ public class MessageController {
             MessageInfoDTO messageInfoDTO = messageService.getMessages(JwtUtils.parseJwt(jwt));
             return Result.success(messageInfoDTO);
         } catch (Exception e) {
+            e.printStackTrace();
             return Result.error(ResultCode.ERROR);
         }
     }
