@@ -21,4 +21,8 @@ public interface PollMapper {
     List<Poll> selectStar(Integer id);
 
     void enableOperate(Integer id);
+
+    List<Poll> selectAll(Integer offset, Integer size);
+
+    List<Poll> search(String keyword);
 }

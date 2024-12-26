@@ -26,5 +26,7 @@ public interface UserMapper {
 
     void enableOperate(Integer id);
 
-    List<User> selectAll();
+    List<User> selectAll(Integer offset, Integer size);
+
+    List<User> search(String keyword);
 }

@@ -98,4 +98,22 @@ public class PollController {
         pollService.enableOperate(poll);
         return Result.success();
     }
+
+    @GetMapping("/all")
+    public Result all(@RequestHeader("Authorization") String jwt, @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int size) {
+        if (!JwtUtils.parseJwt(jwt).getIsAdmin()) {
+            return Result.error(ResultCode.PERMISSION_NO_ACCESS);
+        }
+        return Result.success(pollService.getAll(page, size));
+    }
+
+    @GetMapping("/search")
+    public Result search(@RequestParam String keyword) {
+        try {
+            return Result.success(pollService.search(keyword));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.error(ResultCode.ERROR);
+        }
+    }
 }

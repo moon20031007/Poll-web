@@ -154,4 +154,14 @@ public class PollServiceImpl implements PollService {
     public void enableOperate(Poll poll) {
         pollMapper.enableOperate(poll.getPollId());
     }
+
+    @Override
+    public List<Poll> getAll(Integer page, Integer size) {
+        return pollMapper.selectAll((page - 1) * size, size);
+    }
+
+    @Override
+    public List<Poll> search(String keyword) {
+        return pollMapper.search(keyword);
+    }
 }

@@ -168,7 +168,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> getAll() {
-        return userMapper.selectAll();
+    public List<User> getAll(Integer page, Integer size) {
+        return userMapper.selectAll((page - 1) * size, size);
+    }
+
+    @Override
+    public List<User> search(String keyword) {
+        List<User> users = userMapper.search(keyword);
+        users.forEach(user -> {
+            user.setPassword(null);
+            user.setIsAdmin(null);
+        });
+        return users;
     }
 }

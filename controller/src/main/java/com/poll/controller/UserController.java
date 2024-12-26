@@ -137,10 +137,20 @@ public class UserController {
     }
 
     @GetMapping("/all")
-    public Result all(@RequestHeader("Authorization") String jwt) {
+    public Result all(@RequestHeader("Authorization") String jwt, @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int size) {
         if (!JwtUtils.parseJwt(jwt).getIsAdmin()) {
             return Result.error(ResultCode.PERMISSION_NO_ACCESS);
         }
-        return Result.success(userService.getAll());
+        return Result.success(userService.getAll(page, size));
+    }
+
+    @GetMapping("/search")
+    public Result search(@RequestParam String keyword) {
+        try {
+            return Result.success(userService.search(keyword));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.error(ResultCode.ERROR);
+        }
     }
 }

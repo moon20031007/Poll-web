@@ -97,5 +97,13 @@
         select
         <include refid="Base_Column_List"/>
         from user
+        limit #{size} offset #{offset}
+    </select>
+
+    <select id="search" resultType="com.poll.pojo.User">
+        select
+        <include refid="Base_Column_List"/>
+        from user
+        where username like concat('%', #{keyword}, '%')
     </select>
 </mapper>

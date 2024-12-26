@@ -29,5 +29,7 @@ public interface UserService {
 
     void enableOperate(User user);
 
-    List<User> getAll();
+    List<User> getAll(Integer page, Integer size);
+
+    List<User> search(String keyword);
 }

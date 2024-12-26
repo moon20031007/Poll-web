@@ -19,4 +19,8 @@ public interface PollService {
     Integer create(User user, Poll poll, List<Options> options, List<Topic> topics, List<String> Images);
 
     void enableOperate(Poll poll);
+
+    List<Poll> getAll(Integer page, Integer size);
+
+    List<Poll> search(String keyword);
 }

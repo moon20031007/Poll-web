@@ -79,4 +79,18 @@
         set enabled = 1 - enabled
         where poll_id = #{id}
     </update>
+
+    <select id="selectAll" resultType="com.poll.pojo.Poll">
+        select
+        <include refid="Base_Column_List"/>
+        from poll
+        limit #{size} offset #{offset}
+    </select>
+
+    <select id="search" resultType="com.poll.pojo.Poll">
+        select
+        <include refid="Base_Column_List"/>
+        from poll
+        where title like concat('%', #{keyword}, '%')
+    </select>
 </mapper>
