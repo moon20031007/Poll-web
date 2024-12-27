@@ -78,14 +78,7 @@
                     <ul class="nav top-2" id="nav-links">
                         <!-- Home link will be inserted here dynamically -->
                     </ul>
-                    <div class="search-open">
-                        <div class="input-append">
-                            <form action="searchResult.html" method="get">
-                                <input type="text" class="span3" placeholder="Search" name="query"/>
-                                <button type="submit" class="btn-u">Go</button>
-                            </form>
-                        </div>
-                    </div>
+                    
                 </div><!-- /nav-collapse -->
             </div><!-- /navbar-inner -->
         </div><!-- /navbar -->
@@ -305,7 +298,7 @@
         homeLi.appendChild(homeA);
         navLinks.appendChild(homeLi);
 
-        fetch('/topic/all') // Replace with your actual API endpoint
+        fetch('/topic/all')
             .then(response => response.json())
             .then(data => {
                 if (data.code === 0 && Array.isArray(data.data)) {
@@ -320,6 +313,11 @@
                         li.innerHTML += '<b class="caret-out"></b>';
                         navLinks.appendChild(li);
                     });
+
+                    // After all topics are added, append the new <li> element
+                    const searchLi = document.createElement('li');
+                    searchLi.innerHTML = `<a class="search" href="/searchResult"><i class="icon-search search-btn"></i></a>`;
+                    navLinks.appendChild(searchLi);
                 }
             })
             .catch(error => console.error('Error fetching topics:', error));
@@ -577,10 +575,10 @@ window.addEventListener('load', async () => {
     }
 
     document.addEventListener('DOMContentLoaded', function() {
-        fetch('/vote/recent') // 请替换为实际的API路径
+        fetch('/vote/recent')
             .then(response => response.json())
             .then(data => {
-                if (data.code === 0) { // 请求成功
+                if (data.code === 0) {
                     const container = document.getElementById('recent-votes');
                     Object.entries(data.data).forEach(([key, value]) => {
                         const voteInfo = key.match(/voteId=(\d+)/);
