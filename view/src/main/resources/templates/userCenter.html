@@ -601,7 +601,7 @@
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    alert('Failed to follow user.');
+
                 });
         });
 
@@ -629,10 +629,10 @@
                 $('#profilePicture').attr('src', `/static/avatar/${userData.user.avatar}`).show();
                 $('#purchaseProfilePicture').attr('src', `/static/avatar/${userData.user.avatar}`).show();
                 $('#uploadPlaceholder').hide();
+                console.log('currentUserId set to:', currentUserId); // Debugging log
             })
             .catch(error => {
                 console.error('Error loading user info:', error);
-                alert('Failed to load user information.');
             });
     }
 
@@ -640,6 +640,45 @@
         const pathArray = window.location.pathname.split('/');
         return pathArray[pathArray.length - 1]; // Last segment of the URL is the username
     }
+
+    function followUser(userId) {
+    if (!userId) {
+        console.error('No userId provided to followUser function');
+        return;
+    }
+    const userToFollow = { userId: userId };
+
+    console.log('Sending follow request with userId:', userId); // Debugging log
+
+    instance.put('follow/operate', userToFollow)
+        .then(response => {
+            console.log('Server response:', response.data); // Debugging log
+            if (response.data.code === 0) { // Assuming success code is 0
+                alert('Successfully followed!');
+                // Optionally, update UI to reflect the change
+                $('#followButton').prop('disabled', true).text('Following');
+            } else {
+                alert('Failed to follow user.');
+            }
+        })
+        .catch(error => {
+            console.error('Error following user:', error.response ? error.response.data : error.message);
+            alert('An error occurred while trying to follow the user.');
+        });
+}
+
+$(document).ready(function() {
+    loadUserInfo();
+
+    $('#followButton').on('click', function() {
+        if (currentUserId) {
+            followUser(currentUserId); // 使用 currentUserId 作为参数传递给后端接口
+        } else {
+            console.error('currentUserId not found when clicking follow button');
+            alert('Current user ID not found.');
+        }
+    });
+});
 
     function updateUIWithUserData(userData) {
         $('#userNameDisplay').text(userData.user.username);
