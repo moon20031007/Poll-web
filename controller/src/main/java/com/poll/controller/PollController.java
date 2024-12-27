@@ -7,6 +7,7 @@ import com.poll.result.Result;
 import com.poll.result.ResultCode;
 import com.poll.service.ImageService;
 import com.poll.service.PollService;
+import com.poll.service.VoteService;
 import com.poll.utils.JwtUtils;
 import com.poll.utils.SaveImageUtils;
 import org.springframework.web.bind.annotation.*;
@@ -20,11 +21,9 @@ import java.util.*;
 public class PollController {
 
     private final PollService pollService;
-    private final ImageService imageService;
 
-    public PollController(PollService pollService, ImageService imageService) {
+    public PollController(PollService pollService) {
         this.pollService = pollService;
-        this.imageService = imageService;
     }
 
     @GetMapping("/main")

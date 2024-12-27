@@ -1,5 +1,6 @@
 package com.poll.controller;
 
+import com.poll.pojo.Poll;
 import com.poll.pojo.User;
 import com.poll.pojo.Vote;
 import com.poll.result.Result;
@@ -37,6 +38,16 @@ public class VoteController {
         try {
             Map<Vote, User> recentVotes = voteService.recent();
             return Result.success(recentVotes);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.error(ResultCode.ERROR);
+        }
+    }
+
+    @GetMapping("/check")
+    public Result check(@RequestHeader("Authorization") String jwt, @RequestBody Poll poll) {
+        try {
+            return Result.success(voteService.check(JwtUtils.parseJwt(jwt), poll));
         } catch (Exception e) {
             e.printStackTrace();
             return Result.error(ResultCode.ERROR);

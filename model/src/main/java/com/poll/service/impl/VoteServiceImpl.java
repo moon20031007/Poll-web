@@ -2,6 +2,7 @@ package com.poll.service.impl;
 
 import com.poll.mapper.UserMapper;
 import com.poll.mapper.VoteMapper;
+import com.poll.pojo.Poll;
 import com.poll.pojo.User;
 import com.poll.pojo.Vote;
 import com.poll.service.VoteService;
@@ -49,5 +50,10 @@ public class VoteServiceImpl implements VoteService {
             map.put(vote, userToPut);
         });
         return map;
+    }
+
+    @Override
+    public List<Vote> check(User user, Poll poll) {
+        return voteMapper.check(user.getUserId(), poll.getPollId());
     }
 }

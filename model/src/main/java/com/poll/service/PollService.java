@@ -22,5 +22,5 @@ public interface PollService {
 
     List<Poll> getAll(Integer page, Integer size);
 
-    List<Poll> search(String keyword);
+    List<PollInfoDTO> search(String keyword);
 }

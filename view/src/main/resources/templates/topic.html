@@ -305,7 +305,7 @@
         homeLi.appendChild(homeA);
         navLinks.appendChild(homeLi);
 
-        fetch('/topic/all') // Replace with your actual API endpoint
+        fetch('/topic/all')
             .then(response => response.json())
             .then(data => {
                 if (data.code === 0 && Array.isArray(data.data)) {
@@ -320,6 +320,11 @@
                         li.innerHTML += '<b class="caret-out"></b>';
                         navLinks.appendChild(li);
                     });
+
+                    // After all topics are added, append the new <li> element
+                    const searchLi = document.createElement('li');
+                    searchLi.innerHTML = `<a class="search" href="/searchResult"><i class="icon-search search-btn"></i></a>`;
+                    navLinks.appendChild(searchLi);
                 }
             })
             .catch(error => console.error('Error fetching topics:', error));
