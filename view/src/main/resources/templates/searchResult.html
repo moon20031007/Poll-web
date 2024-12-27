@@ -34,18 +34,27 @@
 <body>
 <!--=== Top ===-->
 <div class="top">
-    <div class="container">
-        <ul class="loginbar pull-right">
-            <li style="visibility:visible;"><a href="login" class="login-btn">Login</a></li>
-            <li class="devider" style="visibility:visible;">&nbsp;</li>
-            <li style="visibility:visible;"><a href="register" class="login-btn">Register</a></li>
-            <li class="devider" style="visibility:visible;">&nbsp;</li>
-            <li style="visibility:visible;"><a href="userCenter.html" class="login-btn" style="text-transform: none;"><img class="media-object" src="assets/img/unlogin.png" alt="" /> UserCenter</a></li>
-            <li class="devider" style="visibility:visible;">&nbsp;</li>
-            <li style="visibility:visible;"><a href="messages" class="login-btn">Messages</a></li>
-            <li class="devider" style="visibility:visible;">&nbsp;</li>
-            <li style="visibility:visible;"><a href="login.html" class="login-btn">Log out</a></li>
-        </ul>
+    <div id="status" class="container">
+        <!-- Unauthenticated state -->
+        <div id="unauthenticated" style="display: block;">
+            <ul class="loginbar pull-right">
+                <li><a href="/login" class="login-btn">Login</a></li>
+                <li class="divider">&nbsp;</li>
+                <li><a href="/register" class="login-btn">Register</a></li>
+            </ul>
+        </div>
+        <!-- Authenticated state -->
+        <div id="authenticated" style="display: none;">
+            <ul class="loginbar pull-right">
+                <li><a href="userCenter.html" class="login-btn" style="text-transform: none;">
+                    <img class="media-object" src="assets/img/unlogin.png" alt="" /> UserCenter
+                </a></li>
+                <li class="divider">&nbsp;</li>
+                <li><a href="/messages" class="login-btn">Messages</a></li>
+                <li class="divider">&nbsp;</li>
+                <li><a href="#" id="logout-link" class="login-btn">Log out</a></li>
+            </ul>
+        </div>
     </div>
 </div><!--/top-->
 <!--=== End Top ===-->
@@ -61,46 +70,12 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
-                </a><!-- /nav-collapse -->
-                <div class="nav-collapse collapse">
-                    <ul class="nav top-2">
-                        <li class="active">
-                            <a href="/" class="dropdown-toggle" data-toggle="dropdown">Home
-                            </a>
-                            <b class="caret-out"></b>
-                        </li>
-                        <li>
-                            <a href="mainpage.html" class="dropdown-toggle" data-toggle="dropdown">Daily life
-                            </a>
-                            <b class="caret-out"></b>
-                        </li>
-                        <li>
-                            <a href="mainpage.html" class="dropdown-toggle" data-toggle="dropdown">Entertainment
-                            </a>
-                            <b class="caret-out"></b>
-                        </li>
-                        <li>
-                            <a href="mainpage.html" class="dropdown-toggle" data-toggle="dropdown">Artwork
-                            </a>
-                            <b class="caret-out"></b>
-                        </li>
-                        <li>
-                            <a href="mainpage.html" class="dropdown-toggle" data-toggle="dropdown">Sport
-                            </a>
-                            <b class="caret-out"></b>
-                        </li>
-                        <li>
-                            <a href="mainpage.html" class="dropdown-toggle" data-toggle="dropdown">Social Event
-                            </a>
-                            <b class="caret-out"></b>
-                        </li>
-                        <li>
-                            <a href="mainpage.html" class="dropdown-toggle" data-toggle="dropdown">Fashion
-                            </a>
-                            <b class="caret-out"></b>
-                        </li>
-                        <li><a class="search"><i class="icon-search search-btn"></i></a></li>
+                </a>
+                <div class="nav-collapse collapse" id="dynamic-nav">
+                    <ul class="nav top-2" id="nav-links">
+                        <!-- Home link will be inserted here dynamically -->
                     </ul>
+
                 </div><!-- /nav-collapse -->
             </div><!-- /navbar-inner -->
         </div><!-- /navbar -->
@@ -112,175 +87,24 @@
 <div class="container">
     <div class="row-fluid">
         <div class="span10">
-            <div class="input-area">
-                <input type="text" id="searchInput" >
-                <button onclick="sendMessage()">Search</button>
-            </div>
+            <form id="searchForm" class="input-area">
+                <input type="text" name="keyword" id="searchInput" placeholder="Enter search keyword" />
+                <button type="submit">Search</button>
+            </form>
             <div class="headline"><h3>Search Results</h3></div>
-            <ul class="nav nav-tabs tabs">
-                <li class="active"><a href="#post" data-toggle="tab">Search Qustion</a></li>
+            <ul class="nav nav-tabs tabs" id="searchTabs">
+                <li class="active"><a href="#post" data-toggle="tab">Search Question</a></li>
                 <li><a href="#comments" data-toggle="tab">Search User</a></li>
             </ul><!--/tabs-->
             <div class="tab-content margin-bottom-20">
                 <div class="tab-pane active" id="post">
-                    <!-- Accardion -->
-                    <div class="accordion acc-home margin-bottom-40" id="accordion2">
-                        <div class="accordion-group">
-                            <div class="accordion-heading">
-                                <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseOne">
-                                    Do you think my photography skill is good? <div style="float:right;font-size: 15px;margin-left:5px;">  Charry</div><img class="media-object" src="assets/img/sliders/elastislide/2.jpg" alt="" style="width:18px; display:inline; float:right; " />
-                                </a>
-                            </div>
-                            <div id="collapseOne" class="accordion-body in collapse" style="height: auto;">
-                                <div class="accordion-inner">
-                                    <p>Your photos are very nice ! where did you travel and I wish I could visit ! And could you teach me how to take a nice photo? Last time I visited Italy and viewed some perfect scenery, but pictures that I took was not so good. Your photos are very nice ! where did you travel and I wish I could visit ! And could you teach me how to take a nice photo? Last time I visited Italy and viewed some perfect scenery, but pictures that I took was not so good.<a href="#">Learn More</a></p>
-                                </div>
-                            </div>
-                        </div><!--/accordion-group-->
-                        <div class="accordion-group">
-                            <div class="accordion-heading">
-                                <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseTwo">
-                                    Which picture that I took do you prefer?<div style="float:right;font-size: 15px;margin-left:5px;">  Charry</div><img class="media-object" src="assets/img/sliders/elastislide/2.jpg" alt="" style="width:18px; display:inline; float:right; " />
-                                </a>
-                            </div>
-                            <div id="collapseTwo" class="accordion-body collapse" style="height: 0px;">
-                                <div class="accordion-inner">
-                                    Your photos are very nice ! where did you travel and I wish I could visit ! And could you teach me how to take a nice photo? Last time I visited Italy and viewed some perfect scenery, but pictures that I took was not so good. Your photos are very nice ! where did you travel and I wish I could visit ! And could you teach me how to take a nice photo? Last time I visited Italy and viewed some perfect scenery, but pictures that I took was not so good.<a href="#">Learn More</a>
-                                </div>
-                            </div>
-                        </div><!--/accordion-group-->
-                        <div class="accordion-group">
-                            <div class="accordion-heading">
-                                <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseThree">
-                                    I want to travel these place, so which one is first choosed if I can only go to one place?<div style="float:right;font-size: 15px;margin-left:5px;">  Charry</div><img class="media-object" src="assets/img/sliders/elastislide/2.jpg" alt="" style="width:18px; display:inline; float:right; " />
-                                </a>
-                            </div>
-                            <div id="collapseThree" class="accordion-body collapse" style="height: 0px;">
-                                <div class="accordion-inner">
-                                    Your photos are very nice ! where did you travel and I wish I could visit ! And could you teach me how to take a nice photo? Last time I visited Italy and viewed some perfect scenery, but pictures that I took was not so good. Your photos are very nice ! where did you travel and I wish I could visit ! And could you teach me how to take a nice photo? Last time I visited Italy and viewed some perfect scenery, but pictures that I took was not so good.<a href="#">Learn More</a>
-                                </div>
-                            </div>
-                        </div><!--/accordion-group-->
-                        <div class="accordion-group">
-                            <div class="accordion-heading">
-                                <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseFour">
-                                    which design draft for my new house is more suited for my family?<div style="float:right;font-size: 15px;margin-left:5px;">  Charry</div><img class="media-object" src="assets/img/sliders/elastislide/2.jpg" alt="" style="width:18px; display:inline; float:right; " />
-                                </a>
-                            </div>
-                            <div id="collapseFour" class="accordion-body collapse" style="height: 0px;">
-                                <div class="accordion-inner">
-                                    Your photos are very nice ! where did you travel and I wish I could visit ! And could you teach me how to take a nice photo? Last time I visited Italy and viewed some perfect scenery, but pictures that I took was not so good. Your photos are very nice ! where did you travel and I wish I could visit ! And could you teach me how to take a nice photo? Last time I visited Italy and viewed some perfect scenery, but pictures that I took was not so good.<a href="#">Learn More</a>
-                                </div>
-                            </div>
-                        </div><!--/accordion-group-->
-                        <div class="accordion-group">
-                            <div class="accordion-heading">
-                                <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseFive">
-                                    The cloud in the sky today is pretty beautiful! Do you agree?<div style="float:right;font-size: 15px;margin-left:5px;">  Charry</div><img class="media-object" src="assets/img/sliders/elastislide/2.jpg" alt="" style="width:18px; display:inline; float:right; " />
-                                </a>
-                            </div>
-                            <div id="collapseFive" class="accordion-body collapse" style="height: 0px;">
-                                <div class="accordion-inner">
-                                    Your photos are very nice ! where did you travel and I wish I could visit ! And could you teach me how to take a nice photo? Last time I visited Italy and viewed some perfect scenery, but pictures that I took was not so good. Your photos are very nice ! where did you travel and I wish I could visit ! And could you teach me how to take a nice photo? Last time I visited Italy and viewed some perfect scenery, but pictures that I took was not so good.<a href="#">Learn More</a>
-                                </div>
-                            </div>
-                        </div><!--/accordion-group-->
-                    </div><!--/accardion-->
+                    <!-- Accardion for Questions -->
+                    <div class="accordion acc-home margin-bottom-40" id="accordion2"></div>
                 </div> <!--/tab-pane-->
                 <div class="tab-pane" id="comments">
-                    <ul class="thumbnails team">
-                        <li class="span3">
-                            <div class="thumbnail-style">
-                                <a href="userCenter.html">
-                                    <img src="assets/img/others/2.jpg" alt="" /></a>
-                                <h3><a href="userCenter.html">Jack Bour</a></h3>
-                                <small><a class="glyphicons no-js user"><i></i></a>
-                                    <a class="glyphicons no-js calendar" style="margin-left: 40px;width:20px;"><i></i></a><span style="font-size:18px;">34</span>
-                                </small>
-                                <p>Hello everyone, I'm happy to share my questions to you and make a vote for you. I am insterested in Sport, Life and Fashion topic's questions. </p>
-                            </div>
-                        </li>
-                        <li class="span3">
-                            <div class="thumbnail-style">
-                                <a href="userCenter.html">
-                                    <img src="assets/img/others/7.jpg" alt="" /></a>
-                                <h3><a href="userCenter.html">Kate Metus</a></h3>
-                                <small><a class="glyphicons no-js woman"><i></i></a>
-                                    <a class="glyphicons no-js calendar" style="margin-left: 40px;width:20px;"><i></i></a><span style="font-size:18px;">32</span>
-                                </small>
-                                <p>Hello everyone, I'm happy to share my questions to you and make a vote for you. I am insterested in Sport, Life and Fashion topic's questions. </p>
-                            </div>
-                        </li>
-                        <li class="span3">
-                            <div class="thumbnail-style">
-                                <a href="userCenter.html">
-                                    <img src="assets/img/others/3.jpg" alt="" /></a>
-                                <h3><a href="userCenter.html">Porta Gravida</a></h3>
-                                <small><a class="glyphicons no-js woman"><i></i></a>
-                                    <a class="glyphicons no-js calendar" style="margin-left: 40px;width:20px;"><i></i></a><span style="font-size:18px;">35</span>
-                                </small>
-                                <p>Hello everyone, I'm happy to share my questions to you and make a vote for you. I am insterested in Sport, Life and Fashion topic's questions. </p>
-                            </div>
-                        </li>
-                        <li class="span3">
-                            <div class="thumbnail-style">
-                                <a href="userCenter.html">
-                                    <img src="assets/img/others/6.jpg" alt="" /></a>
-                                <h3><a href="userCenter.html">Donec Elit</a></h3>
-                                <small><a class="glyphicons no-js user"><i></i></a>
-                                    <a class="glyphicons no-js calendar" style="margin-left: 40px;width:20px;"><i></i></a><span style="font-size:18px;">29</span>
-                                </small>
-                                <p>Hello everyone, I'm happy to share my questions to you and make a vote for you. I am insterested in Sport, Life and Fashion topic's questions. </p>
-                            </div>
-                        </li>
-                    </ul><!--/thumbnails-->
-                    <ul class="thumbnails team">
-                        <li class="span3">
-                            <div class="thumbnail-style">
-                                <a href="userCenter.html">
-                                    <img src="assets/img/others/2.jpg" alt="" /></a>
-                                <h3><a href="userCenter.html">Jack Bour</a></h3>
-                                <small><a class="glyphicons no-js user"><i></i></a>
-                                    <a class="glyphicons no-js calendar" style="margin-left: 40px;width:20px;"><i></i></a><span style="font-size:18px;">34</span>
-                                </small>
-                                <p>Hello everyone, I'm happy to share my questions to you and make a vote for you. I am insterested in Sport, Life and Fashion topic's questions. </p>
-                            </div>
-                        </li>
-                        <li class="span3">
-                            <div class="thumbnail-style">
-                                <a href="userCenter.html">
-                                    <img src="assets/img/others/7.jpg" alt="" /></a>
-                                <h3><a href="userCenter.html">Kate Metus</a></h3>
-                                <small><a class="glyphicons no-js woman"><i></i></a>
-                                    <a class="glyphicons no-js calendar" style="margin-left: 40px;width:20px;"><i></i></a><span style="font-size:18px;">32</span>
-                                </small>
-                                <p>Hello everyone, I'm happy to share my questions to you and make a vote for you. I am insterested in Sport, Life and Fashion topic's questions. </p>
-                            </div>
-                        </li>
-                        <li class="span3">
-                            <div class="thumbnail-style">
-                                <a href="userCenter.html">
-                                    <img src="assets/img/others/3.jpg" alt="" /></a>
-                                <h3><a href="userCenter.html">Porta Gravida</a></h3>
-                                <small><a class="glyphicons no-js woman"><i></i></a>
-                                    <a class="glyphicons no-js calendar" style="margin-left: 40px;width:20px;"><i></i></a><span style="font-size:18px;">35</span>
-                                </small>
-                                <p>Hello everyone, I'm happy to share my questions to you and make a vote for you. I am insterested in Sport, Life and Fashion topic's questions. p>
-                            </div>
-                        </li>
-                        <li class="span3">
-                            <div class="thumbnail-style">
-                                <a href="userCenter.html">
-                                    <img src="assets/img/others/6.jpg" alt="" /></a>
-                                <h3><a href="userCenter.html">Donec Elit</a></h3>
-                                <small><a class="glyphicons no-js user"><i></i></a>
-                                    <a class="glyphicons no-js calendar" style="margin-left: 40px;width:20px;"><i></i></a><span style="font-size:18px;">29</span>
-                                </small>
-                                <p>Hello everyone, I'm happy to share my questions to you and make a vote for you. I am insterested in Sport, Life and Fashion topic's questions. </p>
-                            </div>
-                        </li>
-                    </ul><!--/thumbnails-->
-                </div>
+                    <!-- List for Users -->
+                    <div class="user-list" id="userList"></div>
+                </div> <!--/tab-pane-->
             </div>
         </div><!--/span8-->
 
@@ -305,6 +129,342 @@
 </div><!--/copyright-->
 <!--=== End Copyright ===-->
 
+<script type="module">
+    // Function to check if the user is logged in based on the presence of an auth token.
+    function isLoggedIn() {
+        const token = localStorage.getItem('authToken');
+        console.log('Checking login status:', !!token, 'Token:', token);
+        return !!token && token.trim(); // Ensure the token is not just whitespace
+    }
+
+    // Function to toggle visibility of authentication states.
+    function toggleAuthState() {
+    console.log('Toggling authentication state...');
+    const unauthenticatedDiv = document.getElementById('unauthenticated');
+    const authenticatedDiv = document.getElementById('authenticated');
+
+    if (isLoggedIn()) {
+        console.log('User is logged in.');
+        unauthenticatedDiv.style.display = 'none';
+        authenticatedDiv.style.display = 'block';
+
+        // Fetch user information and update the DOM elements accordingly.
+        instance.get('/user/check')
+            .then(response => {
+                console.log('User info:', response.data);
+                const userData = response.data.data;
+
+                // Update the User Center link with the username.
+                const userCenterLink = document.querySelector('#authenticated ul li a[href="userCenter.html"]');
+                if (userCenterLink) {
+                    userCenterLink.href = `/userCenter/${userData.username}`;
+                    userCenterLink.textContent = `UserCenter`;
+                }
+
+                // Update the avatar image source if available.
+                const avatarImg = document.querySelector('#authenticated img.media-object');
+                if (avatarImg && userData.avatar) {
+                    avatarImg.src = userData.avatar;
+                }
+            })
+            .catch(error => {
+                console.error('Error checking user info:', error);
+            });
+    } else {
+        console.log('User is not logged in.');
+        unauthenticatedDiv.style.display = 'block';
+        authenticatedDiv.style.display = 'none';
+    }
+}
+
+    // Function to handle logout process.
+    async function logout(event) {
+        event.preventDefault(); // Prevent default link behavior.
+
+        try {
+            // Optionally, you can make a request to your server to invalidate the token.
+            // await instance.post('/user/logout'); // Uncomment this line if needed.
+
+            // Remove the token from local storage.
+            localStorage.removeItem('authToken');
+            console.log('User logged out.');
+
+            // Toggle the authentication state display.
+            toggleAuthState();
+
+            // Optionally, you can redirect to a different page or refresh the current one.
+            // window.location.reload(); // Uncomment this line if you want to reload the page.
+        } catch (error) {
+            console.error('Error during logout:', error);
+        }
+    }
+
+    // Existing login function with added call to toggleAuthState upon successful login.
+    async function login(event) {
+        event.preventDefault(); // Prevent form's default submit behavior.
+
+        try {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            await instance.post('/user/login', {
+                email: email,
+                password: password
+            }).then(response => {
+                if (response.data.code == 0) {
+                    alert("success");
+                    const token = response.data.data;
+                    if (token) {
+                        localStorage.setItem('authToken', token);
+                        console.log('Token stored successfully:', token);
+
+                        // Debugging: Check if token is being sent in headers
+                        console.log('Authorization header:', { authorization: `Bearer ${token}` });
+
+                        toggleAuthState(); // Update nav links after successful login.
+                    } else {
+                        console.warn('No token received from the server.');
+                    }
+                } else {
+                    throw new Error('Login failed with code: ' + response.data.msg);
+                }
+            }).catch(error => {
+                alert("error");
+            });
+
+        } catch (error) {
+            console.error('Error during login:', error);
+        }
+    }
+
+    // Add event listener for logout link
+    document.addEventListener('DOMContentLoaded', () => {
+        const logoutLink = document.getElementById('logout-link');
+        if (logoutLink) {
+            logoutLink.addEventListener('click', logout);
+        }
+
+        // Initialize the authentication state when the DOM is fully loaded.
+        console.log('DOM fully loaded, initializing authentication state...');
+        toggleAuthState();
+    });
+
+    // Listen for form submission.
+    document.addEventListener('DOMContentLoaded', () => {
+        const loginForm = document.getElementById('loginForm');
+        if (loginForm) {
+            loginForm.addEventListener('submit', login);
+        }
+    });
+
+    // Prevent double submission on "Log in" button click.
+    document.addEventListener('DOMContentLoaded', () => {
+        const submitButton = document.querySelector('.submit');
+        if (submitButton) {
+            submitButton.addEventListener('click', function(event) {
+                login(event); // Call login function and pass event object.
+            });
+        }
+    });
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Create the Home link and add it to the navigation bar
+        const navLinks = document.getElementById('nav-links');
+        const homeLi = document.createElement('li');
+        const homeA = document.createElement('a');
+        homeA.href = '/'; // URL for the home page
+        homeA.textContent = 'Home';
+        homeLi.appendChild(homeA);
+        navLinks.appendChild(homeLi);
+
+        fetch('/topic/all')
+            .then(response => response.json())
+            .then(data => {
+                if (data.code === 0 && Array.isArray(data.data)) {
+                    data.data.forEach(topic => {
+                        const li = document.createElement('li');
+                        const a = document.createElement('a');
+                        a.href = `/topic/${topic.topicId}`; // New URL format using topicId
+                        a.textContent = topic.name;
+                        a.className = 'dropdown-toggle';
+                        a.setAttribute('data-toggle', 'dropdown');
+                        li.appendChild(a);
+                        li.innerHTML += '<b class="caret-out"></b>';
+                        navLinks.appendChild(li);
+                    });
+
+                    // After all topics are added, append the new <li> element
+                    const searchLi = document.createElement('li');
+                    searchLi.innerHTML = `<a class="search" href="/searchResult"><i class="icon-search search-btn"></i></a>`;
+                    navLinks.appendChild(searchLi);
+                }
+            })
+            .catch(error => console.error('Error fetching topics:', error));
+    });
+</script>
+
+<script>
+    document.getElementById('searchForm').addEventListener('submit', function(event) {
+        event.preventDefault(); // 阻止表单默认提交行为
+
+        // 获取用户输入的关键词
+        var keyword = this.elements['keyword'].value;
+
+        // 使用fetch API发送GET请求到服务器端的/search接口
+        fetch(`/user/search?keyword=${encodeURIComponent(keyword)}`)
+            .then(response => response.json())
+            .then(data => console.log('Search result:', data))
+            .catch(error => console.error('Error:', error));
+    });
+</script>
+
+<script>
+    document.getElementById('searchForm').addEventListener('submit', function(event) {
+        event.preventDefault(); // 阻止表单默认提交行为
+
+        // 获取用户输入的关键词
+        const keyword = this.elements['keyword'].value;
+
+        // 获取当前激活的选项卡链接
+        const activeTabLink = document.querySelector('.nav-tabs .active a');
+        const activeTabId = activeTabLink.getAttribute('href');
+
+        // 根据激活的选项卡调用相应的搜索函数，并更新URL hash
+        if (activeTabId === '#post') {
+            searchQuestions(keyword);
+            window.location.hash = 'post';
+        } else if (activeTabId === '#comments') {
+            searchUsers(keyword);
+            window.location.hash = 'comments';
+        }
+    });
+
+    // 监听选项卡切换事件，确保点击时正确激活对应的选项卡并更新URL hash
+    document.querySelectorAll('#searchTabs a').forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault(); // 阻止默认行为
+
+            // 切换选项卡并更新激活状态
+            const targetTabId = this.getAttribute('href');
+            document.querySelectorAll('#searchTabs li').forEach(li => li.classList.remove('active'));
+            this.parentElement.classList.add('active');
+
+            // 显示对应的内容区，并隐藏其他内容区
+            document.querySelectorAll('.tab-pane').forEach(tabPane => tabPane.classList.remove('active'));
+            document.querySelector(targetTabId).classList.add('active');
+
+            // 更新URL hash
+            window.location.hash = targetTabId.substring(1);
+
+            // 如果有搜索关键词，则执行相应的搜索
+            const keyword = document.getElementById('searchInput').value;
+            if (keyword) {
+                if (targetTabId === '#post') {
+                    searchQuestions(keyword);
+                } else if (targetTabId === '#comments') {
+                    searchUsers(keyword);
+                }
+            }
+        });
+    });
+
+    // 初始化页面时根据URL hash选择激活的选项卡
+    function initializeTabs() {
+        const hash = window.location.hash;
+        if (hash === '#post' || hash === '#comments') {
+            const tabLink = document.querySelector(`a[href="${hash}"]`);
+            if (tabLink) {
+                tabLink.click();
+            }
+        } else {
+            // 默认激活第一个选项卡
+            document.querySelector('#searchTabs li:first-child a').click();
+        }
+    }
+
+    window.onload = initializeTabs;
+
+    function searchQuestions(keyword) {
+        fetch(`/poll/search?keyword=${encodeURIComponent(keyword)}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.code === 0) { // 检查是否成功
+                    populateQuestionResults(data.data);
+                } else {
+                    console.error('Search questions failed:', data.msg);
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    }
+
+    function searchUsers(keyword) {
+        fetch(`/user/search?keyword=${encodeURIComponent(keyword)}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.code === 0) { // 检查是否成功
+                    populateUserResults(data.data);
+                } else {
+                    console.error('Search users failed:', data.msg);
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    }
+
+    function populateQuestionResults(results) {
+        const accordion = document.querySelector('#accordion2');
+        accordion.innerHTML = ''; // 清空之前的搜索结果
+
+        results.forEach(item => {
+            const poll = item.poll || {}; // 确保poll对象存在
+            const creator = item.creator || {};
+
+            const group = document.createElement('div');
+            group.className = 'accordion-group';
+
+            const heading = `<div class="accordion-heading">
+                                <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion2" href="/commentpage/${poll.pollId}">
+                                    ${poll.title || 'No Title'}
+                                    <div style="float:right;font-size: 15px;margin-left:5px;">
+                                        ${creator.username || 'Unknown'}
+                                    </div>
+                                    <p>${poll.description ? poll.description.replace(/<[^>]+>/g, '') : 'No description available'}</p>
+                                </a>
+                             </div>`;
+
+            group.innerHTML = heading;
+            accordion.appendChild(group);
+        });
+    }
+
+    function populateUserResults(users) {
+    const userList = document.querySelector('#userList');
+    userList.innerHTML = ''; // 清空之前的搜索结果
+
+    users.forEach(user => {
+        const userItem = document.createElement('div');
+        userItem.className = 'user-item media'; // 使用media对象样式
+
+        userItem.innerHTML = `
+            <div class="media-left">
+                <a href="/userCenter/${encodeURIComponent(user.username)}">
+                    <img class="avatar media-object" src="/static/avatar/${user.avatar || 'default.png'}" alt="Avatar" style="width: 64px; height: 64px; border-radius: 50%;" />
+                </a>
+            </div>
+            <div class="media-body">
+                <h4 class="media-heading">
+                    <a href="/userCenter/${encodeURIComponent(user.username)}">${user.username || 'Unknown'}</a>
+                </h4>
+                <p>${user.email || 'Email not provided'}</p>
+                <p>${user.profile || 'No profile available'}</p>
+            </div>
+        `;
+
+        userList.appendChild(userItem);
+    });
+}
+</script>
 
 </body>
 
