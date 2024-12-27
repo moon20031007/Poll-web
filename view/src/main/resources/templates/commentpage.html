@@ -415,7 +415,7 @@ function renderLessThanOrTwoOptionsPage(data) {
                                     </div>
                                 `).join('')}
                             </div>
-                            <button style="padding: 10px 20px; font-size: 16px; margin-left: 10px;" onclick="submitVotes('${pollId}')">sumbit</button>
+                            <button style="padding: 10px 20px; font-size: 16px; margin-left: 10px;" onclick="submitVotes1('${pollId}')">sumbit</button>
                             <div class="progress" style="width: 85%; max-width: 300px; margin: 10px auto; display: flex; justify-content: center; align-items: center;">
                                 ${createProgressBars(data)}
                             </div>
@@ -427,7 +427,7 @@ function renderLessThanOrTwoOptionsPage(data) {
     `;
 }
 
-    function submitVotes(pollId) {
+    function submitVotes1(pollId) {
         const selectedOption = document.querySelector('input[name="voteType"]:checked');
         const voteData = {
             pollId: pollId,
@@ -476,6 +476,9 @@ function renderLessThanOrTwoOptionsPage(data) {
 }
 
     function renderMoreThanTwoOptionsPage(data) {
+        let pollId = data.poll.pollId;
+        const voteOptionIds = getVoteOptionIds(data.votes);
+
         return `
             <div class="container">
                 <div class="row-fluid blog-page blog-item">
@@ -507,11 +510,12 @@ function renderLessThanOrTwoOptionsPage(data) {
                             <div class="vote4content">
                                 ${data.options.map((option, index) => `
                                     <div class="btncontent" style="font-size: 20px;">
+                                        <input type="radio" id="voteOption${index}" name="voteType" value="${option.optionId}" style="margin-bottom: 5px;">
                                         <span class="vote${index + 1}btn">${String.fromCharCode(65 + index)}</span> ${option.description}
                                     </div>
                                 `).join('')}
                                 <div style="text-align: left; margin-top: 10px;">
-                                    <button type="submit" class="submitbtn" style="font-size: 20px;">Submit</button>
+                                    <button type="submit" class="submitbtn" style="font-size: 20px;" onclick="submitVotes2('${pollId}')">Submit</button>
                                 </div>
                             </div>
                         </div>
@@ -520,6 +524,40 @@ function renderLessThanOrTwoOptionsPage(data) {
             </div>
         `;
     }
+
+    function submitVotes2(pollId) {
+    // 获取选中的投票选项
+    const selectedOption = document.querySelector('input[name="voteType"]:checked');
+    
+    if (!selectedOption) {
+        alert("Please select an option before submitting.");
+        return;
+    }
+
+    // 准备投票数据
+    const voteData = {
+        pollId: pollId,
+        optionId: selectedOption.value
+    };
+
+    // 将投票数据放入数组中
+    let voteList = [voteData];
+
+    // 发送投票数据到服务器
+    instance.post('/vote/operate', voteList)
+        .then(response => {
+            if (response.data.code === 0) {
+                alert("Vote submitted successfully!");
+                window.location.reload(); // 刷新页面以显示最新的投票结果
+            } else {
+                alert("Failed to submit vote. Please try again.");
+            }
+        })
+        .catch(error => {
+            console.error('There was an error submitting the vote!', error);
+            alert('An error occurred while submitting your vote!');
+        });
+}
 </script>
 
 </body>
