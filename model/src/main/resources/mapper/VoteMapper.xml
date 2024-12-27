@@ -53,4 +53,10 @@
         order by vote_id desc
         limit 10
     </select>
+
+    <select id="check" resultType="com.poll.pojo.Vote">
+        select <include refid="Base_Column_List"/>
+        from vote
+        where voter_id = #{userId} and poll_id = #{pollId}
+    </select>
 </mapper>

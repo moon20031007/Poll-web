@@ -15,4 +15,6 @@ public interface VoteMapper {
     void insert(Vote vote);
 
     List<Vote> recent();
+
+    List<Vote> check(Integer userId, Integer pollId);
 }
