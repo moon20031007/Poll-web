@@ -20,7 +20,7 @@ public interface PollService {
 
     void enableOperate(Poll poll);
 
-    List<Poll> getAll(Integer page, Integer size);
+    List<PollInfoDTO> getAll(Integer page, Integer size);
 
     List<PollInfoDTO> search(String keyword);
 }
