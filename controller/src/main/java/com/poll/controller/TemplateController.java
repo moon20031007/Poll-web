@@ -78,4 +78,9 @@ public class TemplateController {
     public String Dailylife(@PathVariable int id) {
         return "topic";
     }
+
+    @GetMapping("/manager")
+    public String manager() {
+        return "manager";
+    }
 }

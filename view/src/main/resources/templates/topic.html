@@ -48,9 +48,7 @@
         <!-- Authenticated state -->
         <div id="authenticated" style="display: none;">
             <ul class="loginbar pull-right">
-                <li><a href="userCenter.html" class="login-btn" style="text-transform: none;">
-                    <img class="media-object" src="/assets/img/unlogin.png" alt="" /> UserCenter
-                </a></li>
+                <li><a href="userCenter.html" class="login-btn" style="text-transform: none;">UserCenter</a></li>
                 <li class="divider">&nbsp;</li>
                 <li><a href="/messages" class="login-btn">Messages</a></li>
                 <li class="divider">&nbsp;</li>
@@ -192,6 +190,22 @@
                 if (avatarImg && userData.avatar) {
                     avatarImg.src = userData.avatar;
                 }
+
+                // Add Manager button if user is an admin.
+                if (userData.isAdmin) {
+                    const managerLi = document.createElement('li');
+
+                    // Apply inline styles directly for spacing
+                    managerLi.style.marginRight = '20px'; // Adjust the value as needed
+
+                    managerLi.innerHTML = `<a href="/manager" class="login-btn">Manager</a>`;
+
+                    // Find the UserCenter link and insert the new Manager button before it.
+                    const userCenterLinkLi = document.querySelector('#authenticated ul li a[href^="/userCenter"]').parentElement;
+                    if (userCenterLinkLi) {
+                        userCenterLinkLi.parentElement.insertBefore(managerLi, userCenterLinkLi);
+                    }
+                }
             })
             .catch(error => {
                 console.error('Error checking user info:', error);
@@ -200,6 +214,12 @@
         console.log('User is not logged in.');
         unauthenticatedDiv.style.display = 'block';
         authenticatedDiv.style.display = 'none';
+
+        // Remove Manager button if it exists when user logs out.
+        const managerButton = document.querySelector('#authenticated ul li a[href="/manager"]');
+        if (managerButton) {
+            managerButton.parentElement.remove();
+        }
     }
 }
 
