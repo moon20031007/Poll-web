@@ -204,6 +204,12 @@ public class PollServiceImpl implements PollService {
     }
 
     @Override
+    public Integer getAllPageSize(Integer size) {
+        Integer total = pollMapper.getAllPollCount();
+        return (int) Math.ceil((double) total / size);
+    }
+
+    @Override
     public List<PollInfoDTO> search(String keyword) {
         List<PollInfoDTO> pollInfoList = new ArrayList<>();
         List<Poll> polls = pollMapper.search(keyword);

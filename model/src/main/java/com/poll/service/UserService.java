@@ -31,5 +31,7 @@ public interface UserService {
 
     List<User> getAll(Integer page, Integer size);
 
+    Integer getAllPageSize(Integer size);
+
     List<User> search(String keyword);
 }

@@ -173,6 +173,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public Integer getAllPageSize(Integer size) {
+        Integer total = userMapper.getAllPollCount();
+        return (int) Math.ceil((double) total / size);
+    }
+
+    @Override
     public List<User> search(String keyword) {
         List<User> users = userMapper.search(keyword);
         users.forEach(user -> {

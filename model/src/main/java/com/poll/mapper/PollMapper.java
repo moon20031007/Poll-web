@@ -24,5 +24,7 @@ public interface PollMapper {
 
     List<Poll> selectAll(Integer offset, Integer size);
 
+    Integer getAllPollCount();
+
     List<Poll> search(String keyword);
 }

@@ -28,5 +28,7 @@ public interface UserMapper {
 
     List<User> selectAll(Integer offset, Integer size);
 
+    Integer getAllPollCount();
+
     List<User> search(String keyword);
 }

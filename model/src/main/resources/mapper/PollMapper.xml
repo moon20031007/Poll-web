@@ -87,6 +87,11 @@
         limit #{size} offset #{offset}
     </select>
 
+    <select id="getAllPollCount" resultType="java.lang.Integer">
+        select count(*)
+        from poll
+    </select>
+
     <select id="search" resultType="com.poll.pojo.Poll">
         select
         <include refid="Base_Column_List"/>

@@ -144,6 +144,19 @@ public class UserController {
         return Result.success(userService.getAll(page, size));
     }
 
+    @GetMapping("/all/size")
+    public Result getAllSizePages(@RequestHeader("Authorization") String jwt, @RequestParam(defaultValue = "3") int size) {
+        try {
+            if (!JwtUtils.parseJwt(jwt).getIsAdmin()) {
+                return Result.error(ResultCode.PERMISSION_NO_ACCESS);
+            }
+            Integer count = userService.getAllPageSize(size);
+            return Result.success(count);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.error(ResultCode.ERROR);
+        }
+    }
     @GetMapping("/search")
     public Result search(@RequestParam String keyword) {
         try {
