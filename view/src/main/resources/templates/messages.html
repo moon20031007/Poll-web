@@ -110,7 +110,7 @@
 
         <!-- Right Sidebar -->
         <div class="span7">
-            <span class="blog-title" style="color: #72c02c;font-size: 22px; line-height: 24px; display: inline;float: left;">User Name </span>
+            <span class="blog-title" style="color: #72c02c;font-size: 22px; line-height: 24px; display: inline;float: left;"></span>
             <div class="chat-container">
                 <div class="messages" id="messages">
                     <!-- 消息会在这里动态添加 -->
@@ -317,75 +317,124 @@
 </script>
 
 <script type="module">
+    // 全局标志变量，用于跟踪是否已经加载过消息
+    let hasLoadedMessages = false;
 
-    // 页面加载时加载聊天记录
+    // 全局变量，用于存储从后端获取的消息数据
+    let globalMessagesData = null;
+
+    // 页面加载时调用的函数
     window.onload = function() {
-            loadReceiverList(); // 加载接收者列表
-            loadMessages();s
+        loadReceiverList(); // 加载接收者列表
+        if (!hasLoadedMessages) {
+            fetchMessages();
+            hasLoadedMessages = true;
+        }
     };
 
-    function loadMessages() {
-        // 从URL中获取receiverId
+    function fetchMessages() {
+        instance.get(`/message/get`)
+            .then(response => {
+                const { messages, currentUser, userList } = response.data.data;
+                globalMessagesData = { messages, currentUser, userList };  // 存储到全局变量
+                let userString = Object.keys(userList);
+                console.log(userList[userString[0]]);
+                console.log("Messages fetched and stored in global variable.");
+            })
+            .catch(error => {
+                console.error("Error fetching messages:", error);
+            });
+    }
+
+    function getUsernameAndAvatarByUserId(userList, userId) {
+        // 获取所有键
+        const userKeys = Object.keys(userList);
+
+        // 查找包含指定 userId 的键
+        const userKey = userKeys.find(key => key.includes(`userId=${userId}`));
+
+        if (userKey) {
+            // 获取对应的未读消息数量
+            const unreadCount = userList[userKey];
+
+            // 使用字符串分割提取 username 和 avatar
+            const parts = userKey.split(', ');
+            const usernamePart = parts.find(part => part.startsWith('username='));
+            const avatarPart = parts.find(part => part.startsWith('avatar='));
+
+            if (usernamePart && avatarPart) {
+                const username = usernamePart.split('=')[1];
+                const avatar = avatarPart.split('=')[1].replace(/\)$/, '');  // 去掉末尾的 ')'
+
+                return { username, avatar, unreadCount };
+            }
+        }
+
+        // 如果没有找到匹配的 userId，返回 null
+        return null;
+    }
+
+    function displayMessages() {
+        // 直接从 URL 参数中获取 receiverId
         let urlParams = new URLSearchParams(window.location.search);
         let receiverId = urlParams.get('receiverId');
-        console.log(receiverId);
+        receiverId = parseInt(receiverId, 10); // 第二个参数 10 表示十进制
 
         if (!receiverId) {
             console.warn("No receiverId found in URL. Please select a receiver.");
             return;
         }
-        receiverId = parseInt(receiverId); // 确保是数字类型
 
-        instance.get(`/message/get`)
-            .then(response => {
-                const { currentUser, messages, userList } = response.data.data;
-                const currentUserId = currentUser.userId;
+        if (!globalMessagesData) {
+            console.warn("No messages data available. Please fetch messages first.");
+            return;
+        }
 
-                // 获取消息显示容器（span7）
-                let messagesContainer = document.querySelector('.span7 .messages');
+        const { messages, currentUser, userList } = globalMessagesData;
+        const currentUserId = currentUser.userId;
 
-                // 清空现有的内容
-                messagesContainer.innerHTML = '';
+        // 获取消息显示容器（span7）
+        let messagesContainer = document.querySelector('.span7 .messages');
 
-                // 如果有消息
-                if (messages.length > 0) {
-                    // 创建一个映射，用于快速查找用户信息
-                    const userMap = new Map(userList.map(user => [user.userId, user]));
+        // 清空现有的内容
+        messagesContainer.innerHTML = '';
 
-                    // 筛选符合条件的消息
-                    const filteredMessages = messages.filter(message =>
-                        (message.senderId === currentUserId && message.receiverId === receiverId) ||
-                        (message.senderId === receiverId && message.receiverId === currentUserId)
-                    );
+        // 如果有消息
+        if (messages.length > 0) {
+            // 筛选符合条件的消息
+            const filteredMessages = messages.filter(message =>
+                (message.senderId === currentUserId && message.receiverId === receiverId) ||
+                (message.senderId === receiverId && message.receiverId === currentUserId)
+            );
+            console.log(filteredMessages);
 
-                    // 按时间排序消息
-                    filteredMessages.sort((a, b) => new Date(a.time) - new Date(b.time));
+            // 按时间排序消息
+            filteredMessages.sort((a, b) => new Date(a.time) - new Date(b.time));
 
-                    filteredMessages.forEach(message => {
-                        // 确定消息是来自自己还是对方
-                        const isOwnMessage = message.senderId === currentUserId;
-                        const sender = userMap.get(message.senderId);
-                        const senderName = sender ? sender.username : 'Unknown';
+            // 生成每条消息的 HTML
+            filteredMessages.forEach(message => {
+                // 确定消息是来自自己还是对方
+                const isOwnMessage = message.senderId === currentUserId;
+                const senderInfo = getUsernameAndAvatarByUserId(userList, message.senderId);  // 获取发送者信息
+                const senderName = senderInfo ? senderInfo.username : 'Unknown';
 
-                        // 生成每条消息的 HTML
-                        let messageHTML = `
-                    <div class="message ${isOwnMessage ? 'sent' : 'received'}">
-                        <strong>${isOwnMessage ? 'You' : senderName}:</strong>
-                        <p class="message-text">${message.content}</p>
-                        <span class="timestamp">${new Date(message.time).toLocaleString()}</span>
-                    </div>
-                `;
+                // 生成每条消息的 HTML
+                let messageHTML = `
+                <div class="message ${isOwnMessage ? 'sent' : 'received'}">
+                    <strong>${isOwnMessage ? 'You' : senderName}:</strong>
+                    <p class="message-text">${message.content}</p>
+                    <span class="timestamp">${new Date(message.time).toLocaleString()}</span>
+                </div>
+            `;
 
-                        // 根据消息的来源，决定插入位置
-                        messagesContainer.innerHTML += messageHTML;
-                    });
-                } else {
-                    messagesContainer.innerHTML = '<p>No messages yet.</p>';
-                }
-            })
-            .catch(error => {
-                console.error("Error loading messages:", error);
+                // 插入消息到容器中
+                messagesContainer.innerHTML += messageHTML;
             });
+        } else {
+            messagesContainer.innerHTML = '<p>No messages yet.</p>';
+        }
+        // 自动滚动到最底部
+        scrollToBottom(messagesContainer);
     }
 
 
@@ -395,7 +444,6 @@
                 console.log(response.data);
                 const { currentUser, messages, userList } = response.data.data;
                 const currentUserId = currentUser.userId;
-                console.log(messages);
 
                 // 获取左侧接收者列表容器（span3）
                 let receiverListContainer = document.querySelector('.span3 .posts');
@@ -418,22 +466,27 @@
 
                             // 如果该接收者没有渲染过
                             if (!renderedReceivers[userId]) {
-                                const user = userList.find(user => user.userId === userId);
-                                const username = user ? user.username : `User ${userId}`;  // 获取用户名
-                                const avatar = user ? user.avatar : 'default.png';  // 获取头像
-                                // 生成每个接收者的 dl-horizontal 元素
-                                let receiverHTML = `
-                                <dl class="dl-horizontal" data-receiver-id="${userId}">
+                                // 获取用户名和头像
+                                const user = getUsernameAndAvatarByUserId(userList, userId);
+
+                                if (user) {
+                                    const { username, avatar, unreadCount } = user;
+
+                                    // 生成每个接收者的 dl-horizontal 元素
+                                    let receiverHTML = `
+                                <dl class="dl-horizontal" data-receiver-id="${userId}" data-unread-count="${unreadCount}">
                                     <dt><a href="?receiverId=${userId}"><img src="/static/avatar/${avatar}" alt="" /></a></dt>
                                     <dd>
                                         <p class="sidebar-contianer"><a href="?receiverId=${userId}">${username}</a></p>
+                                        ${unreadCount > 0 ? `<span class="unread-badge">${unreadCount}</span>` : ''}
                                     </dd>
                                 </dl>
-                            `;
-                                receiverListContainer.innerHTML += receiverHTML;
+                                `;
+                                    receiverListContainer.innerHTML += receiverHTML;
 
-                                // 标记该接收者为已渲染
-                                renderedReceivers[userId] = true;
+                                    // 标记该接收者为已渲染
+                                    renderedReceivers[userId] = true;
+                                }
                             }
                         }
                     });
@@ -450,8 +503,29 @@
                             // 更新 URL 并触发消息加载
                             window.history.pushState({}, '', `?receiverId=${receiverId}`);
 
-                            // 直接调用 loadMessages() 加载消息
-                            loadMessages();
+                            // 发送 POST 请求标记消息为已读
+                            instance.post('/message/read', { userId: receiverId })
+                                .then(response => {
+                                    console.log("Messages marked as read:", response.data);
+                                    // 成功后重新加载消息
+                                    displayMessages();
+
+                                    // 隐藏或移除 unread-badge
+                                    const badge = this.querySelector('.unread-badge');
+                                    if (badge) {
+                                        // 你可以选择移除整个元素
+                                        badge.remove();
+
+                                        // 或者只是隐藏它
+                                        // badge.style.display = 'none';
+                                    }
+
+                                    // 更新 data-unread-count 属性
+                                    this.setAttribute('data-unread-count', '0');
+                                })
+                                .catch(error => {
+                                    console.error("Error marking messages as read:", error);
+                                });
                         });
                     });
 
@@ -466,7 +540,6 @@
 
 
 
-    // 发送消息的函数
     function sendMessage() {
         // 从URL中获取receiverId
         let urlParams = new URLSearchParams(window.location.search);
@@ -486,16 +559,37 @@
         })
             .then(response => {
                 console.log("Message sent successfully:", response);
-                window.location.reload();
 
                 // 清空输入框
                 document.getElementById("chatInput").value = '';
+
+                // 模拟一条新消息
+                const newMessage = {
+                    senderId: globalMessagesData.currentUser.userId,  // 当前用户为发送者
+                    receiverId: parseInt(receiverId, 10),  // 接收者ID
+                    content: messageContent,  // 消息内容
+                    time: new Date().toISOString()  // 当前时间
+                };
+
+                // 更新 globalMessagesData 中的消息列表
+                if (globalMessagesData) {
+                    globalMessagesData.messages.push(newMessage);
+                    displayMessages();  // 重新渲染消息
+                } else {
+                    console.warn("No messages data available. Please fetch messages first.");
+                }
             })
             .catch(error => {
                 console.error("Error sending message:", error);
             });
     }
-
+    // 辅助函数：滚动到消息容器的最底部
+    function scrollToBottom(container) {
+        // 确保容器存在并且是一个可滚动的元素
+        if (container) {
+            container.scrollTop = container.scrollHeight;
+        }
+    }
     // 监听键盘输入，支持回车键发送消息
     document.getElementById("chatInput").addEventListener("keypress", function(event) {
         if (event.key === "Enter") {

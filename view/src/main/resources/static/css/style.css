@@ -2445,3 +2445,17 @@ hr {
 		border-width: 5px;
 		border-color: transparent transparent transparent #e6e6fa;
 	}
+
+.unread-badge {
+	display: inline-block;
+	width: 20px;
+	height: 20px;
+	line-height: 20px;
+	border-radius: 50%;
+	background-color: red;
+	color: white;
+	text-align: center;
+	font-size: 12px;
+	font-weight: bold;
+	margin-left: 5px;
+}

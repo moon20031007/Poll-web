@@ -112,7 +112,7 @@
                 <div class="basic-info-content">
                     <div class="basic-info-contentHead" id="userNameDisplay">Loading...</div>
                     <div class="basic-info-description" id="userDescriptionDisplay">Loading...</div>
-                    <div class="basic-info-buttons">
+                    <div class="basic-info-buttons" id="actionButtons">
                         <button class="btn btn-primary" id="followButton">Follow</button>
                         <button class="btn btn-success" id="messageButton">Message</button>
                     </div>
@@ -131,14 +131,14 @@
         <div class="span10">
 
             <!-- Tabs -->
-            <ul class="nav nav-tabs tabs">
+            <ul class="nav nav-tabs tabs" id="tabs">
                 <li class="active"><a href="#post" data-toggle="tab">Post</a></li>
                 <li><a href="#star" data-toggle="tab">Star</a></li>
                 <li><a href="#myvoted" data-toggle="tab">My Voted</a></li>
                 <li><a href="#follow" data-toggle="tab">Follow</a></li>
                 <li><a href="#befollowed" data-toggle="tab">Be Followed</a></li>
-                <li><a href="#information" data-toggle="tab">Information</a></li>
-                <li><a href="#security" data-toggle="tab">Security</a></li>
+                <li id="informationTab"><a href="#information" data-toggle="tab">Information</a></li>
+                <li id="securityTab"><a href="#security" data-toggle="tab">Security</a></li>
             </ul><!--/tabs-->
 
             <div class="tab-content margin-bottom-20">
@@ -271,6 +271,32 @@
         console.log('Checking login status:', !!token, 'Token:', token);
         return !!token && token.trim(); // Ensure the token is not just whitespace
     }
+
+    $(document).ready(function() {
+    instance.get('user/check')
+        .then(response => {
+            console.log(response.data.data);
+            const currentUsername = response.data.data.username;
+
+            // 提取 URL 路径中的 username
+            const pathname = window.location.pathname;
+            const pathParts = pathname.split('/');
+            const viewedUsername = pathParts[pathParts.length - 1];
+
+            if (currentUsername !== viewedUsername) {
+                $('#informationTab').hide();
+                $('#securityTab').hide();
+                $('#actionButtons').show();
+            } else {
+                $('#informationTab').show();
+                $('#securityTab').show();
+                $('#actionButtons').hide();
+            }
+        })
+        .catch(error => {
+            console.error('Failed to check user:', error);
+        });
+});
 
     // Function to toggle visibility of authentication states.
     function toggleAuthState() {
@@ -580,7 +606,7 @@
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    alert('Failed to follow user.');
+
                 });
         });
 
@@ -608,10 +634,10 @@
                 $('#profilePicture').attr('src', `/static/avatar/${userData.user.avatar}`).show();
                 $('#purchaseProfilePicture').attr('src', `/static/avatar/${userData.user.avatar}`).show();
                 $('#uploadPlaceholder').hide();
+                console.log('currentUserId set to:', currentUserId); // Debugging log
             })
             .catch(error => {
                 console.error('Error loading user info:', error);
-                alert('Failed to load user information.');
             });
     }
 
@@ -619,6 +645,45 @@
         const pathArray = window.location.pathname.split('/');
         return pathArray[pathArray.length - 1]; // Last segment of the URL is the username
     }
+
+    function followUser(userId) {
+    if (!userId) {
+        console.error('No userId provided to followUser function');
+        return;
+    }
+    const userToFollow = { userId: userId };
+
+    console.log('Sending follow request with userId:', userId); // Debugging log
+
+    instance.put('follow/operate', userToFollow)
+        .then(response => {
+            console.log('Server response:', response.data); // Debugging log
+            if (response.data.code === 0) { // Assuming success code is 0
+                alert('Successfully followed!');
+                // Optionally, update UI to reflect the change
+                $('#followButton').prop('disabled', true).text('Following');
+            } else {
+                alert('Failed to follow user.');
+            }
+        })
+        .catch(error => {
+            console.error('Error following user:', error.response ? error.response.data : error.message);
+            alert('An error occurred while trying to follow the user.');
+        });
+}
+
+$(document).ready(function() {
+    loadUserInfo();
+
+    $('#followButton').on('click', function() {
+        if (currentUserId) {
+            followUser(currentUserId); // 使用 currentUserId 作为参数传递给后端接口
+        } else {
+            console.error('currentUserId not found when clicking follow button');
+            alert('Current user ID not found.');
+        }
+    });
+});
 
     function updateUIWithUserData(userData) {
         $('#userNameDisplay').text(userData.user.username);
@@ -759,6 +824,8 @@
         // App.initBxSlider();
     });
 </script>
+
+
 <!--[if lt IE 9]>
 <script src="assets/js/respond.js"></script>
 <![endif]-->

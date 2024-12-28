@@ -97,24 +97,6 @@
 <!--=== Content Part ===-->
 <div id="content"></div>
 
-<!-- 分隔线 -->
-<hr>
-
-<div class="vote_analysis" style="text-align: center; margin-top: 20px;">
-    <h3 style="font-size: 24px;">Voting result analysis</h3>
-    <p>Total votes：4</p>
-    <div style="display: flex; justify-content: space-between; align-items: center; width: 85%; max-width: 300px; margin: 0 auto;">
-        <div style="width: 100%;">
-            <p>agree (75%)</p>
-            <div class="progress" style="background-color: #C5E1A5; height: 20px;"></div>
-        </div>
-        <div style="width: 100%;">
-            <p>disagree (25%)</p>
-            <div class="progress" style="background-color: #558B2F; height: 20px;"></div>
-        </div>
-    </div>
-    <p>analysis</p>
-</div>
 <!--=== End Content Part ===-->
 
 <!--=== Copyright ===-->
@@ -133,6 +115,11 @@
     </div><!--/container-->
 </div><!--/copyright-->
 <!--=== End Copyright ===-->
+
+<script type="text/javascript" src="/js/jquery-1.8.2.min.js"></script>
+<script type="text/javascript" src="/js/modernizr.custom.js"></script>
+<script type="text/javascript" src="/plugins/bootstrap/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/js/zoom.min.js"></script> <!-- image extension -->
 
 <script type="module">
     // Function to check if the user is logged in based on the presence of an auth token.
@@ -310,6 +297,7 @@
     });
 </script>
 
+<script src="/js/Chart.js"></script>
 <script>
     // 从URL路径中动态获取commentId
     const pathArray = window.location.pathname.split('/');
@@ -331,6 +319,7 @@
                         document.getElementById('content').innerHTML = renderLessThanOrTwoOptionsPage(data.data);
                     } else {
                         document.getElementById('content').innerHTML = renderMoreThanTwoOptionsPage(data.data);
+                        initVoteSystem('.htmleaf-content', getInitialValues(data.data.results));
                     }
                 } else {
                     console.error('API returned an error:', data.msg);
@@ -383,7 +372,7 @@ function renderLessThanOrTwoOptionsPage(data) {
                             </ul>
                         </div>
                         <ul class="unstyled inline blog-info blog-tags">
-                            <li><a href="userCenter.html" class="login-btn" style="text-transform: none;"><img class="media-object" src="/static/avatar/${data.creator.avatar}">${data.creator.username}</a></li>
+                            <li><a href="/userCenter/${data.creator.username}" class="login-btn" style="text-transform: none;"><img class="media-object" src="/static/avatar/${data.creator.avatar}">${data.creator.username}</a></li>
                             <li><i class="icon-calendar"></i>${new Date(data.poll.startTime).toLocaleDateString()} ${data.poll.endTime ? `~${new Date(data.poll.endTime).toLocaleString()}` : ''}</li>
                             <li>
                                 <i class="icon-tags"></i>
@@ -406,13 +395,8 @@ function renderLessThanOrTwoOptionsPage(data) {
                                 ${data.options.map((option, index) => `
                                     <div class="votecolumn" style="display: flex; flex-direction: column; align-items: center; text-align: center;">
                                         <!-- Radio Button -->
-                                        <input type="radio" id="voteOption${index}" name="voteType" value="${option.optionId}" style="margin-bottom: 5px;">
+                                        <input type="radio" id="voteOption${index}" name="voteType" value="${option.optionId}" style="margin-bottom: 5px; position: relative; right: -15px; top: -10px;">
                                         <label for="voteOption${index}" style="cursor: pointer;">
-                                            <div class="votecard" style="width: 100%;">
-                                                <div style="margin: 5px 0; margin-left: 20px;">
-                                                    <em><strong>${data.results[option.optionId] || 0}</strong></em>
-                                                </div>
-                                            </div>
                                             <a>
                                                 <img src="/img/${index === 0 ? 'good' : 'bad'}.png" class="resized-image"/>
                                             </a>
@@ -421,8 +405,20 @@ function renderLessThanOrTwoOptionsPage(data) {
                                 `).join('')}
                             </div>
                             <button style="padding: 10px 20px; font-size: 16px; margin-left: 10px;" onclick="submitVotes1('${pollId}')">sumbit</button>
-                            <div class="progress" style="width: 85%; max-width: 300px; margin: 10px auto; display: flex; justify-content: center; align-items: center;">
-                                ${createProgressBars(data)}
+                            <div class="vote_analysis" style="text-align: center; margin-top: 20px;">
+                                <h3 style="font-size: 24px;">Voting result analysis</h3>
+                                <p>Total votes：${Object.values(data.results).reduce((acc, curr) => acc + (curr || 0), 0)}</p>
+                                <div style="display: flex; justify-content: space-around; width: 85%; max-width: 300px; margin: 10px auto;">
+                                    ${data.options.map((option, index) => `
+                                        <div class="votecard" style="display: flex; align-items: center;">
+                                            <em><strong>${data.results[option.optionId] || 0}</strong></em>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                                <div class="progress" style="width: 85%; max-width: 300px; margin: 10px auto; display: flex; justify-content: center; align-items: center;">
+                                    ${createProgressBars(data)}
+                                </div>
+                                <p>analysis</p>
                             </div>
                         </div>
                     </div>
@@ -496,7 +492,7 @@ function renderLessThanOrTwoOptionsPage(data) {
                                 </ul>
                             </div>
                             <ul class="unstyled inline blog-info blog-tags">
-                                <li><a href="userCenter.html" class="login-btn" style="text-transform: none;"><img class="media-object" src="/static/avatar/${data.creator.avatar}">${data.creator.username}</a></li>
+                                <li><a href="/userCenter/${data.creator.username}" class="login-btn" style="text-transform: none;"><img class="media-object" src="/static/avatar/${data.creator.avatar}">${data.creator.username}</a></li>
                                 <li><i class="icon-calendar"></i>${new Date(data.poll.startTime).toLocaleDateString()} ${data.poll.endTime ? `~${new Date(data.poll.endTime).toLocaleString()}` : ''}</li>
                                 <li>
                                     <i class="icon-tags"></i>
@@ -513,15 +509,30 @@ function renderLessThanOrTwoOptionsPage(data) {
                                 <p class="qst-container_pro" style="font-size: 18px; margin-top: 20px;">${data.poll.description}</p>
                             </div>
                             <div class="vote4content">
-                                ${data.options.map((option, index) => `
-                                    <div class="btncontent" style="font-size: 20px;">
-                                        <input type="radio" id="voteOption${index}" name="voteType" value="${option.optionId}" style="margin-bottom: 5px;">
-                                        <span class="vote${index + 1}btn">${String.fromCharCode(65 + index)}</span> ${option.description}
-                                    </div>
-                                `).join('')}
+                                ${data.options.map((option, index) => {
+                                    // 判断 data.poll.type 是否为 true 并返回不同的 input 类型
+                                    const inputType = data.poll.type === true ? 'checkbox' : 'radio';
+                                    return `
+                                        <label class="btncontent" style="font-size: 20px;">
+                                            <input type="${inputType}" id="voteOption${index}" name="voteType" value="${option.optionId}" style="margin-bottom: 5px;">
+                                            <span class="vote${index + 1}btn">${String.fromCharCode(65 + index)}</span> ${option.description}
+                                        </label>
+                                    `;
+                                }).join('')}
                                 <div style="text-align: left; margin-top: 10px;">
                                     <button type="submit" class="submitbtn" style="font-size: 20px;" onclick="submitVotes2('${pollId}')">Submit</button>
                                 </div>
+                                <div class="vote_analysis" style="text-align: center; margin-top: 20px;">
+                                <h3 style="font-size: 24px;">Voting result analysis</h3>
+                                <p>Total votes：${Object.values(data.results).reduce((acc, curr) => acc + (curr || 0), 0)}</p>
+                                <div class="htmleaf-content">
+                                    <div class="canvas-holder" style="margin:0px auto;width:160px; height: 160px;">
+                                        <canvas id="chart-area-1" width="160" height="160" style="margin:10px auto;"></canvas>
+                                    </div>
+                                </div>
+                                <hr>
+                                <p>analysis</p>
+                            </div>
                             </div>
                         </div>
                     </div>
@@ -530,37 +541,113 @@ function renderLessThanOrTwoOptionsPage(data) {
         `;
     }
 
+    // 获取初始值的辅助函数
+function getInitialValues(results) {
+    return Object.values(results).map(result => result || 0);
+}
+
+// 初始化投票系统的函数
+function initVoteSystem(containerSelector, initialValues) {
+    var valuea = initialValues[0] || 0;
+    var valueb = initialValues[1] || 0;
+    var valuec = initialValues[2] || 0;
+    var valued = initialValues[3] || 0;
+
+    var pieData = [
+        {value: valuea, color: "#FFC107", highlight: "#FFCA28", label: "A"},
+        {value: valueb, color: "#FB8C00", highlight: "#FF9800", label: "B"},
+        {value: valuec, color: "#F4511E", highlight: "#FF5722", label: "C"},
+        {value: valued, color: "#6D4C41", highlight: "#795548", label: "D"}
+    ];
+
+    function updateChart(index, newValue) {
+        pieData[index].value = newValue;
+        var ctx = $(containerSelector).find(".canvas-holder canvas").get(0).getContext("2d");
+        window.myPie && window.myPie.destroy(); // 销毁之前的图表实例
+        window.myPie = new Chart(ctx).Pie(pieData);
+    }
+
+    function bindButtonEvents() {
+        $(containerSelector + ' .vote1btn').off().on('mouseup', function() {
+            var newvalue = ++valuea;
+            $(this).parents(".vote4content").find(".vote1num").html(newvalue);
+            updateChart(0, newvalue);
+
+            resetButtonStyles($(this));
+        });
+
+        $(containerSelector + ' .vote2btn').off().on('mouseup', function() {
+            var newvalue = ++valueb;
+            $(this).parents(".vote4content").find(".vote2num").html(newvalue);
+            updateChart(1, newvalue);
+
+            resetButtonStyles($(this));
+        });
+
+        $(containerSelector + ' .vote3btn').off().on('mouseup', function() {
+            var newvalue = ++valuec;
+            $(this).parents(".vote4content").find(".vote3num").html(newvalue);
+            updateChart(2, newvalue);
+
+            resetButtonStyles($(this));
+        });
+
+        $(containerSelector + ' .vote4btn').off().on('mouseup', function() {
+            var newvalue = ++valued;
+            $(this).parents(".vote4content").find(".vote4num").html(newvalue);
+            updateChart(3, newvalue);
+
+            resetButtonStyles($(this));
+        });
+    }
+
+    function resetButtonStyles(currentBtn) {
+        currentBtn.parents(".vote_bar").find("button").css("background-color","#EAEBDD");
+        currentBtn.css("background-color","initial"); // 或者设置为你想要的颜色
+    }
+
+    function drawInitialChart() {
+        var ctx = $(containerSelector).find(".canvas-holder canvas").get(0).getContext("2d");
+        window.myPie && window.myPie.destroy(); // 确保旧的图表实例被销毁
+        window.myPie = new Chart(ctx).Pie(pieData);
+    }
+
+    // 初始化绘制饼图并绑定事件
+    drawInitialChart();
+    bindButtonEvents();
+}
+
     function submitVotes2(pollId) {
-    // 获取选中的投票选项
-    const selectedOption = document.querySelector('input[name="voteType"]:checked');
-    
-    if (!selectedOption) {
-        alert("Please select an option before submitting.");
+    // 获取所有选中的投票选项
+    const selectedOptions = document.querySelectorAll('input[name="voteType"]:checked');
+
+    if (selectedOptions.length === 0) {
+        alert("Please select at least one option before submitting.");
         return;
     }
 
-    // 准备投票数据
-    const voteData = {
-        pollId: pollId,
-        optionId: selectedOption.value
-    };
-
-    // 将投票数据放入数组中
-    let voteList = [voteData];
+    // 准备投票数据数组
+    let voteList = [];
+    selectedOptions.forEach(option => {
+        voteList.push({
+            pollId: pollId,
+            optionId: option.value
+        });
+    });
 
     // 发送投票数据到服务器
     instance.post('/vote/operate', voteList)
         .then(response => {
             if (response.data.code === 0) {
-                alert("Vote submitted successfully!");
+                alert("Votes submitted successfully!");
                 window.location.reload(); // 刷新页面以显示最新的投票结果
             } else {
-                alert("Failed to submit vote. Please try again.");
+                alert("Failed to submit votes. Please try again.");
             }
         })
         .catch(error => {
-            console.error('There was an error submitting the vote!', error);
-            alert('An error occurred while submitting your vote!');
+            console.error('There was an error submitting the votes!', error);
+            alert('An error occurred while submitting your votes!');
         });
 }
 </script>
