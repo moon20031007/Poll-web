@@ -157,6 +157,7 @@ public class UserController {
             return Result.error(ResultCode.ERROR);
         }
     }
+
     @GetMapping("/search")
     public Result search(@RequestParam String keyword) {
         try {
