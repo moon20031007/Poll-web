@@ -29,9 +29,9 @@ public class FollowController {
     }
 
     @GetMapping("/check")
-    public Result check(@RequestHeader("Authorization") String jwt, @RequestBody User user) {
+    public Result check(@RequestHeader("Authorization") String jwt, @RequestParam Integer userId) {
         try {
-            Follow follow = followService.select(JwtUtils.parseJwt(jwt), user);
+            Follow follow = followService.select(JwtUtils.parseJwt(jwt), userId);
             if (follow != null) {
                 return Result.success(true);
             } else {

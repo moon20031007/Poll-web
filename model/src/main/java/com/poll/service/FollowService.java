@@ -7,5 +7,5 @@ public interface FollowService {
 
     void followOperate(User follower, User following);
 
-    Follow select (User follower, User following);
+    Follow select (User follower, Integer following);
 }

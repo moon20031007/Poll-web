@@ -26,7 +26,7 @@ public class FollowServiceImpl implements FollowService {
     }
 
     @Override
-    public Follow select(User follower, User following) {
-        return followMapper.select(follower.getUserId(), following.getUserId());
+    public Follow select(User follower, Integer following) {
+        return followMapper.select(follower.getUserId(), following);
     }
 }
