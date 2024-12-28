@@ -107,7 +107,7 @@ public class PollController {
     }
 
     @GetMapping("/all/size")
-    public Result getAllSizePages(@RequestHeader("Authorization") String jwt, @RequestParam(defaultValue = "3") int size) {
+    public Result getAllSizePages(@RequestHeader("Authorization") String jwt, @RequestParam(defaultValue = "10") int size) {
         try {
             if (!JwtUtils.parseJwt(jwt).getIsAdmin()) {
                 return Result.error(ResultCode.PERMISSION_NO_ACCESS);
