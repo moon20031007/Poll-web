@@ -130,21 +130,6 @@ public class UserServiceImpl implements UserService {
         return true;
     }
 
-//    @Override
-//    public Boolean avatar(User user, MultipartFile avatar) {
-//        try {
-//            User userToUpdate = userMapper.selectById(user.getUserId());
-//            String avatarName = SaveImageUtils.saveImage(avatar, "avatar");
-//            userMapper.updateAvatar(user.getUserId(), avatarName);
-//            if (!Objects.equals(userToUpdate.getAvatar(), "default.png")){
-//                SaveImageUtils.deleteImage(userToUpdate.getAvatar(), "avatar");
-//            }
-//            return true;
-//        } catch (IOException e) {
-//            throw new RuntimeException(e);
-//        }
-//    }
-
     @Override
     public String avatar(User user, String avatarName) {
         User userToUpdate = userMapper.selectById(user.getUserId());
@@ -155,11 +140,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public void updateProfile(Integer id, String profile) {
         userMapper.updateProfile(id, profile);
-    }
-
-    @Override
-    public void updateInfo(Integer id, User user) {
-        userMapper.updateInfo(id, user);
     }
 
     @Override

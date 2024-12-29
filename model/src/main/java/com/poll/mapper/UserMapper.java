@@ -22,8 +22,6 @@ public interface UserMapper {
 
     void updateProfile(Integer id, String profile);
 
-    void updateInfo(Integer id, User user);
-
     void enableOperate(Integer id);
 
     List<User> selectAll(Integer offset, Integer size);
