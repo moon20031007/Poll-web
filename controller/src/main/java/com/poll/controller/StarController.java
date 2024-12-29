@@ -31,9 +31,9 @@ public class StarController {
     }
 
     @GetMapping("/check")
-    public Result check(@RequestHeader("Authorization") String jwt, @RequestParam Poll poll) {
+    public Result check(@RequestHeader("Authorization") String jwt, @RequestParam Integer pollId) {
         try {
-            Star star = starService.select(JwtUtils.parseJwt(jwt), poll);
+            Star star = starService.select(JwtUtils.parseJwt(jwt), pollId);
             if (star != null) {
                 return Result.success(true);
             } else {

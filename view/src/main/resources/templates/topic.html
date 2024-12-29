@@ -395,6 +395,13 @@ function renderPolls(polls) {
         }
 
         container.appendChild(template);
+
+        // 获取 "star" 按钮元素
+        const buttonElement = template.querySelector('.praise');
+        if (buttonElement) {
+            // 立即检查收藏状态并更新UI
+            checkIfStarred(poll.pollId, buttonElement); // 使用 await 确保异步完成
+        }
     });
 }
 
@@ -406,7 +413,17 @@ function createSimplePollTemplate(poll, options, topics, images, creator) {
         <div class="special-button">
             <span class="blog-title" style="color: #72c02c;font-size: 22px; line-height: 24px; display: inline;float: left;">${poll.title}</span>
             <ul class="unstyled">
-                <a class="praise" style="text-decoration:none;font-size: 16px;" href="javascript:void(0);" onclick="praiseBox(this);"><li style="list-style: none;display: inline;"><i class="icon-star"></i></li>star</a>
+                <a
+                    class="praise"
+                    style="text-decoration:none;font-size: 16px;"
+                    href="javascript:void(0);"
+                    onclick="toggleStar(this, '${poll.pollId}');"
+                    data-poll-id="${poll.pollId}"
+                >
+                    <li style="list-style: none;display: inline;">
+                        <i class="icon-star"></i> star
+                    </li>
+                </a>
             </ul>
         </div>
         <ul class="unstyled inline blog-info blog-tags">
@@ -461,7 +478,17 @@ function createComplexPollTemplate(poll, options, topics, images, creator) {
         <div class="special-button">
             <span class="blog-title" style="color: #72c02c;font-size: 22px; line-height: 24px; display: inline;float: left;">${poll.title}</span>
             <ul class="unstyled">
-                <a class="praise" style="text-decoration:none;font-size: 16px;" href="javascript:void(0);" onclick="praiseBox(this);"><li style="list-style: none;display: inline;"><i class="icon-star"></i></li>star</a>
+                <a
+                    class="praise"
+                    style="text-decoration:none;font-size: 16px;"
+                    href="javascript:void(0);"
+                    onclick="toggleStar(this, '${poll.pollId}');"
+                    data-poll-id="${poll.pollId}"
+                >
+                    <li style="list-style: none;display: inline;">
+                        <i class="icon-star"></i> star
+                    </li>
+                </a>
             </ul>
         </div>
         <ul class="unstyled inline blog-info blog-tags">
@@ -495,6 +522,57 @@ function createComplexPollTemplate(poll, options, topics, images, creator) {
 
     return pollDiv;
 }
+
+function toggleStar(buttonElement, pollId) {
+    const url = `/star/operate`;
+
+    // 发送收藏操作请求
+    instance.put(url,  {pollId: pollId} )
+        .then(response => {
+            if (response.data.code === 0) {
+                updateStarButton(buttonElement, pollId);
+            } else {
+                console.error('Failed to operate star:', response.data.message);
+            }
+        })
+        .catch(error => console.error('Error toggling star:', error));
+}
+
+function checkIfStarred(pollId, buttonElement) {
+
+    instance.get('/star/check', { params: {pollId : pollId } })
+        .then(response => {
+            if (response.data.code === 0) {
+                const isStarred = response.data.data; // 直接从 data 字段读取布尔值
+                updateStarButton(buttonElement, pollId, isStarred);
+            } else {
+                console.error('Failed to check star status:', response.data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error checking star status:', error.response ? error.response.data : error.message);
+        });
+}
+
+
+
+function updateStarButton(buttonElement, pollId, isStarred = null) {
+    if (isStarred === null) {
+        // 如果没有提供 isStarred，则切换当前状态
+        isStarred = !buttonElement.classList.contains('starred');
+    }
+
+    // 更新按钮样式
+    buttonElement.classList.toggle('starred', isStarred);
+
+    // 更新图标样式（可选）
+    const icon = buttonElement.querySelector('.icon-star');
+    if (icon) {
+        icon.style.color = isStarred ? 'gold' : ''; // 或者使用其他方式改变图标颜色
+    }
+}
+
+
 
 async function fetchTotalPages(id) {
     try {

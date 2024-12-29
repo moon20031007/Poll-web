@@ -8,5 +8,5 @@ public interface StarService {
 
     void starOperate(User user, Poll poll);
 
-    Star select(User user, Poll poll);
+    Star select(User user, Integer pollId);
 }
