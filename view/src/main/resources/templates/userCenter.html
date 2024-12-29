@@ -178,6 +178,9 @@
                         <div id="uploadPlaceholder" style="width: 150px; height: 150px; border: 2px dashed #ccc; line-height: 150px; text-align: center; border-radius: 50%;">
                             Upload New Photo
                         </div>
+                        <br>
+                        <button type="button" class="btn btn-primary" id="editProfilePictureBtn" style="display:none;">Edit Profile Picture</button>
+                        <button type="button" class="btn btn-success" id="saveProfilePictureBtn" style="display:none;">Save Profile Picture</button>
                     </div>
                     <form id="infoForm">
 
@@ -187,8 +190,8 @@
                                 <textarea class="span6" id="bio" rows="3" readonly></textarea>
                             </div>
                         </div>
-                        <button type="button" class="btn btn-primary" id="editInfoBtn">Edit Information</button>
-                        <button type="button" class="btn btn-success" id="saveInfoBtn" style="display:none;">Save Changes</button>
+                        <button type="button" class="btn btn-primary" id="editBioBtn">Edit Bio</button>
+                        <button type="button" class="btn btn-success" id="saveBioBtn" style="display:none;">Save Bio</button>
                     </form>
                 </div>
                 <div class="tab-pane" id="security">
@@ -511,30 +514,84 @@
     // Load user information from database
     loadUserInfo();
 
-    // Edit and Save Information Functionality
-    $('#editInfoBtn').click(function() {
+    // Edit and Save Bio Functionality
+    $('#editBioBtn').click(function() {
         $('#bio').prop('readonly', false);
-        $('#editInfoBtn').hide();
-        $('#saveInfoBtn').show();
+        $('#editBioBtn').hide();
+        $('#saveBioBtn').show();
     });
 
-    $('#saveInfoBtn').click(function() {
+    $('#saveBioBtn').click(function() {
         const bio = $('#bio').val();
-        const user = { profile: bio  };
+        const user = { profile:  bio  };
 
         instance.post('user/profile/update', user)
             .then(response => {
                 console.log('Profile updated successfully:', response.data);
                 alert('Your profile has been successfully updated.');
                 $('#bio').prop('readonly', true);
-                $('#editInfoBtn').show();
-                $('#saveInfoBtn').hide();
+                $('#editBioBtn').show();
+                $('#saveBioBtn').hide();
             })
             .catch(error => {
                 console.error('Error updating profile:', error.response ? error.response.data : error.message);
                 alert('Failed to update profile.');
             });
     });
+
+    // Edit and Save Profile Picture Functionality
+    $('#profilePicture').on('load', function() {
+        $('#editProfilePictureBtn').show();
+    });
+
+    $('#editProfilePictureBtn').click(function() {
+        $('#newProfilePicture').trigger('click');
+    });
+
+    $('#newProfilePicture').on('change', function(event) {
+        const fileInput = event.target;
+        if (fileInput.files && fileInput.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                $('#profilePicture').attr('src', e.target.result).show();
+                $('#purchaseProfilePicture').attr('src', e.target.result).show();
+                $('#uploadPlaceholder').hide();
+            };
+            reader.readAsDataURL(fileInput.files[0]);
+        }
+        $('#editProfilePictureBtn').hide();
+        $('#saveProfilePictureBtn').show();
+    });
+
+    $('#saveProfilePictureBtn').click(function() {
+        const fileInput = document.getElementById('newProfilePicture');
+        let profilePictureFile = null;
+        if (fileInput.files.length > 0) {
+            profilePictureFile = fileInput.files[0];
+        }
+
+        const formData = new FormData();
+        formData.append('file', profilePictureFile);
+
+        instance.post('user/avatar/update', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        })
+        .then(response => {
+            console.log('Profile picture uploaded successfully:', response.data);
+            alert('Your profile picture has been successfully updated.');
+            $('#editProfilePictureBtn').show();
+            $('#saveProfilePictureBtn').hide();
+        })
+        .catch((error) => {
+            console.error('Error uploading profile picture:', error);
+            alert('Failed to upload profile picture.');
+            $('#editProfilePictureBtn').show();
+            $('#saveProfilePictureBtn').hide();
+        });
+    });
+
 
 
 
@@ -724,7 +781,7 @@ $(document).ready(function() {
         userData.posts.forEach(post => {
             postsContainer.append(`
                 <div class="ps-post-title">
-                    <a href="#" style="text-decoration: none;">
+                    <a href="/commentpage/${post.pollId}" style="text-decoration: none;">
                         <blockquote>
                             <div class="ps-post-time">${formatDate(new Date(post.startTime))}</div>
                             <h4><strong>${post.title}</strong></h4>
@@ -741,7 +798,7 @@ $(document).ready(function() {
         userData.stars.forEach(star => {
             starsContainer.append(`
                 <div class="ps-post-title">
-                    <a href="#" style="text-decoration: none;">
+                    <a href="/commentpage/${star.pollId}" style="text-decoration: none;">
                         <blockquote>
                             <div class="ps-post-time">${formatDate(new Date(star.startTime))}</div>
                             <h4><strong>${star.title}</strong></h4>
