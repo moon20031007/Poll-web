@@ -223,7 +223,7 @@
                         <div class="control-group">
                             <label class="control-label" for="verificationCode">Verification Code:</label>
                             <div class="controls">
-                                <input type="text" class="span6" id="verificationCode" required>
+                                <input type="text" class="span6" id="verificationCode" placeholder="Enter verification code" required>
                             </div>
                         </div>
                         <div class="control-group">
@@ -238,14 +238,17 @@
                                 <input type="password" class="span6" id="confirmPassword" required>
                             </div>
                         </div>
-                        <button type="button" class="btn btn-primary" id="sendVerificationEmailBtn">Send Verification Email</button>
-                        <button type="button" class="btn btn-primary" id="changePasswordBtn" style="display:none;">Save New Password</button>
+                        <button type="button" class="btn btn-primary" id="sendVerificationBtn">Send Verification Code</button>
+                        <button type="button" class="btn btn-success" id="changePasswordBtn" style="display:none;">Save New Password</button>
                     </form>
                     <div id="passwordMismatchAlert" class="alert alert-error" style="display:none;">
                         The passwords you entered do not match.
                     </div>
                     <div id="verificationSentAlert" class="alert alert-success" style="display:none;">
-                        Verification email has been sent!
+                        Verification code has been sent to your email.
+                    </div>
+                    <div id="verificationErrorAlert" class="alert alert-error" style="display:none;">
+                        Invalid verification code.
                     </div>
                 </div><!--/ tab-pane -->
             </div><!--/tab-content-->
@@ -594,35 +597,7 @@
             $('#uploadPlaceholder').show();
         });
 
-        // Change Password Functionality
-        $('#changePasswordBtn').click(function() {
-            const newPassword = $('#newPassword').val();
-            const confirmPassword = $('#confirmPassword').val();
 
-            if (newPassword !== confirmPassword) {
-                $('#passwordMismatchAlert').show();
-            } else {
-                $('#passwordMismatchAlert').hide();
-
-                const passwordData = {
-                    newPassword: newPassword
-                };
-
-                instance.post('/api/changePassword', {
-                    ...passwordData
-                })
-                .then(response => {
-                    console.log('Success:', response.data);
-                    alert('Password changed successfully!');
-                    $('#newPassword').val('');
-                    $('#confirmPassword').val('');
-                })
-                .catch((error) => {
-                    console.error('Error:', error);
-                    alert('Failed to change password.');
-                });
-            }
-        });
 
         // Follow Button Click Handler
         $('#followButton').click(function() {
@@ -729,6 +704,48 @@ function followUser(userId) {
         });
 }
 
+function sendVerificationCode() {
+    instance.get('user/password/step/1')
+        .then(response => {
+            console.log('Verification code sent successfully:', response.data);
+            $('#verificationSentAlert').show().delay(3000).fadeOut();
+            $('#changePasswordBtn').show();
+        })
+        .catch(error => {
+            console.error('Error sending verification code:', error.response ? error.response.data : error.message);
+            alert('Failed to send verification code.');
+        });
+}
+
+function changePassword() {
+    const newPassword = $('#newPassword').val();
+    const confirmPassword = $('#confirmPassword').val();
+    const verificationCode = $('#verificationCode').val();
+
+    if (newPassword !== confirmPassword) {
+        $('#passwordMismatchAlert').show().delay(3000).fadeOut();
+        return;
+    }
+
+    const user = { password: newPassword };
+    instance.post('user/password/step/2', user, { params: { verification: verificationCode } })
+        .then(response => {
+            console.log('Password changed successfully:', response.data);
+            alert('Your password has been successfully changed.');
+            $('#changePasswordForm')[0].reset();
+            $('#verificationCode').val('');
+            $('#changePasswordBtn').hide();
+        })
+        .catch(error => {
+            console.error('Error changing password:', error.response ? error.response.data : error.message);
+            if (error.response && error.response.status === 400) {
+                $('#verificationErrorAlert').show().delay(3000).fadeOut();
+            } else {
+                alert('Failed to change password.');
+            }
+        });
+}
+
 $(document).ready(function() {
     loadUserInfo();
 
@@ -740,7 +757,18 @@ $(document).ready(function() {
             alert('Current user ID not found.');
         }
     });
+    setupPasswordReset();
 });
+
+    function setupPasswordReset() {
+    $('#sendVerificationBtn').on('click', function() {
+        sendVerificationCode();
+    });
+
+    $('#changePasswordBtn').on('click', function() {
+        changePassword();
+    });
+}
 
     function updateUIWithUserData(userData) {
         $('#userNameDisplay').text(userData.user.username);
