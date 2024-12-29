@@ -29,7 +29,7 @@ public class StarServiceImpl implements StarService {
     }
 
     @Override
-    public Star select(User user, Poll poll) {
-        return starMapper.select(user.getUserId(), poll.getPollId());
+    public Star select(User user, Integer pollId) {
+        return starMapper.select(user.getUserId(), pollId);
     }
 }
