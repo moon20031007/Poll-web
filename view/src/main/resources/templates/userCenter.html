@@ -180,33 +180,7 @@
                         </div>
                     </div>
                     <form id="infoForm">
-                        <div class="control-group">
-                            <label class="control-label" for="name">Name:</label>
-                            <div class="controls">
-                                <input type="text" class="span6" id="name" value="" readonly>
-                            </div>
-                        </div>
-                        <div class="control-group">
-                            <label class="control-label" for="age">Age:</label>
-                            <div class="controls">
-                                <input type="number" class="span6" id="age" value="" readonly>
-                            </div>
-                        </div>
-                        <div class="control-group">
-                            <label class="control-label" for="gender">Gender:</label>
-                            <div class="controls">
-                                <select class="span6" id="gender" disabled>
-                                    <option value="male">Male</option>
-                                    <option value="female">Female</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="control-group">
-                            <label class="control-label" for="occupation">Occupation:</label>
-                            <div class="controls">
-                                <input type="text" class="span6" id="occupation" value="" readonly>
-                            </div>
-                        </div>
+
                         <div class="control-group">
                             <label class="control-label" for="bio">Bio:</label>
                             <div class="controls">
@@ -510,92 +484,57 @@
 });
 
     $(document).ready(function() {
-        $('#heartbtn').on("click", '.heart', function() {
-            var A = $(this).attr("id");
-            var B = A.split("like");
-            var messageID = B[1];
-            var C = parseInt($("#likeCount" + messageID).html());
-            $(this).css("background-position", "")
-            var D = $(this).attr("rel");
+    $('#heartbtn').on("click", '.heart', function() {
+        var A = $(this).attr("id");
+        var B = A.split("like");
+        var messageID = B[1];
+        var C = parseInt($("#likeCount" + messageID).html());
+        $(this).css("background-position", "")
+        var D = $(this).attr("rel");
 
-            if (D === 'like') {
-                $("#likeCount" + messageID).html(C + 1);
-                $(this).addClass("heartAnimation").attr("rel", "unlike");
-            } else {
-                $("#likeCount" + messageID).html(C - 1);
-                $(this).removeClass("heartAnimation").attr("rel", "like");
-                $(this).css("background-position", "left");
-            }
-        });
+        if (D === 'like') {
+            $("#likeCount" + messageID).html(C + 1);
+            $(this).addClass("heartAnimation").attr("rel", "unlike");
+        } else {
+            $("#likeCount" + messageID).html(C - 1);
+            $(this).removeClass("heartAnimation").attr("rel", "like");
+            $(this).css("background-position", "left");
+        }
+    });
 
-        // Tab switching functionality
-        $('.nav.nav-tabs a').on('click', function(e) {
-            e.preventDefault();
-            $(this).tab('show');
-        });
+    // Tab switching functionality
+    $('.nav.nav-tabs a').on('click', function(e) {
+        e.preventDefault();
+        $(this).tab('show');
+    });
 
-        // Load user information from database
-        loadUserInfo();
+    // Load user information from database
+    loadUserInfo();
 
-        // Edit and Save Information Functionality
-        $('#editInfoBtn').click(function() {
-            $('#name, #age, #occupation, #bio').prop('readonly', false);
-            $('#gender').prop('disabled', false);
-            $('#editInfoBtn').hide();
-            $('#saveInfoBtn').show();
-            $('#profilePicture').hide();
-            $('#newProfilePicture').show();
-            $('#uploadPlaceholder').hide();
-        });
+    // Edit and Save Information Functionality
+    $('#editInfoBtn').click(function() {
+        $('#bio').prop('readonly', false);
+        $('#editInfoBtn').hide();
+        $('#saveInfoBtn').show();
+    });
 
-        $('#saveInfoBtn').click(function() {
-            const userInfo = {
-                name: $('#name').val(),
-                age: $('#age').val(),
-                gender: $('#gender').val(),
-                occupation: $('#occupation').val(),
-                bio: $('#bio').val()
-            };
+    $('#saveInfoBtn').click(function() {
+        const bio = $('#bio').val();
+        const user = { profile: bio  };
 
-            const fileInput = document.getElementById('newProfilePicture');
-            let profilePictureFile = null;
-            if (fileInput.files.length > 0) {
-                profilePictureFile = fileInput.files[0];
-            }
-
-            const formData = new FormData();
-            formData.append('userInfo', JSON.stringify(userInfo));
-            if (profilePictureFile) {
-                formData.append('profilePicture', profilePictureFile);
-            }
-
-            instance.post('/api/updateUserInfo', formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data'
-                }
-            })
+        instance.post('user/profile/update', user)
             .then(response => {
-                console.log('Success:', response.data);
-                alert('Information saved successfully!');
-                updateUIWithUserData(response.data.userInfo);
-                if (profilePictureFile) {
-                    $('#profilePicture').attr('src', URL.createObjectURL(profilePictureFile)).show();
-                    $('#purchaseProfilePicture').attr('src', URL.createObjectURL(profilePictureFile)).show();
-                }
+                console.log('Profile updated successfully:', response.data);
+                alert('Your profile has been successfully updated.');
+                $('#bio').prop('readonly', true);
+                $('#editInfoBtn').show();
+                $('#saveInfoBtn').hide();
             })
-            .catch((error) => {
-                console.error('Error:', error);
-                alert('Failed to save information.');
+            .catch(error => {
+                console.error('Error updating profile:', error.response ? error.response.data : error.message);
+                alert('Failed to update profile.');
             });
-
-            $('#name, #age, #occupation, #bio').prop('readonly', true);
-            $('#gender').prop('disabled', true);
-            $('#editInfoBtn').show();
-            $('#saveInfoBtn').hide();
-            $('#profilePicture').show();
-            $('#newProfilePicture').hide();
-            $('#uploadPlaceholder').show();
-        });
+    });
 
 
 
