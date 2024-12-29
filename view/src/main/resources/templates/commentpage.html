@@ -103,11 +103,8 @@
         <div class="row-fluid">
             <div class="span8">
                 <!-- start-copyright -->
-                <p>Copyright @ 2024 Voteease</p>
+                <p>Copyright @ 2024 VoteEase</p>
                 <!-- end-copyrigh -->
-            </div>
-            <div class="span4">
-                <a href="mainpage.html"><img id="logo-footer" src="assets/img/htc_logo.png" class="pull-right" alt="" /></a>
             </div>
         </div><!--/row-fluid-->
     </div><!--/container-->
@@ -115,7 +112,6 @@
 <!--=== End Copyright ===-->
 
 <script type="text/javascript" src="/js/jquery-1.8.2.min.js"></script>
-<script type="text/javascript" src="/js/modernizr.custom.js"></script>
 <script type="text/javascript" src="/plugins/bootstrap/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="/js/zoom.min.js"></script> <!-- image extension -->
 
@@ -330,23 +326,80 @@
         console.error('Invalid comment ID');
     }
 
-    function fetchDataAndRender(id) {
-        instance.get(`/poll/info/${id}`) // 使用instance.get代替fetch
-            .then(response => {
-                const data = response.data; // Axios默认解析json，所以直接访问response.data
-                if (data.code === 0) { // 检查API返回的状态码是否为成功
-                    if (data.data.options.length <= 2) {
-                        document.getElementById('content').innerHTML = renderLessThanOrTwoOptionsPage(data.data);
-                    } else {
-                        document.getElementById('content').innerHTML = renderMoreThanTwoOptionsPage(data.data);
-                        initVoteSystem('.htmleaf-content', getInitialValues(data.data.results));
-                    }
-                } else {
-                    console.error('API returned an error:', data.msg);
-                }
-            })
-            .catch(error => console.error('Error fetching data:', error));
+async function fetchDataAndRender(id) {
+    try {
+        const response = await instance.get(`/poll/info/${id}`); // 使用instance.get代替fetch
+        const data = response.data; // Axios默认解析json，所以直接访问response.data
+        if (data.code === 0) { // 检查API返回的状态码是否为成功
+            let template;
+            if (data.data.options.length <= 2) {
+                template = renderLessThanOrTwoOptionsPage(data.data);
+            } else {
+                template = renderMoreThanTwoOptionsPage(data.data);
+                initVoteSystem('.htmleaf-content', getInitialValues(data.data.results));
+            }
+
+            document.getElementById('content').innerHTML = template;
+
+            // 获取 "star" 按钮元素并检查收藏状态
+            const buttonElement = document.querySelector('.praise');
+            if (buttonElement) {
+                await checkIfStarred(data.data.poll.pollId, buttonElement); // 使用 await 确保异步完成
+            }
+        } else {
+            console.error('API returned an error:', data.msg);
+        }
+    } catch (error) {
+        console.error('Error fetching data:', error);
     }
+}
+
+function toggleStar(buttonElement, pollId) {
+    const url = `/star/operate`;
+
+    // 发送收藏操作请求
+    instance.put(url,  {pollId: pollId} )
+        .then(response => {
+            if (response.data.code === 0) {
+                updateStarButton(buttonElement, pollId);
+            } else {
+                console.error('Failed to operate star:', response.data.message);
+            }
+        })
+        .catch(error => console.error('Error toggling star:', error));
+}
+
+function checkIfStarred(pollId, buttonElement) {
+
+    instance.get('/star/check', { params: {pollId : pollId } })
+        .then(response => {
+            if (response.data.code === 0) {
+                const isStarred = response.data.data; // 直接从 data 字段读取布尔值
+                updateStarButton(buttonElement, pollId, isStarred);
+            } else {
+                console.error('Failed to check star status:', response.data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error checking star status:', error.response ? error.response.data : error.message);
+        });
+}
+
+function updateStarButton(buttonElement, pollId, isStarred = null) {
+    if (isStarred === null) {
+        // 如果没有提供 isStarred，则切换当前状态
+        isStarred = !buttonElement.classList.contains('starred');
+    }
+
+    // 更新按钮样式
+    buttonElement.classList.toggle('starred', isStarred);
+
+    // 更新图标样式（可选）
+    const icon = buttonElement.querySelector('.icon-star');
+    if (icon) {
+        icon.style.color = isStarred ? 'gold' : ''; // 或者使用其他方式改变图标颜色
+    }
+}
 
 function parseVoteString(voteString) {
     const pollRegex = /Vote\((.*?)\)/;
@@ -388,7 +441,17 @@ function renderLessThanOrTwoOptionsPage(data) {
                         <div class="special-button">
                             <span class="blog-title" style="color: #72c02c;font-size: 22px; line-height: 24px; display: inline;float: left;">${data.poll.title}</span>
                             <ul class="unstyled">
-                                <a class="praise" style="text-decoration:none;font-size: 16px;" href="javascript:void(0);" onclick="praiseBox(this);"><li style="list-style: none;display: inline;"><i class="icon-star"></i>star</a>
+                                <a
+                                    class="praise"
+                                    style="text-decoration:none;font-size: 16px;"
+                                    href="javascript:void(0);"
+                                    onclick="toggleStar(this, '${pollId}');"
+                                    data-poll-id="${pollId}"
+                                >
+                                    <li style="list-style: none;display: inline;">
+                                        <i class="icon-star"></i> star
+                                    </li>
+                                </a>
                             </ul>
                         </div>
                         <ul class="unstyled inline blog-info blog-tags">

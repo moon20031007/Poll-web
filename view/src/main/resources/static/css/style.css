@@ -1923,7 +1923,7 @@ i.style-switcher-btn-option:hover {
 .span7{margin-left:13%;}
 
 /* votecard */
-.votecard{background:url(../img/posts/vote-up.png) no-repeat 0 0;padding:4px;width:63px;height:43px;text-align:center; display: block;float:left;}
+/*.votecard{background:url(../img/posts/vote-up.png) no-repeat 0 0;padding:4px;width:63px;height:43px;text-align:center; display: block;float:left;}*/
 .votecard div{position:relative;overflow:hidden;width:63px;height:43px;}
 .votecard em{display:block;position:relative;width:63px;height:33px;padding:6px 0 6px 0;font:normal 28px/28px "Helvetica Neue","Helvetica","Arial",Sans-serif;color:#585F69;}
 .votecard strong{font-weight:bold;}
