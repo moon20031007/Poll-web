@@ -221,6 +221,12 @@
                     <div class="headline"><h4>Account Security</h4></div>
                     <form id="changePasswordForm">
                         <div class="control-group">
+                            <label class="control-label" for="verificationCode">Verification Code:</label>
+                            <div class="controls">
+                                <input type="text" class="span6" id="verificationCode" required>
+                            </div>
+                        </div>
+                        <div class="control-group">
                             <label class="control-label" for="newPassword">New Password:</label>
                             <div class="controls">
                                 <input type="password" class="span6" id="newPassword" required>
@@ -232,10 +238,14 @@
                                 <input type="password" class="span6" id="confirmPassword" required>
                             </div>
                         </div>
-                        <button type="button" class="btn btn-primary" id="changePasswordBtn">Save New Password</button>
+                        <button type="button" class="btn btn-primary" id="sendVerificationEmailBtn">Send Verification Email</button>
+                        <button type="button" class="btn btn-primary" id="changePasswordBtn" style="display:none;">Save New Password</button>
                     </form>
                     <div id="passwordMismatchAlert" class="alert alert-error" style="display:none;">
                         The passwords you entered do not match.
+                    </div>
+                    <div id="verificationSentAlert" class="alert alert-success" style="display:none;">
+                        Verification email has been sent!
                     </div>
                 </div><!--/ tab-pane -->
             </div><!--/tab-content-->
@@ -469,6 +479,33 @@
 <!-- JS Page Level -->
 <script type="text/javascript" src="/assets/js/app.js"></script>
 <script>
+
+    $(document).ready(function() {
+    instance.get('user/check')
+        .then(response => {
+            console.log(response.data.data);
+            const currentUsername = response.data.data.username;
+
+            // 提取 URL 路径中的 username
+            const pathname = window.location.pathname;
+            const pathParts = pathname.split('/');
+            const viewedUsername = pathParts[pathParts.length - 1];
+
+            if (currentUsername !== viewedUsername) {
+                $('#informationTab').hide();
+                $('#securityTab').hide();
+                $('#actionButtons').show();
+            } else {
+                $('#informationTab').show();
+                $('#securityTab').show();
+                $('#actionButtons').hide();
+            }
+        })
+        .catch(error => {
+            console.error('Failed to check user:', error);
+        });
+});
+
     $(document).ready(function() {
         $('#heartbtn').on("click", '.heart', function() {
             var A = $(this).attr("id");
