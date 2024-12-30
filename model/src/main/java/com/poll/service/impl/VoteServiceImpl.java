@@ -53,7 +53,7 @@ public class VoteServiceImpl implements VoteService {
     }
 
     @Override
-    public List<Vote> check(User user, Poll poll) {
-        return voteMapper.check(user.getUserId(), poll.getPollId());
+    public List<Vote> check(User user, Integer pollId) {
+        return voteMapper.check(user.getUserId(), pollId);
     }
 }
