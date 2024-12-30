@@ -334,18 +334,30 @@ async function fetchDataAndRender(id) {
             let template;
             if (data.data.options.length <= 2) {
                 template = renderLessThanOrTwoOptionsPage(data.data);
+                document.getElementById('content').innerHTML = template;
+
+                // 获取 "star" 按钮元素并检查收藏状态
+                const buttonElement = document.querySelector('.star');
+                console.log(buttonElement);
+                if (buttonElement) {
+                    await checkIfStarred(data.data.poll.pollId, buttonElement); // 使用 await 确保异步完成
+                }
             } else {
                 template = renderMoreThanTwoOptionsPage(data.data);
-                initVoteSystem('.htmleaf-content', getInitialValues(data.data.results));
+                requestAnimationFrame(() => {
+                    initVoteSystem('.htmleaf-content', getInitialValues(data.data.results));
+                });
+                document.getElementById('content').innerHTML = template;
+
+                // 获取 "star" 按钮元素并检查收藏状态
+                const buttonElement = document.querySelector('.star');
+                console.log(buttonElement);
+                if (buttonElement) {
+                    await checkIfStarred(data.data.poll.pollId, buttonElement); // 使用 await 确保异步完成
+                }
             }
 
-            document.getElementById('content').innerHTML = template;
 
-            // 获取 "star" 按钮元素并检查收藏状态
-            const buttonElement = document.querySelector('.praise');
-            if (buttonElement) {
-                await checkIfStarred(data.data.poll.pollId, buttonElement); // 使用 await 确保异步完成
-            }
         } else {
             console.error('API returned an error:', data.msg);
         }
@@ -395,7 +407,8 @@ function updateStarButton(buttonElement, pollId, isStarred = null) {
     buttonElement.classList.toggle('starred', isStarred);
 
     // 更新图标样式（可选）
-    const icon = buttonElement.querySelector('.icon-star');
+    const icon = document.querySelector('.icon-star');
+    console.log(icon);
     if (icon) {
         icon.style.color = isStarred ? 'gold' : ''; // 或者使用其他方式改变图标颜色
     }
@@ -442,7 +455,7 @@ function renderLessThanOrTwoOptionsPage(data) {
                             <span class="blog-title" style="color: #72c02c;font-size: 22px; line-height: 24px; display: inline;float: left;">${data.poll.title}</span>
                             <ul class="unstyled">
                                 <a
-                                    class="praise"
+                                    class="praise star"
                                     style="text-decoration:none;font-size: 16px;"
                                     href="javascript:void(0);"
                                     onclick="toggleStar(this, '${pollId}');"
@@ -571,7 +584,17 @@ function renderLessThanOrTwoOptionsPage(data) {
                             <div class="special-button">
                                 <span class="blog-title" style="color: #72c02c;font-size: 22px; line-height: 24px; display: inline;float: left;">${data.poll.title}</span>
                                 <ul class="unstyled">
-                                    <a class="praise" style="text-decoration:none;font-size: 16px;" href="javascript:void(0);" onclick="praiseBox(this);"><li style="list-style: none;display: inline;"><i class="icon-star"></i>star</a>
+                                    <a
+                                        class="praise star"
+                                        style="text-decoration:none;font-size: 16px;"
+                                        href="javascript:void(0);"
+                                        onclick="toggleStar(this, '${pollId}');"
+                                        data-poll-id="${pollId}"
+                                    >
+                                        <li style="list-style: none;display: inline;">
+                                            <i class="icon-star"></i> star
+                                        </li>
+                                    </a>
                                 </ul>
                             </div>
                             <ul class="unstyled inline blog-info blog-tags">
