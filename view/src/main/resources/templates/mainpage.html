@@ -357,6 +357,7 @@ async function fetchPollsAndRender(page) {
         }
 
         const pollsData = response.data.data;
+        console.log(pollsData)
         renderPolls(pollsData);
         currentPage = page; // 更新当前页
         updatePagination(currentPage, totalPages); // 使用全局变量totalPages
@@ -376,10 +377,11 @@ function renderPolls(polls) {
         const topics = pollItem.topics;
         const images = pollItem.images;
         const creator = pollItem.creator;
+        const results = pollItem.results;
 
         let template;
         if (options.length <= 2) {
-            template = createSimplePollTemplate(poll, options, topics, images, creator);
+            template = createSimplePollTemplate(poll, options, topics, images, creator, results);
         } else {
             template = createComplexPollTemplate(poll, options, topics, images, creator);
         }
@@ -395,7 +397,7 @@ function renderPolls(polls) {
     });
 }
 
-function createSimplePollTemplate(poll, options, topics, images, creator) {
+function createSimplePollTemplate(poll, options, topics, images, creator, results) {
     const pollDiv = document.createElement('div');
     pollDiv.className = 'blog margin-bottom-30 bg-light';
 
@@ -431,28 +433,29 @@ function createSimplePollTemplate(poll, options, topics, images, creator) {
                 </ul>
             </div>
             <div class="span6 vote_bar">
-                <div class="main-comment inline">
-                    <p class="qst-container">${poll.description}</p>
-                    <hr />
-                </div>
-                <div style="margin:10px auto; width: 190px;height: 75px; overflow: hidden;">
-                    ${options.map((option, index) => `
-                        <div class="votecolumn" style="">
-                            <div class="votecard">
-                                <div>
-                                    <em><strong>0</strong><span></span></em>
-                                </div>
-                            </div>
-                            <a><img src="/img/${index === 0 ? 'good' : 'bad'}.png" class="resized-image"></a>
-                        </div>
-                    `).join('')}
-                </div>
-
-                <div class="progress" style="width:85%;overflow: hidden; margin: 10px auto; ">
-                    <div class="bar bar-warning" style="width: 75%; background-color:#C5E1A5;color:#C5E1A5"></div>
-                    <div class="bar bar-danger" style="width: 25%; background-color:#558B2F;color:#558B2F"></div>
+    <div class="main-comment inline">
+        <p class="qst-container">${poll.description}</p>
+        <hr />
+    </div>
+    <div style="display: flex; justify-content: space-around; width: 85%; max-width: 300px; margin: 10px auto;">
+        ${options.map((option, index) => `
+            <div style="display: flex; flex-direction: column; align-items: center;">
+                <div class="votecolumn" style="margin-bottom: 5px;">
+                    <a><img src="/img/${index === 0 ? 'good' : 'bad'}.png"
+                            class="resized-image"
+                            style="position: relative; top: 5px; left: -5px;"></a>
                 </div>
             </div>
+        `).join('')}
+    </div>
+    <div style="display: flex; justify-content: space-around; width: 85%; max-width: 300px; margin: 0 auto;">
+        ${Object.entries(results).map(([optionId, optionNumber]) => `
+            <div class="votecard" style="align-self: center;">
+                <em><strong>${optionNumber || 0}</strong></em>
+            </div>
+        `).join('')}
+    </div>
+</div>
         </div>
         <p><a class="btn-u btn-u-small" href="/commentpage/${poll.pollId}" style="margin-left: 20px;margin-top: 5px;">Read More</a></p>
     `;
