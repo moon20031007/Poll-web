@@ -45,9 +45,9 @@ public class VoteController {
     }
 
     @GetMapping("/check")
-    public Result check(@RequestHeader("Authorization") String jwt, @RequestBody Poll poll) {
+    public Result check(@RequestHeader("Authorization") String jwt, @RequestParam Integer pollId) {
         try {
-            return Result.success(voteService.check(JwtUtils.parseJwt(jwt), poll));
+            return Result.success(voteService.check(JwtUtils.parseJwt(jwt), pollId));
         } catch (Exception e) {
             e.printStackTrace();
             return Result.error(ResultCode.ERROR);

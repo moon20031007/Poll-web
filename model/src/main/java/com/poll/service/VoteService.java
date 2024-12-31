@@ -13,5 +13,5 @@ public interface VoteService {
 
     Map<Vote, User> recent();
 
-    List<Vote> check(User user, Poll poll);
+    List<Vote> check(User user, Integer pollId);
 }

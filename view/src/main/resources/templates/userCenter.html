@@ -178,43 +178,20 @@
                         <div id="uploadPlaceholder" style="width: 150px; height: 150px; border: 2px dashed #ccc; line-height: 150px; text-align: center; border-radius: 50%;">
                             Upload New Photo
                         </div>
+                        <br>
+                        <button type="button" class="btn btn-primary" id="editProfilePictureBtn" style="display:none;">Edit Profile Picture</button>
+                        <button type="button" class="btn btn-success" id="saveProfilePictureBtn" style="display:none;">Save Profile Picture</button>
                     </div>
                     <form id="infoForm">
-                        <div class="control-group">
-                            <label class="control-label" for="name">Name:</label>
-                            <div class="controls">
-                                <input type="text" class="span6" id="name" value="" readonly>
-                            </div>
-                        </div>
-                        <div class="control-group">
-                            <label class="control-label" for="age">Age:</label>
-                            <div class="controls">
-                                <input type="number" class="span6" id="age" value="" readonly>
-                            </div>
-                        </div>
-                        <div class="control-group">
-                            <label class="control-label" for="gender">Gender:</label>
-                            <div class="controls">
-                                <select class="span6" id="gender" disabled>
-                                    <option value="male">Male</option>
-                                    <option value="female">Female</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="control-group">
-                            <label class="control-label" for="occupation">Occupation:</label>
-                            <div class="controls">
-                                <input type="text" class="span6" id="occupation" value="" readonly>
-                            </div>
-                        </div>
+
                         <div class="control-group">
                             <label class="control-label" for="bio">Bio:</label>
                             <div class="controls">
                                 <textarea class="span6" id="bio" rows="3" readonly></textarea>
                             </div>
                         </div>
-                        <button type="button" class="btn btn-primary" id="editInfoBtn">Edit Information</button>
-                        <button type="button" class="btn btn-success" id="saveInfoBtn" style="display:none;">Save Changes</button>
+                        <button type="button" class="btn btn-primary" id="editBioBtn">Edit Bio</button>
+                        <button type="button" class="btn btn-success" id="saveBioBtn" style="display:none;">Save Bio</button>
                     </form>
                 </div>
                 <div class="tab-pane" id="security">
@@ -510,92 +487,111 @@
 });
 
     $(document).ready(function() {
-        $('#heartbtn').on("click", '.heart', function() {
-            var A = $(this).attr("id");
-            var B = A.split("like");
-            var messageID = B[1];
-            var C = parseInt($("#likeCount" + messageID).html());
-            $(this).css("background-position", "")
-            var D = $(this).attr("rel");
+    $('#heartbtn').on("click", '.heart', function() {
+        var A = $(this).attr("id");
+        var B = A.split("like");
+        var messageID = B[1];
+        var C = parseInt($("#likeCount" + messageID).html());
+        $(this).css("background-position", "")
+        var D = $(this).attr("rel");
 
-            if (D === 'like') {
-                $("#likeCount" + messageID).html(C + 1);
-                $(this).addClass("heartAnimation").attr("rel", "unlike");
-            } else {
-                $("#likeCount" + messageID).html(C - 1);
-                $(this).removeClass("heartAnimation").attr("rel", "like");
-                $(this).css("background-position", "left");
-            }
-        });
+        if (D === 'like') {
+            $("#likeCount" + messageID).html(C + 1);
+            $(this).addClass("heartAnimation").attr("rel", "unlike");
+        } else {
+            $("#likeCount" + messageID).html(C - 1);
+            $(this).removeClass("heartAnimation").attr("rel", "like");
+            $(this).css("background-position", "left");
+        }
+    });
 
-        // Tab switching functionality
-        $('.nav.nav-tabs a').on('click', function(e) {
-            e.preventDefault();
-            $(this).tab('show');
-        });
+    // Tab switching functionality
+    $('.nav.nav-tabs a').on('click', function(e) {
+        e.preventDefault();
+        $(this).tab('show');
+    });
 
-        // Load user information from database
-        loadUserInfo();
+    // Load user information from database
+    loadUserInfo();
 
-        // Edit and Save Information Functionality
-        $('#editInfoBtn').click(function() {
-            $('#name, #age, #occupation, #bio').prop('readonly', false);
-            $('#gender').prop('disabled', false);
-            $('#editInfoBtn').hide();
-            $('#saveInfoBtn').show();
-            $('#profilePicture').hide();
-            $('#newProfilePicture').show();
-            $('#uploadPlaceholder').hide();
-        });
+    // Edit and Save Bio Functionality
+    $('#editBioBtn').click(function() {
+        $('#bio').prop('readonly', false);
+        $('#editBioBtn').hide();
+        $('#saveBioBtn').show();
+    });
 
-        $('#saveInfoBtn').click(function() {
-            const userInfo = {
-                name: $('#name').val(),
-                age: $('#age').val(),
-                gender: $('#gender').val(),
-                occupation: $('#occupation').val(),
-                bio: $('#bio').val()
-            };
+    $('#saveBioBtn').click(function() {
+        const bio = $('#bio').val();
+        const user = { profile:  bio  };
 
-            const fileInput = document.getElementById('newProfilePicture');
-            let profilePictureFile = null;
-            if (fileInput.files.length > 0) {
-                profilePictureFile = fileInput.files[0];
-            }
-
-            const formData = new FormData();
-            formData.append('userInfo', JSON.stringify(userInfo));
-            if (profilePictureFile) {
-                formData.append('profilePicture', profilePictureFile);
-            }
-
-            instance.post('/api/updateUserInfo', formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data'
-                }
-            })
+        instance.post('user/profile/update', user)
             .then(response => {
-                console.log('Success:', response.data);
-                alert('Information saved successfully!');
-                updateUIWithUserData(response.data.userInfo);
-                if (profilePictureFile) {
-                    $('#profilePicture').attr('src', URL.createObjectURL(profilePictureFile)).show();
-                    $('#purchaseProfilePicture').attr('src', URL.createObjectURL(profilePictureFile)).show();
-                }
+                console.log('Profile updated successfully:', response.data);
+                alert('Your profile has been successfully updated.');
+                $('#bio').prop('readonly', true);
+                $('#editBioBtn').show();
+                $('#saveBioBtn').hide();
             })
-            .catch((error) => {
-                console.error('Error:', error);
-                alert('Failed to save information.');
+            .catch(error => {
+                console.error('Error updating profile:', error.response ? error.response.data : error.message);
+                alert('Failed to update profile.');
             });
+    });
 
-            $('#name, #age, #occupation, #bio').prop('readonly', true);
-            $('#gender').prop('disabled', true);
-            $('#editInfoBtn').show();
-            $('#saveInfoBtn').hide();
-            $('#profilePicture').show();
-            $('#newProfilePicture').hide();
-            $('#uploadPlaceholder').show();
+    // Edit and Save Profile Picture Functionality
+    $('#profilePicture').on('load', function() {
+        $('#editProfilePictureBtn').show();
+    });
+
+    $('#editProfilePictureBtn').click(function() {
+        $('#newProfilePicture').trigger('click');
+    });
+
+    $('#newProfilePicture').on('change', function(event) {
+        const fileInput = event.target;
+        if (fileInput.files && fileInput.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                $('#profilePicture').attr('src', e.target.result).show();
+                $('#purchaseProfilePicture').attr('src', e.target.result).show();
+                $('#uploadPlaceholder').hide();
+            };
+            reader.readAsDataURL(fileInput.files[0]);
+        }
+        $('#editProfilePictureBtn').hide();
+        $('#saveProfilePictureBtn').show();
+    });
+
+    $('#saveProfilePictureBtn').click(function() {
+        const fileInput = document.getElementById('newProfilePicture');
+        let profilePictureFile = null;
+        if (fileInput.files.length > 0) {
+            profilePictureFile = fileInput.files[0];
+        }
+
+        const formData = new FormData();
+        formData.append('file', profilePictureFile);
+
+        instance.post('user/avatar/update', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        })
+        .then(response => {
+            console.log('Profile picture uploaded successfully:', response.data);
+            alert('Your profile picture has been successfully updated.');
+            $('#editProfilePictureBtn').show();
+            $('#saveProfilePictureBtn').hide();
+        })
+        .catch((error) => {
+            console.error('Error uploading profile picture:', error);
+            alert('Failed to upload profile picture.');
+            $('#editProfilePictureBtn').show();
+            $('#saveProfilePictureBtn').hide();
         });
+    });
+
 
 
 
@@ -785,7 +781,7 @@ $(document).ready(function() {
         userData.posts.forEach(post => {
             postsContainer.append(`
                 <div class="ps-post-title">
-                    <a href="#" style="text-decoration: none;">
+                    <a href="/commentpage/${post.pollId}" style="text-decoration: none;">
                         <blockquote>
                             <div class="ps-post-time">${formatDate(new Date(post.startTime))}</div>
                             <h4><strong>${post.title}</strong></h4>
@@ -802,7 +798,7 @@ $(document).ready(function() {
         userData.stars.forEach(star => {
             starsContainer.append(`
                 <div class="ps-post-title">
-                    <a href="#" style="text-decoration: none;">
+                    <a href="/commentpage/${star.pollId}" style="text-decoration: none;">
                         <blockquote>
                             <div class="ps-post-time">${formatDate(new Date(star.startTime))}</div>
                             <h4><strong>${star.title}</strong></h4>
