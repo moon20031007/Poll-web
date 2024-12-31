@@ -514,6 +514,11 @@ function createComplexPollTemplate(poll, options, topics, images, creator) {
 }
 
 function toggleStar(buttonElement, pollId) {
+    const token = localStorage.getItem('authToken');
+    if (!token) {
+        alert('Please Login First');
+        return;
+    }
     const url = `/star/operate`;
 
     // 发送收藏操作请求
@@ -529,6 +534,10 @@ function toggleStar(buttonElement, pollId) {
 }
 
 function checkIfStarred(pollId, buttonElement) {
+    const token = localStorage.getItem('authToken');
+    if (!token) {
+        return;
+    }
 
     instance.get('/star/check', { params: {pollId : pollId } })
         .then(response => {

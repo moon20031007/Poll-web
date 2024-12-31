@@ -338,10 +338,10 @@ async function fetchDataAndRender(id) {
 
                 // 获取 "star" 按钮元素并检查收藏状态
                 const buttonElement = document.querySelector('.star');
-                console.log(buttonElement);
                 if (buttonElement) {
                     await checkIfStarred(data.data.poll.pollId, buttonElement); // 使用 await 确保异步完成
                 }
+                checkIfVoted(data.data.poll.pollId);
             } else {
                 template = renderMoreThanTwoOptionsPage(data.data);
                 requestAnimationFrame(() => {
@@ -355,6 +355,7 @@ async function fetchDataAndRender(id) {
                 if (buttonElement) {
                     await checkIfStarred(data.data.poll.pollId, buttonElement); // 使用 await 确保异步完成
                 }
+                checkIfVoted(data.data.poll.pollId);
             }
 
 
@@ -367,6 +368,11 @@ async function fetchDataAndRender(id) {
 }
 
 function toggleStar(buttonElement, pollId) {
+    const token = localStorage.getItem('authToken');
+    if (!token) {
+        alert('Please Login First');
+        return;
+    }
     const url = `/star/operate`;
 
     // 发送收藏操作请求
@@ -382,7 +388,10 @@ function toggleStar(buttonElement, pollId) {
 }
 
 function checkIfStarred(pollId, buttonElement) {
-
+    const token = localStorage.getItem('authToken');
+    if (!token) {
+        return;
+    }
     instance.get('/star/check', { params: {pollId : pollId } })
         .then(response => {
             if (response.data.code === 0) {
@@ -500,7 +509,15 @@ function renderLessThanOrTwoOptionsPage(data) {
                                     </div>
                                 `).join('')}
                             </div>
-                            <button style="padding: 10px 20px; font-size: 16px; margin-left: 10px;" onclick="submitVotes1('${pollId}')">sumbit</button>
+                                ${data.poll.allowAnonymous ? `
+                                    <label for="isAnonymous">If Anonymous</label>
+                                    <div class="row cf">
+                                        <div class="four col">
+                                            <input type="checkbox" name="isAnonymous" id="isAnonymous">
+                                        </div>
+                                    </div>
+                                ` :``}
+                            <button class="submit-vote-button" style="padding: 10px 20px; font-size: 16px; margin-left: 10px;" onclick="submitVotes1('${pollId}')">sumbit</button>
                             <div class="vote_analysis" style="text-align: center; margin-top: 20px;">
                                 <h3 style="font-size: 24px;">Voting result analysis</h3>
                                 <p>Total votes：${Object.values(data.results).reduce((acc, curr) => acc + (curr || 0), 0)}</p>
@@ -524,12 +541,70 @@ function renderLessThanOrTwoOptionsPage(data) {
     `;
 }
 
+// 在页面加载或初始化时检查用户是否已投票
+function checkIfVoted(pollId) {
+    const token = localStorage.getItem('authToken');
+    if (!token) {
+        return;
+    }
+    instance.get('/vote/check', { params: { pollId: pollId } })
+        .then(response => {
+            if (response.data.code === 0) {
+                const votedOptions = response.data.data; // 获取用户投票的选项列表
+                console.log('Voted Options:', votedOptions);
+                if (votedOptions && votedOptions.length > 0) {
+                    votedOptions.forEach(vote => {
+                        const optionId = vote.option;
+                        const inputElement = document.querySelector(`input[value="${optionId}"]`);
+                        if (inputElement) {
+                            inputElement.checked = true;
+                            inputElement.disabled = true; // 禁用该输入框以防止更改
+                        }
+                    });
+
+                    document.querySelectorAll('input[name="voteType"]').forEach(input => {
+                        input.disabled = true;
+                    });
+
+                    // 如果用户已经投票，则禁用提交按钮并设置提示信息
+                    document.querySelector('button[onclick="submitVotes1(\'' + pollId + '\')"]').disabled = true;
+                }
+            } else {
+                console.error('Failed to check vote status:', response.data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error checking vote status:', error.response ? error.response.data : error.message);
+        });
+}
+
     function submitVotes1(pollId) {
+        const token = localStorage.getItem('authToken');
+        if (!token) {
+            alert('Please Login First');
+            return;
+        }
+
+        const hasVoted = document.querySelector('button[onclick="submitVotes1(\'' + pollId + '\')"]').disabled;
+        if (hasVoted) {
+            alert('You have already voted.');
+            return;
+        }
+
         const selectedOption = document.querySelector('input[name="voteType"]:checked');
+        if (!selectedOption) {
+            alert('Please select an option before submitting.');
+            return;
+        }
         const voteData = {
             pollId: pollId,
-            optionId: selectedOption.value
+            optionId: selectedOption.value,
+            isAnonymous: false
         };
+        let isAnonymous = document.querySelector('#isAnonymous').checked;
+        if (isAnonymous) {
+            voteData.isAnonymous = true;
+        }
         let voteList = [voteData];
         instance.post('/vote/operate', voteList)
             .then(response => {
@@ -625,6 +700,14 @@ function renderLessThanOrTwoOptionsPage(data) {
                                         </label>
                                     `;
                                 }).join('')}
+                                ${data.poll.allowAnonymous ? `
+                                    <label for="isAnonymous">If Anonymous</label>
+                                    <div class="row cf">
+                                        <div class="four col">
+                                            <input type="checkbox" name="isAnonymous" id="isAnonymous">
+                                        </div>
+                                    </div>
+                                ` :``}
                                 <div style="text-align: left; margin-top: 10px;">
                                     <button type="submit" class="submitbtn" style="font-size: 20px;" onclick="submitVotes2('${pollId}')">Submit</button>
                                 </div>
@@ -724,6 +807,11 @@ function initVoteSystem(containerSelector, initialValues) {
 }
 
     function submitVotes2(pollId) {
+    const token = localStorage.getItem('authToken');
+    if (!token) {
+        alert('Please Login First');
+        return;
+    }
     // 获取所有选中的投票选项
     const selectedOptions = document.querySelectorAll('input[name="voteType"]:checked');
 
@@ -735,10 +823,16 @@ function initVoteSystem(containerSelector, initialValues) {
     // 准备投票数据数组
     let voteList = [];
     selectedOptions.forEach(option => {
-        voteList.push({
+        const voteData = {
             pollId: pollId,
-            optionId: option.value
-        });
+            optionId: option.value,
+            isAnonymous: false
+        }
+        let isAnonymous = document.querySelector('#isAnonymous').checked;
+        if (isAnonymous) {
+            voteData.isAnonymous = true;
+        }
+        voteList.push(voteData);
     });
 
     // 发送投票数据到服务器
