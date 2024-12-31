@@ -554,7 +554,7 @@ function checkIfVoted(pollId) {
                 console.log('Voted Options:', votedOptions);
                 if (votedOptions && votedOptions.length > 0) {
                     votedOptions.forEach(vote => {
-                        const optionId = vote.option;
+                        const optionId = vote.optionId;
                         const inputElement = document.querySelector(`input[value="${optionId}"]`);
                         if (inputElement) {
                             inputElement.checked = true;
@@ -567,7 +567,7 @@ function checkIfVoted(pollId) {
                     });
 
                     // 如果用户已经投票，则禁用提交按钮并设置提示信息
-                    document.querySelector('button[onclick="submitVotes1(\'' + pollId + '\')"]').disabled = true;
+                    document.querySelector('.submit-vote-button').disabled = true;
                 }
             } else {
                 console.error('Failed to check vote status:', response.data.message);
@@ -709,7 +709,7 @@ function checkIfVoted(pollId) {
                                     </div>
                                 ` :``}
                                 <div style="text-align: left; margin-top: 10px;">
-                                    <button type="submit" class="submitbtn" style="font-size: 20px;" onclick="submitVotes2('${pollId}')">Submit</button>
+                                    <button type="submit" class="submit-vote-button" style="font-size: 20px;" onclick="submitVotes2('${pollId}')">Submit</button>
                                 </div>
                                 <div class="vote_analysis" style="text-align: center; margin-top: 20px;">
                                 <h3 style="font-size: 24px;">Voting result analysis</h3>
