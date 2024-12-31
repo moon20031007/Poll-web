@@ -143,8 +143,7 @@
         return !!token && token.trim(); // Ensure the token is not just whitespace
     }
 
-    // Function to toggle visibility of authentication states.
-    function toggleAuthState() {
+function toggleAuthState() {
     console.log('Toggling authentication state...');
     const unauthenticatedDiv = document.getElementById('unauthenticated');
     const authenticatedDiv = document.getElementById('authenticated');
@@ -176,21 +175,44 @@
                 // Add Manager button if user is an admin.
                 if (userData.isAdmin) {
                     const managerLi = document.createElement('li');
-
-                    // Apply inline styles directly for spacing
                     managerLi.style.marginRight = '20px'; // Adjust the value as needed
-
                     managerLi.innerHTML = `<a href="/manager" class="login-btn">Manager</a>`;
-
-                    // Find the UserCenter link and insert the new Manager button before it.
                     const userCenterLinkLi = document.querySelector('#authenticated ul li a[href^="/userCenter"]').parentElement;
                     if (userCenterLinkLi) {
                         userCenterLinkLi.parentElement.insertBefore(managerLi, userCenterLinkLi);
                     }
                 }
+
+                // Fetch unread messages count and conditionally display it next to Messages link.
+                return instance.get('/message/unread'); // Chain this promise
+            })
+            .then(response => {
+                const unreadCount = response.data.data || 0; // Ensure we have a number or default to 0
+
+                // Select the Messages link element.
+                const messagesLink = document.querySelector('#authenticated ul li a[href="/messages"]');
+
+                // Remove any existing unread message badge before adding a new one.
+                const existingBadge = messagesLink.querySelector('.unread-badge');
+                if (existingBadge) {
+                    existingBadge.remove();
+                }
+
+                // Only add the badge if there are unread messages.
+                if (unreadCount > 0) {
+                    // Create a span for the badge and set its content.
+                    const unreadBadge = document.createElement('span');
+                    unreadBadge.className = 'unread-badge';
+                    unreadBadge.textContent = ` ${unreadCount}`;
+
+                    // Insert the badge after the Messages link text.
+                    messagesLink.appendChild(unreadBadge);
+
+                    // Optionally style the badge using CSS classes or inline styles.
+                }
             })
             .catch(error => {
-                console.error('Error checking user info:', error);
+                console.error('Error checking user info or fetching unread messages count:', error);
             });
     } else {
         console.log('User is not logged in.');
@@ -201,6 +223,15 @@
         const managerButton = document.querySelector('#authenticated ul li a[href="/manager"]');
         if (managerButton) {
             managerButton.parentElement.remove();
+        }
+
+        // Clear any unread message badge when the user is not logged in.
+        const messagesLink = document.querySelector('#authenticated ul li a[href="/messages"]');
+        if (messagesLink) {
+            const existingBadge = messagesLink.querySelector('.unread-badge');
+            if (existingBadge) {
+                existingBadge.remove();
+            }
         }
     }
 }
