@@ -8,12 +8,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 @Controller
 public class TemplateController {
 
-    @GetMapping("/example")
-    public String asd(Model model) {
-        model.addAttribute("data", "example");
-        return "example";
-    }
-
     @GetMapping("/")
     public String index() {
         return "mainpage";
@@ -22,16 +16,6 @@ public class TemplateController {
     @GetMapping("/commentpage/{id}")
     public String commentpage(@PathVariable int id) {
         return "commentpage";
-    }
-
-    @GetMapping("/type1")
-    public String commentpage1() {
-        return "commentpage1";
-    }
-
-    @GetMapping("/type2")
-    public String commentpage2() {
-        return "commentpage2";
     }
 
     @GetMapping("/login")
