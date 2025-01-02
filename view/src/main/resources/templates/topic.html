@@ -462,7 +462,7 @@ function createSimplePollTemplate(poll, options, topics, images, creator) {
             <li><i class="icon-calendar"></i> ${new Date(poll.startTime).toLocaleString()} ${poll.endTime ? `~${new Date(poll.endTime).toLocaleString()}` : ''}</li>
             <li>
                 <i class="icon-tags"></i>
-                ${topics.map(topic => `<a href="javascript:void(0);">${topic.name}</a>`).join('')}
+                ${topics.map(topic => `<a href="/topic/${topic.topicId}">${topic.name}</a>`).join('')}
             </li>
         </ul>
         <div class="blog_content">
@@ -527,7 +527,7 @@ function createComplexPollTemplate(poll, options, topics, images, creator) {
             <li><i class="icon-calendar"></i> ${new Date(poll.startTime).toLocaleString()} ${poll.endTime ? `~${new Date(poll.endTime).toLocaleString()}` : ''}</li>
             <li>
                 <i class="icon-tags"></i>
-                ${topics.map(topic => `<a href="javascript:void(0);">${topic.name}</a>`).join('')}
+                ${topics.map(topic => `<a href="/topic/${topic.topicId}">${topic.name}</a>`).join('')}
             </li>
         </ul>
         <div class="blog_content">

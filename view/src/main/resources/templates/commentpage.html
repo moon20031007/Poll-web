@@ -512,7 +512,7 @@ function renderLessThanOrTwoOptionsPage(data) {
                             <li><i class="icon-calendar"></i>${new Date(data.poll.startTime).toLocaleDateString()} ${data.poll.endTime ? `~${new Date(data.poll.endTime).toLocaleString()}` : ''}</li>
                             <li>
                                 <i class="icon-tags"></i>
-                                ${data.topics.map(topic => `<a href="#">${topic.name}</a>`).join(' ')}
+                                ${data.topics.map(topic => `<a href="/topic/${topic.topicId}">${topic.name}</a>`).join(' ')}
                             </li>
                         </ul>
                         <hr>
@@ -708,7 +708,7 @@ function checkIfVoted(pollId) {
                                 <li><i class="icon-calendar"></i>${new Date(data.poll.startTime).toLocaleDateString()} ${data.poll.endTime ? `~${new Date(data.poll.endTime).toLocaleString()}` : ''}</li>
                                 <li>
                                     <i class="icon-tags"></i>
-                                    ${data.topics.map(topic => `<a href="#">${topic.name}</a>`).join(' ')}
+                                    ${data.topics.map(topic => `<a href="/topic/${topic.topicId}">${topic.name}</a>`).join(' ')}
                                 </li>
                             </ul>
                             <hr>
